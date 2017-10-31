@@ -16,6 +16,15 @@ class TaskController extends Controller
     }
 
     // 上报任务
-
+    public function report(
+        Request $request
+    ) {
+        Util::die_jishua(['ok']);
+    }
     // 上报失败账号
+    public function invalid_account(
+        Request $request
+    ) {
+        Util::die_jishua(['ok']);
+    }
 }
