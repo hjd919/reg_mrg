@@ -20,7 +20,8 @@ class TaskController extends Controller
         // func getdevice_id
         $get_device_id = function () {
             $ua        = $_SERVER['HTTP_USER_AGENT'];
-            $device_id = explode('device/', $ua)[1];
+            $data  = explode('device/', $ua);
+	    $device_id = empty($data[1])?'0':$data[1];
             return $device_id;
         };
 
