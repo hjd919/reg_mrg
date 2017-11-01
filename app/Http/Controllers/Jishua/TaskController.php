@@ -18,7 +18,7 @@ class TaskController extends Controller
     ) {
         // 输入
         $device_id = '1111';
-
+        Util::log('get--header', $_SERVER['HTTP_USER_AGENT']);
         // func getid
         $get_last_id = function ($key, $init_value = '', $prefix = '') {
             $value = Redis::get($key);
