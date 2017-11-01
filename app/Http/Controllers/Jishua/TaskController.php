@@ -75,7 +75,7 @@ class TaskController extends Controller
         };
 
         $device_id = $get_device_id();
-        Util::log('get--header', $_SERVER['HTTP_USER_AGENT']);
+        Util::log('get--device_id', $device_id);
 
         // * 循环获取任务记录 正在刷、有数量
         $last_app_id = $get_last_id('last_app_id');
