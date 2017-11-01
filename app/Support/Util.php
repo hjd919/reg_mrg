@@ -2,11 +2,23 @@
 
 namespace App\Support;
 
+use Illuminate\Support\Facades\Log;
+
 /**
  *
  */
 class Util
 {
+    public static function errorLog($title, $data)
+    {
+        Log::error($title . ':' . var_export($data, true));
+    }
+
+    public static function log($title, $data)
+    {
+        Log::info($title . ':' . var_export($data, true));
+    }
+
     public static function die_jishua($message, $code = 0)
     {
         if (is_array($message) || is_object($message)) {
@@ -16,7 +28,7 @@ class Util
             );
         } else {
             $data = array(
-                'data' => $default_data,
+                'data' => $message,
                 'ret'  => 1,
             );
         }
