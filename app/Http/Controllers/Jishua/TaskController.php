@@ -160,6 +160,7 @@ class TaskController extends Controller
                 // 构造所需格式的结果
                 $data['keyword']  = $app_row->keyword;
                 $data['app_name'] = $app_row->bundle_id;
+                $data['app_id']   = $data['appid'];
                 $response[]       = $data;
             }
             DB::table('work_detail')->insert($work_detail);
