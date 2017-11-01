@@ -19,6 +19,14 @@ class TaskController extends Controller
         // 输入
         $device_id = '1111';
         Util::log('get--header', $_SERVER['HTTP_USER_AGENT']);
+
+        // func getdevice_id
+        $get_device_id = function () {
+            $ua        = $_SERVER['HTTP_USER_AGENT'];
+            $device_id = explode('device/', $ua)[1];
+            return $device_id;
+        };
+
         // func getid
         $get_last_id = function ($key, $init_value = '', $prefix = '') {
             $value = Redis::get($key);
@@ -65,6 +73,9 @@ class TaskController extends Controller
             }
             return $rows;
         };
+
+        $device_id = $get_device_id();
+        Util::log('get--header', $_SERVER['HTTP_USER_AGENT']);
 
         // * 循环获取任务记录 正在刷、有数量
         $last_app_id = $get_last_id('last_app_id');
