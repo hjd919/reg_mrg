@@ -5,7 +5,6 @@ use App\Http\Controllers\Controller;
 use App\Support\Util;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 
 class TaskController extends Controller
@@ -17,8 +16,6 @@ class TaskController extends Controller
         Request $request
     ) {
         // 输入
-        $device_id = '1111';
-        Util::log('get--header', $_SERVER['HTTP_USER_AGENT']);
 
         // func getdevice_id
         $get_device_id = function () {
@@ -75,7 +72,6 @@ class TaskController extends Controller
         };
 
         $device_id = $get_device_id();
-        Util::log('get--device_id', $device_id);
 
         // * 循环获取任务记录 正在刷、有数量
         $last_app_id = $get_last_id('last_app_id');
