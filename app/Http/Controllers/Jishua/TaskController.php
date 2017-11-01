@@ -76,9 +76,7 @@ class TaskController extends Controller
         if (!$app_rows) {
             Util::die_jishua('没有任务记录数据了', 1);
         }
-        Util::log('app_rows', $app_rows);
         $app_row = $app_rows->first();
-        Util::log('app_row', $app_row);
         $set_last_id('last_app_id', $app_row->id);
 
         // * 循环获取苹果账号记录
@@ -101,7 +99,6 @@ class TaskController extends Controller
             ->whereIn('email', $emails)
             ->pluck('email')
             ->toArray();
-        Util::log('exist_work_detail', $exist_work_detail);
         if ($exist_work_detail) {
             // 删除存在的emails
             $emails = array_diff($emails, $exist_work_detail);
@@ -118,7 +115,6 @@ class TaskController extends Controller
             Util::die_jishua('没有device记录数据了', 1);
         }
         $set_last_id('last_device_id', $device_rows[count($device_rows) - 1]->id);
-        Util::log('device_rows', $device_rows);
 
         // * 增加刷任务记录   -> 任务数量减一
         DB::beginTransaction();
