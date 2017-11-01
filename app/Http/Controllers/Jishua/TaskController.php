@@ -20,8 +20,8 @@ class TaskController extends Controller
         // func getdevice_id
         $get_device_id = function () {
             $ua        = $_SERVER['HTTP_USER_AGENT'];
-            $data  = explode('device/', $ua);
-	    $device_id = empty($data[1])?'0':$data[1];
+            $data      = explode('device/', $ua);
+            $device_id = empty($data[1]) ? '0' : $data[1];
             return $device_id;
         };
 
@@ -161,7 +161,7 @@ class TaskController extends Controller
                 // 构造所需格式的结果
                 $data['keyword']  = $app_row->keyword;
                 $data['app_name'] = $app_row->bundle_id;
-                $data['app_id']   = $app_row->appid;
+                $data['app_id']   = (string) $app_row->appid;
                 $response[]       = $data;
             }
             DB::table('work_detail')->insert($work_detail);
