@@ -32,18 +32,14 @@ class Util
             if (0 == $code) {
                 // 成功
                 $data = array(
-                    'data' => [
-                        'msg' => $message,
-                    ],
+                    'data' => [],
                     'msg'  => $message,
                     'ret'  => 0,
                 );
             } else {
                 // 失败
                 $data = array(
-                    'data' => [
-                        'msg' => $message,
-                    ],
+                    'data' => [],
                     'msg'  => $message,
                     'ret'  => 1,
                 );
