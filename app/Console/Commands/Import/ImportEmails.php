@@ -45,6 +45,11 @@ class ImportEmails extends Command
         while (($data = fgetcsv($fp, 1000, ';')) !== false) {
 
             list($email, $appleid_password) = $data;
+
+            // 去除两端空格
+            $email            = trim($email);
+            $appleid_password = trim($appleid_password);
+
             if (empty($email) || empty($appleid_password)) {
                 $i++;
                 continue;
