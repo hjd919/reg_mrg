@@ -190,12 +190,16 @@ class TaskController extends Controller
         if (!$work_id || null === $succ_num || null === $fail_num) {
             Util::die_jishua('缺少参数' . $work_id . $succ_num . $fail_num);
         }
-
+        $status = 2;
+        if ($succ_num) {
+            $status = 3;
+        }
         // * 根据任务id和账号id更新刷任务记录状态
-        DB::table('works')->where('id', $work_id)->update([
-            'status'      => 1,
-            'succ_num'    => $succ_num,
-            'fail_num'    => $fail_num,
+        DB::table('work_detail')->where([
+            'work_id'    => $work_id,
+            'account_id' => $account_id,
+        ])->update([
+            'status'      => $status,
             'report_time' => date('Y-m-d H:i:s'),
         ]);
 
