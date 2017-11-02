@@ -39,7 +39,7 @@ class ImportDevices extends Command
      */
     public function handle()
     {
-        $file = 'devices.csv';
+        $file = 'devices' . date('md') . '.csv';
         $fp   = fopen($file, 'r');
         $i    = $j    = 0;
         while (($data = fgetcsv($fp)) !== false) {
@@ -65,6 +65,9 @@ class ImportDevices extends Command
             $j++;
         }
         echo 'good:' . $i . '--bad:' . $j;
+
+        Redis::set('last_device_id', 9999999999);
+
         die('1');
     }
 }
