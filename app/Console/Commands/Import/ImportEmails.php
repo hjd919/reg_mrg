@@ -39,7 +39,7 @@ class ImportEmails extends Command
      */
     public function handle()
     {
-        $file = '/Users/jdhu/Desktop/test';
+        $file = './test';
         $fp   = fopen($file, 'r');
         $r    = $i    = $j    = 0;
         while (($data = fgetcsv($fp, 1000, ';')) !== false) {
