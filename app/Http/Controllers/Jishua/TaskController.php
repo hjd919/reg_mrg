@@ -90,6 +90,7 @@ class TaskController extends Controller
         // * 循环获取苹果账号记录
         $last_email_id = $get_last_id('last_email_id');
         $where         = [
+            'is_valid'     => 301,
             'valid_status' => 1,
         ];
         $email_rows = $query_rows($last_email_id, 'emails', $where);
