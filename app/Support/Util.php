@@ -2,11 +2,6 @@
 
 namespace App\Support;
 
-$a = json_encode([
-    'data' => [],
-]);
-var_dump($a);
-die;
 use Illuminate\Support\Facades\Log;
 
 /**
