@@ -50,12 +50,12 @@ class ImportDevices extends Command
             }
 
             // 判断文件中是否有重复的udid
-            $exist = DB::table('mobile_info')->where(['udid' => $UDID])->first();
+            $exist = DB::table('devices')->where(['udid' => $UDID])->first();
             if ($exist) {
                 continue;
             }
 
-            DB::table('mobile_info')->insert([
+            DB::table('devices')->insert([
                 'imei'          => $IMEI,
                 'udid'          => $UDID,
                 'serial_number' => $SerialNumber,
