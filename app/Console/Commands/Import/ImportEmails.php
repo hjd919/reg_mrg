@@ -61,7 +61,6 @@ class ImportEmails extends Command
                 'appleid_password' => $appleid_password,
                 'password'         => $appleid_password,
                 'is_valid'         => 301,
-                'mac'              => $WIFI,
             ]);
             $j++;
         }
