@@ -2,6 +2,11 @@
 
 namespace App\Support;
 
+$a = json_encode([
+    'data' => [],
+]);
+var_dump($a);
+die;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -22,15 +27,33 @@ class Util
     public static function die_jishua($message, $code = 0)
     {
         if (is_array($message) || is_object($message)) {
+            // 成功
             $data = array(
                 'data' => $message,
+                'msg'  => 'ok',
                 'ret'  => 0,
             );
         } else {
-            $data = array(
-                'data' => $message,
-                'ret'  => 1,
-            );
+            if (0 == $code) {
+                // 成功
+                $data = array(
+                    'data' => [
+                        'msg' => $message,
+                    ],
+                    'msg'  => $message,
+                    'ret'  => 0,
+                );
+            } else {
+                // 失败
+                $data = array(
+                    'data' => [
+                        'msg' => $message,
+                    ],
+                    'msg'  => $message,
+                    'ret'  => 1,
+                );
+            }
+
         }
         header("Content-type: application/json; charset=utf-8");
         $json_str = json_encode($data, JSON_UNESCAPED_UNICODE);
