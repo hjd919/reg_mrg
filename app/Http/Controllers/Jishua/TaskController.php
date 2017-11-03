@@ -11,6 +11,14 @@ class TaskController extends Controller
 {
     const MAX_KEY = 9999999999;
 
+    public $fixed_device = [
+        'udid'   => '49478d3f961958eecc8e5932e007064f5cd724ce',
+        'imei'   => '355406076406099',
+        'serial' => 'FFMS6LR6G5MN',
+        'bt'     => 'bc:54:36:dd:74:1d',
+        'wifi'   => 'bc:54:36:dd:74:05',
+    ];
+
     // 获取任务
     public function get(
         Request $request
@@ -125,6 +133,14 @@ class TaskController extends Controller
         }
         $set_last_id('last_device_id', $device_rows[count($device_rows) - 1]->id);
 
+        // * 根据任务，固定返回值中设备某项信息
+        if ($app_row->fixed_device) {
+            $fixed_device = explode('|', $app_row->fixed_device);
+            foreach ($fixed_device as $fd) {
+                ${$fd} = $this->fixed_device[$fd];
+            }
+        }
+
         // * 增加刷任务记录   -> 任务数量减一
         DB::beginTransaction();
         try {
@@ -151,11 +167,11 @@ class TaskController extends Controller
                     'account_id' => $email_row->id,
                     'email'      => $email_row->email,
                     'password'   => $email_row->appleid_password,
-                    'udid'       => $device_rows[$key]->udid,
-                    'imei'       => $device_rows[$key]->imei,
-                    'serial'     => $device_rows[$key]->serial_number,
-                    'bt'         => $device_rows[$key]->lanya,
-                    'wifi'       => $device_rows[$key]->mac,
+                    'udid'       => empty($udid) ? $device_rows[$key]->udid : $udid,
+                    'imei'       => empty($imei) ? $device_rows[$key]->imei : $imei,
+                    'serial'     => empty($serial) ? $device_rows[$key]->serial_number : $serial,
+                    'bt'         => empty($bt) ? $device_rows[$key]->lanya : $bt,
+                    'wifi'       => empty($wifi) ? $device_rows[$key]->mac : $wifi,
                 ];
                 $work_detail[] = $data;
 

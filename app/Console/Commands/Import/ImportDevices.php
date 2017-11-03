@@ -5,6 +5,7 @@ namespace App\Console\Commands\Import;
 use App\App;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 
 class ImportDevices extends Command
 {
@@ -41,7 +42,7 @@ class ImportDevices extends Command
     {
         $file = 'devices' . date('md') . '.csv';
         $fp   = fopen($file, 'r');
-        $i    = $j    = 0;
+        $r    = $i    = $j    = 0;
         while (($data = fgetcsv($fp)) !== false) {
             list($SerialNumber, $IMEI, $Bluetooth, $WIFI, $UDID) = $data;
             if (empty($SerialNumber) || empty($IMEI) || empty($Bluetooth) || empty($WIFI) || empty($UDID)) {
@@ -52,6 +53,7 @@ class ImportDevices extends Command
             // 判断文件中是否有重复的udid
             $exist = DB::table('devices')->where(['udid' => $UDID])->first();
             if ($exist) {
+                $r++;
                 continue;
             }
 
@@ -64,7 +66,7 @@ class ImportDevices extends Command
             ]);
             $j++;
         }
-        echo 'good:' . $i . '--bad:' . $j;
+        echo 'repeat:' . $r . '--bad:' . $i;
 
         Redis::set('last_device_id', 9999999999);
 
