@@ -154,7 +154,7 @@ class TaskController extends Controller
         }
         $exist_work_detail = DB::table('work_detail')
             ->where('appid', $app_row->appid)
-            ->whereIn('udid', $emails)
+            ->whereIn('udid', $udids)
             ->pluck('udid')
             ->toArray();
         if ($exist_work_detail) {
