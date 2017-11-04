@@ -39,10 +39,10 @@ class ImportEmails extends Command
      */
     public function handle()
     {
-        $file = './test';
+        $file = './50000_1';
         $fp   = fopen($file, 'r');
         $r    = $i    = $j    = 0;
-        while (($data = fgetcsv($fp, 1000, ';')) !== false) {
+        while (($data = fgetcsv($fp, 1000, '    ')) !== false) {
 
             list($email, $appleid_password) = $data;
 
@@ -72,7 +72,7 @@ class ImportEmails extends Command
             ]);
             $j++;
         }
-        echo 'good:' . $i . '--bad:' . $j . '--repeat:' . $r;
-        die('1');
+        echo 'empty:' . $i . '--good:' . $j . '--repeat:' . $r;
+        die("\n ok");
     }
 }
