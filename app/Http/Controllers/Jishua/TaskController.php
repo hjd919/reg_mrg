@@ -6,6 +6,8 @@ use App\Support\Util;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Log;
+
 
 class TaskController extends Controller
 {
@@ -39,6 +41,7 @@ class TaskController extends Controller
             if (null === $value) {
                 $value = $init_value ?: self::MAX_KEY;
                 Redis::set($key, $value);
+            	Redis::expire($key, 86400);
             }
             return $value;
         };
@@ -46,6 +49,7 @@ class TaskController extends Controller
         // func setid
         $set_last_id = function ($key, $value, $prefix = '') {
             $value = Redis::set($key, $value);
+            Redis::expire($key, 86400);
             return $value;
         };
 
@@ -96,7 +100,7 @@ class TaskController extends Controller
         $set_last_id('last_app_id', $app_row->id);
 
         // * 循环获取苹果账号记录
-        $last_email_id = $get_last_id('last_email_id');
+        $last_email_id = $get_last_id('last_email_id:appid_'.$app_row->appid);
         $where         = [
             'is_valid'     => 301,
             'valid_status' => 1,
@@ -105,19 +109,25 @@ class TaskController extends Controller
         if (!$email_rows) {
             Util::die_jishua('没有email记录数据了', 1);
         }
-        $set_last_id('last_email_id', $email_rows->last()->id);
+        $set_last_id('last_email_id:appid_'.$app_row->appid, $email_rows->last()->id);
 
         // * 判断是否存在已经刷任务记录
         foreach ($email_rows as $key => $email_row) {
             $emails[] = $email_row->email;
         }
+	/*DB::listen(function ($query) {
+		Util::log($query->sql,$query->bindings);
+	});
+	*/
         $exist_work_detail = DB::table('work_detail')
             ->where('appid', $app_row->appid)
             ->whereIn('email', $emails)
             ->pluck('email')
             ->toArray();
         if ($exist_work_detail) {
+	//	Log::error('111');
             // 删除存在的emails
+
             $emails = array_diff($emails, $exist_work_detail);
             if (!$emails) {
                 // 都删除了，即全部已经刷过了
@@ -126,12 +136,13 @@ class TaskController extends Controller
         }
 
         // * 循环获取手机设备记录
-        $last_device_id = $get_last_id('last_device_id');
+	$key = 'last_device_id:appid_'.$app_row->appid;
+        $last_device_id = $get_last_id($key);
         $device_rows    = $query_rows($last_device_id, 'devices');
         if (!$device_rows) {
             Util::die_jishua('没有device记录数据了', 1);
         }
-        $set_last_id('last_device_id', $device_rows[count($device_rows) - 1]->id);
+        $set_last_id($key, $device_rows[count($device_rows) - 1]->id);
 
         // * 根据任务，固定返回值中设备某项信息
         if ($app_row->fixed_device) {
@@ -233,7 +244,7 @@ class TaskController extends Controller
             Util::die_jishua('缺少参数' . $account_id);
         }
 
-        DB::table('apps')
+        DB::table('emails')
             ->where('id', $account_id)
             ->update(['valid_status' => 0]);
 
