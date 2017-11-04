@@ -6,8 +6,6 @@ use App\Support\Util;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
-use Illuminate\Support\Facades\Log;
-
 
 class TaskController extends Controller
 {
@@ -41,7 +39,7 @@ class TaskController extends Controller
             if (null === $value) {
                 $value = $init_value ?: self::MAX_KEY;
                 Redis::set($key, $value);
-            	Redis::expire($key, 86400);
+                Redis::expire($key, 86400);
             }
             return $value;
         };
@@ -57,7 +55,7 @@ class TaskController extends Controller
         $query_rows = function ($offset,
             $table,
             $where = null,
-            $limit = 5,
+            $limit = 3,
             $order_field = 'id',
             $order_value = 'desc'
         ) {
@@ -100,7 +98,7 @@ class TaskController extends Controller
         $set_last_id('last_app_id', $app_row->id);
 
         // * 循环获取苹果账号记录
-        $last_email_id = $get_last_id('last_email_id:appid_'.$app_row->appid);
+        $last_email_id = $get_last_id('last_email_id:appid_' . $app_row->appid);
         $where         = [
             'is_valid'     => 301,
             'valid_status' => 1,
@@ -109,34 +107,32 @@ class TaskController extends Controller
         if (!$email_rows) {
             Util::die_jishua('没有email记录数据了', 1);
         }
-        $set_last_id('last_email_id:appid_'.$app_row->appid, $email_rows->last()->id);
+        $set_last_id('last_email_id:appid_' . $app_row->appid, $email_rows->last()->id);
 
-        // * 判断是否存在已经刷任务记录
+        // * 判断app是否刷过此设备信息
         foreach ($email_rows as $key => $email_row) {
             $emails[] = $email_row->email;
         }
-	/*DB::listen(function ($query) {
-		Util::log($query->sql,$query->bindings);
-	});
-	*/
+        /*DB::listen(function ($query) {
+        Util::log($query->sql,$query->bindings);
+        });
+         */
         $exist_work_detail = DB::table('work_detail')
             ->where('appid', $app_row->appid)
             ->whereIn('email', $emails)
             ->pluck('email')
             ->toArray();
         if ($exist_work_detail) {
-	//	Log::error('111');
+            Util::die_jishua('app存在刷过此批量账号了', 1);
             // 删除存在的emails
-
-            $emails = array_diff($emails, $exist_work_detail);
-            if (!$emails) {
+            $emails_diff = array_diff($emails, $exist_work_detail);
+            if (!$emails_diff) {
                 // 都删除了，即全部已经刷过了
-                Util::die_jishua('全部存在已经刷任务记录', 1);
             }
         }
 
         // * 循环获取手机设备记录
-	$key = 'last_device_id:appid_'.$app_row->appid;
+        $key            = 'last_device_id:appid_' . $app_row->appid;
         $last_device_id = $get_last_id($key);
         $device_rows    = $query_rows($last_device_id, 'devices');
         if (!$device_rows) {
@@ -150,6 +146,19 @@ class TaskController extends Controller
             foreach ($fixed_device as $fd) {
                 ${$fd} = $this->fixed_device[$fd];
             }
+        }
+
+        // * 判断app是否刷过此设备信息
+        foreach ($device_rows as $key => $device_row) {
+            $udids[] = $device_row->udid;
+        }
+        $exist_work_detail = DB::table('work_detail')
+            ->where('appid', $app_row->appid)
+            ->whereIn('udid', $emails)
+            ->pluck('udid')
+            ->toArray();
+        if ($exist_work_detail) {
+            Util::die_jishua('app存在刷过此设备信息了', 1);
         }
 
         // * 增加刷任务记录   -> 任务数量减一
