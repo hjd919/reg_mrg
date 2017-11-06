@@ -9,13 +9,21 @@ use Illuminate\Support\Facades\Log;
  */
 class Util
 {
-    public static function errorLog($title, $data)
+    public static function errorLog($title, $data = null)
     {
+        if (!$data) {
+            $data = $title;
+        }
+
         Log::error($title . ':' . var_export($data, true));
     }
 
-    public static function log($title, $data)
+    public static function log($title, $data = null)
     {
+        if (!$data) {
+            $data = $title;
+        }
+
         Log::info($title . ':' . var_export($data, true));
     }
 

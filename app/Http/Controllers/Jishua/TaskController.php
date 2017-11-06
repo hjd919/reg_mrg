@@ -83,12 +83,32 @@ class TaskController extends Controller
         };
 
         $device_id = $get_device_id();
+        if (!$device_id) {
+            $error_message = 'ua中没有device_id {ua:' . $_SERVER['HTTP_USER_AGENT'];
+            Util::errorLog($error_message);
+            Util::die_jishua($error_message, 1);
+        }
+
+        // * 根据device_id获取手机组id
+        // * 判断是否是新device_id，不是：则记录到数据库和缓存
+        $row = DB::table('mobiles')->select('mobile_group_id')->where('device_id', $device_id)->first();
+        if (!$row) {
+            $mobile_group_id = 1; //默认组id
+            DB::table('mobiles')->insert([
+                'device_id'       => $device_id,
+                'alias'           => '编号new',
+                'mobile_group_id' => $mobile_group_id,
+            ]);
+        } else {
+            $mobile_group_id = $row->mobile_group_id;
+        }
 
         // * 循环获取任务记录 正在刷、有数量
         $last_app_id = $get_last_id('last_app_id');
         $where       = [
-            ['is_brushing', '=', 1],
             ['brush_num', '>', 0],
+            ['is_brushing', '=', 1],
+            ['mobile_group_id', '=', $mobile_group_id],
         ];
         $app_rows = $query_rows($last_app_id, 'apps', $where, 1);
         if (!$app_rows) {
@@ -210,6 +230,8 @@ class TaskController extends Controller
         }
 
         DB::commit();
+
+        Util::log('ok', $response);
 
         // * 返回所需格式的结果
         Util::die_jishua($response);
