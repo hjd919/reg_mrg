@@ -23,7 +23,7 @@ class TaskController extends Controller
     // * 开始任务
     public function start($is_die = true)
     {
-        if (Redis::set(self::STOP_GET_APP, 1)) {
+        if (Redis::set(self::STOP_GET_APP, 0)) {
             if ($is_die) {
                 Util::die_jishua('开始任务 ok');
             }
@@ -36,7 +36,7 @@ class TaskController extends Controller
     // * 结束任务
     public function stop($is_die = true)
     {
-        if (Redis::set(self::STOP_GET_APP, 0)) {
+        if (Redis::set(self::STOP_GET_APP, 1)) {
             if ($is_die) {
                 Util::die_jishua('结束任务 ok');
             }
@@ -53,10 +53,10 @@ class TaskController extends Controller
         $this->stop(false);
 
         // * 在当前跑的任务中获取所需设备数,
-        $app_rows = DB::table('apps')->where(
+        $app_rows = DB::table('apps')->where([
             ['brush_num', '>', 0],
             ['is_brushing', '=', 1]
-        )->get();
+        ])->get();
 
         // * 循环任务，统计出设备总数
         $mobile_total = 0;
@@ -71,13 +71,13 @@ class TaskController extends Controller
         }
 
         // * 把mobiles表的mobile_group_id全部更新为0
-        DB::table('mobiles')->update('mobile_group_id', 0);
+        DB::table('mobiles')->update(['mobile_group_id' => 0]);
 
         // * 循环任务表对应设备数，把mobiles表的device更新为对应mobile_group_id
         foreach ($app_rows as $app_row) {
             $mobile_group_id = $app_row->mobile_group_id;
             $mobile_num      = $app_row->mobile_num;
-            DB::table('mobiles')->where('mobile_group_id', 0)->limit($mobile_num)->update('mobile_group_id', $mobile_group_id);
+            DB::table('mobiles')->where('mobile_group_id', 0)->limit($mobile_num)->update(['mobile_group_id' => $mobile_group_id]);
         }
 
         // * 开始任务获取
@@ -89,7 +89,8 @@ class TaskController extends Controller
         Request $request
     ) {
         // * 停止任务获取
-        if (Redis::get(self::STOP_GET_APP)) {
+	$is_stop = Redis::get(self::STOP_GET_APP); 
+        if ($is_stop === '1') {
             Util::die_jishua('停止任务获取', 1);
         }
 
