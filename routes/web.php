@@ -16,6 +16,6 @@ $router->group(['middleware' => [], 'namespace' => 'Jishua', 'prefix' => 'jishua
     $router->get('/task/report', 'TaskController@report');
     $router->get('/task/invalid_account', 'TaskController@invalid_account');
     $router->get('/task/start', 'TaskController@start');
-    $router->get('/task/end', 'TaskController@end');
+    $router->get('/task/stop', 'TaskController@stop');
     $router->get('/task/dispatch_mobile', 'TaskController@dispatchMobile');
 });
