@@ -231,7 +231,7 @@ class TaskController extends Controller
 
         DB::commit();
 
-        Util::log('ok', $response);
+        //Util::log('ok', $response);
 
         // * 返回所需格式的结果
         Util::die_jishua($response);
