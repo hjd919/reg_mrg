@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Redis;
 
 class TaskController extends Controller
 {
-    const MAX_KEY = 9999999999;
+    const MAX_KEY      = 9999999999;
+    const STOP_GET_APP = 'stop_get_app';
 
     public $fixed_device = [
         'udid'   => '49478d3f961958eecc8e5932e007064f5cd724ce',
@@ -19,11 +20,78 @@ class TaskController extends Controller
         'wifi'   => 'bc:54:36:dd:74:05',
     ];
 
+    // * 开始任务
+    public function start($is_die = true)
+    {
+        if (Redis::set(self::STOP_GET_APP, 1)) {
+            if ($is_die) {
+                Util::die_jishua('开始任务 ok');
+            }
+
+        } else {
+            Util::die_jishua('开始任务 fail', 1);
+        }
+    }
+
+    // * 结束任务
+    public function stop($is_die = true)
+    {
+        if (Redis::set(self::STOP_GET_APP, 0)) {
+            if ($is_die) {
+                Util::die_jishua('结束任务 ok');
+            }
+
+        } else {
+            Util::die_jishua('结束任务 fail', 1);
+        }
+    }
+
+    // * 根据任务所需设备数分配手机的mobile_group_id
+    public function dispatchMobile()
+    {
+        // * 停止任务获取
+        $this->stop(false);
+
+        // * 在当前跑的任务中获取所需设备数,
+        $app_rows = DB::table('apps')->where(
+            ['brush_num', '>', 0],
+            ['is_brushing', '=', 1]
+        )->get();
+
+        // * 循环任务，统计出设备总数
+        $mobile_total = 0;
+        foreach ($app_rows as $app_row) {
+            $mobile_total += $app_row->mobile_num;
+        }
+
+        // * 判断设备总数是否超过mobiles表的总数，超过则提示
+        $db_mobile = DB::table('mobiles')->count();
+        if ($mobile_total > $db_mobile) {
+            Util::die_jishua('设备总数超过mobiles表的总数 fail-所设置手机数量:' . $mobile_total . ',mobiles总数:' . $db_mobile, 1);
+        }
+
+        // * 把mobiles表的mobile_group_id全部更新为0
+        DB::table('mobiles')->update('mobile_group_id', 0);
+
+        // * 循环任务表对应设备数，把mobiles表的device更新为对应mobile_group_id
+        foreach ($app_rows as $app_row) {
+            $mobile_group_id = $app_row->mobile_group_id;
+            $mobile_num      = $app_row->mobile_num;
+            DB::table('mobiles')->where('mobile_group_id', 0)->limit($mobile_num)->update('mobile_group_id', $mobile_group_id);
+        }
+
+        // * 开始任务获取
+        // $this->start(false);
+    }
+
     // 获取任务
     public function get(
         Request $request
     ) {
-        // 输入
+        // * 停止任务获取
+        if (Redis::get(self::STOP_GET_APP)) {
+            Util::die_jishua('停止任务获取', 1);
+        }
 
         // func getdevice_id
         $get_device_id = function () {
