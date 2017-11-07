@@ -81,7 +81,9 @@ class TaskController extends Controller
         }
 
         // * 开始任务获取
-        // $this->start(false);
+        $this->start(false);
+
+        Util::die_jishua('分配手机成功');
     }
 
     // 获取任务
