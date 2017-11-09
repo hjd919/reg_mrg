@@ -39,10 +39,10 @@ class ImportEmails extends Command
      */
     public function handle()
     {
-        $file = './50000_2.csv';
+        $file = './emails_'.date('md').'.csv';
         $fp   = fopen($file, 'r');
         $r    = $i    = $j    = 0;
-        while (($data = fgetcsv($fp, 1000, '|')) !== false) {
+        while (($data = fgetcsv($fp, 1000, ' ')) !== false) {
 
             list($email, $appleid_password) = $data;
 

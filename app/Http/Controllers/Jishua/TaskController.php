@@ -183,7 +183,7 @@ class TaskController extends Controller
         ];
         $app_rows = $query_rows($last_app_id, 'apps', $where, 1);
         if (!$app_rows) {
-            Util::die_jishua('没有任务记录数据了', 1);
+            Util::die_jishua('没有任务记录数据了{mobile_group_id:'.$mobile_group_id, 1);
         }
         $app_row = $app_rows->first();
         $set_last_id('last_app_id', $app_row->id);
@@ -214,7 +214,7 @@ class TaskController extends Controller
             ->pluck('email')
             ->toArray();
         if ($exist_work_detail) {
-            Util::die_jishua('app存在刷过此批量账号了', 1);
+            Util::die_jishua('app存在刷过此批量账号了{appid:'.$app_row->appid.',emails:'.json_encode($emails), 1);
             // 删除存在的emails
             $emails_diff = array_diff($emails, $exist_work_detail);
             if (!$emails_diff) {
