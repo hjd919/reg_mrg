@@ -55,17 +55,17 @@ class TaskController extends Controller
         // * 在当前跑的任务中获取所需设备数,
         $app_rows = DB::table('apps')->where([
             ['brush_num', '>', 0],
-            ['is_brushing', '=', 1]
+            ['mobile_group_id', '<', 1000],
+            ['is_brushing', '=', 1],
         ])->get();
 
         // * 循环任务，统计出设备总数
-        $mobile_total = 0;
-        foreach ($app_rows as $app_row) {
+        $mobile_total = 0; foreach ($app_rows as $app_row) {
             $mobile_total += $app_row->mobile_num;
         }
 
         // * 判断设备总数是否超过mobiles表的总数，超过则提示
-        $db_mobile = DB::table('mobiles')->count();
+        $db_mobile = DB::table('mobiles')->where('mobile_group_id','<',1000)->count();
         if ($mobile_total > $db_mobile) {
             Util::die_jishua('设备总数超过mobiles表的总数 fail-所设置手机数量:' . $mobile_total . ',mobiles总数:' . $db_mobile, 1);
         }
