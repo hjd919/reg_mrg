@@ -23,8 +23,11 @@ $app = new Laravel\Lumen\Application(
     realpath(__DIR__ . '/../')
 );
 
-$app->withFacades();
-
+// $app->withFacades();
+$app->withFacades(true, [
+    Tymon\JWTAuth\Facades\JWTAuth::class    => 'JWTAuth',
+    Tymon\JWTAuth\Facades\JWTFactory::class => 'JWTFactory',
+]);
 $app->withEloquent();
 
 /*
@@ -55,7 +58,9 @@ $app->singleton('filesystem', function ($app) {
         'filesystem'
     );
 });
-
+$app->singleton('mailer', function () use ($app) {
+    return $app->loadComponent('mail', Illuminate\Mail\MailServiceProvider::class, 'mailer');
+});
 /*
 |--------------------------------------------------------------------------
 | Register Middleware
@@ -67,12 +72,13 @@ $app->singleton('filesystem', function ($app) {
 |
  */
 
-// $app->middleware([
-//    App\Http\Middleware\ExampleMiddleware::class
-// ]);
+$app->middleware([
+    App\Http\Middleware\HandleOptionsMiddleware::class,
+]);
 
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
+    'cors' => App\Http\Middleware\CorsMiddleware::class,
 ]);
 
 /*
@@ -87,9 +93,13 @@ $app->routeMiddleware([
  */
 
 $app->register(App\Providers\AppServiceProvider::class);
+
 $app->register(App\Providers\AuthServiceProvider::class);
+$app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
+
 $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Illuminate\Redis\RedisServiceProvider::class);
+// $app->register(Illuminate\Mail\MailServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
