@@ -71,7 +71,7 @@ class TaskController extends Controller
         }
 
         // * 把mobiles表的mobile_group_id全部更新为0
-        DB::table('mobiles')->update(['mobile_group_id' => 0]);
+        DB::table('mobiles')->where('mobile_group_id','<',1000)->update(['mobile_group_id' => 0]);
 
         // * 循环任务表对应设备数，把mobiles表的device更新为对应mobile_group_id
         foreach ($app_rows as $app_row) {
