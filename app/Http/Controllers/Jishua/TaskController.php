@@ -43,7 +43,7 @@ class TaskController extends Controller
         // 设置cache的id
         $res = Redis::set($key, $id);
 
-        die_jishua($res);
+        Util::die_jishua($res);
     }
 
     // * 开始任务
