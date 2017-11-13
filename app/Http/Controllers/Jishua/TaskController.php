@@ -20,6 +20,32 @@ class TaskController extends Controller
         'wifi'   => 'bc:54:36:dd:74:05',
     ];
 
+    // 设置appid缓存的key的id
+    public function setLoopId(Request $request)
+    {
+        $type  = $request->type;
+        $appid = $request->appid;
+        $id    = $request->id;
+        if (!$type || !$appid || !$id) {
+            die('缺少参数-type,appid,id');
+        }
+        if (!in_array($type, ['email', 'device'])) {
+            die('type要在email,device之间');
+        }
+
+        // 获取cache_key
+        if ('email' == $type) {
+            $key = 'last_email_id:appid_' . $appid;
+        } elseif ('device' == $type) {
+            $key = 'last_device_id:appid_' . $appid;
+        }
+
+        // 设置cache的id
+        $res = Redis::set($key, $id);
+
+        die_jishua($res);
+    }
+
     // * 开始任务
     public function start($is_die = true)
     {
@@ -60,12 +86,12 @@ class TaskController extends Controller
         ])->get();
 
         // * 循环任务，统计出设备总数
-        $mobile_total = 0; foreach ($app_rows as $app_row) {
+        $mobile_total = 0;foreach ($app_rows as $app_row) {
             $mobile_total += $app_row->mobile_num;
         }
 
         // * 判断设备总数是否超过mobiles表的总数，超过则提示
-        $db_mobile = DB::table('mobiles')->where('mobile_group_id','<',1000)->count();
+        $db_mobile = DB::table('mobiles')->where('mobile_group_id', '<', 1000)->count();
         if ($mobile_total > $db_mobile) {
             Util::die_jishua('设备总数超过mobiles表的总数 fail-所设置手机数量:' . $mobile_total . ',mobiles总数:' . $db_mobile, 1);
         }
@@ -91,8 +117,8 @@ class TaskController extends Controller
         Request $request
     ) {
         // * 停止任务获取
-	$is_stop = Redis::get(self::STOP_GET_APP); 
-        if ($is_stop === '1') {
+        $is_stop = Redis::get(self::STOP_GET_APP);
+        if ('1' === $is_stop) {
             Util::die_jishua('停止任务获取', 1);
         }
 
@@ -183,7 +209,7 @@ class TaskController extends Controller
         ];
         $app_rows = $query_rows($last_app_id, 'apps', $where, 1);
         if (!$app_rows) {
-            Util::die_jishua('没有任务记录数据了{mobile_group_id:'.$mobile_group_id, 1);
+            Util::die_jishua('没有任务记录数据了{mobile_group_id:' . $mobile_group_id, 1);
         }
         $app_row = $app_rows->first();
         $set_last_id('last_app_id', $app_row->id);
@@ -214,7 +240,7 @@ class TaskController extends Controller
             ->pluck('email')
             ->toArray();
         if ($exist_work_detail) {
-            Util::die_jishua('app存在刷过此批量账号了{appid:'.$app_row->appid.',emails:'.json_encode($emails), 1);
+            Util::die_jishua('app存在刷过此批量账号了{appid:' . $app_row->appid . ',emails:' . json_encode($emails), 1);
             // 删除存在的emails
             $emails_diff = array_diff($emails, $exist_work_detail);
             if (!$emails_diff) {

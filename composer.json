@@ -8,7 +8,9 @@
         "php": ">=7.0",
         "laravel/lumen-framework": "5.5.*",
         "vlucas/phpdotenv": "~2.2",
-        "illuminate/redis": "^5.5"
+        "illuminate/redis": "^5.5",
+        "illuminate/mail": "^5.5",
+        "tymon/jwt-auth": "1.0.*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

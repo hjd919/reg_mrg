@@ -41,7 +41,7 @@ class ImportDevices extends Command
     public function handle()
     {
         $file = 'devices' . date('md') . '.csv';
-	echo $file;
+        echo $file;
         $fp   = fopen($file, 'r');
         $r    = $i    = $j    = 0;
         while (($data = fgetcsv($fp)) !== false) {
