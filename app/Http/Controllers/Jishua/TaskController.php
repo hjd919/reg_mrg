@@ -215,16 +215,16 @@ class TaskController extends Controller
         $set_last_id('last_app_id', $app_row->id);
 
         // * 循环获取苹果账号记录
-        $last_email_id = $get_last_id('last_email_id:appid_' . $app_row->appid);
+	$email_key = 'last_email_id:appid_' . $app_row->appid;
+        $last_email_id = $get_last_id($email_key);
         $where         = [
             'is_valid'     => 301,
             'valid_status' => 1,
         ];
         $email_rows = $query_rows($last_email_id, 'emails', $where);
         if (!$email_rows) {
-            Util::die_jishua('没有email记录数据了', 1);
+            Util::die_jishua('该app没有苹果账号可用了', 1);
         }
-        $set_last_id('last_email_id:appid_' . $app_row->appid, $email_rows->last()->id);
 
         // * 判断app是否刷过此设备信息
         foreach ($email_rows as $key => $email_row) {
@@ -240,22 +240,17 @@ class TaskController extends Controller
             ->pluck('email')
             ->toArray();
         if ($exist_work_detail) {
+            $set_last_id($email_key, $email_rows->last()->id);
             Util::die_jishua('app存在刷过此批量账号了{appid:' . $app_row->appid . ',emails:' . json_encode($emails), 1);
-            // 删除存在的emails
-            $emails_diff = array_diff($emails, $exist_work_detail);
-            if (!$emails_diff) {
-                // 都删除了，即全部已经刷过了
-            }
         }
 
         // * 循环获取手机设备记录
-        $key            = 'last_device_id:appid_' . $app_row->appid;
-        $last_device_id = $get_last_id($key);
+	$device_key = 'last_device_id:appid_' . $app_row->appid;
+        $last_device_id = $get_last_id($device_key);
         $device_rows    = $query_rows($last_device_id, 'devices');
         if (!$device_rows) {
             Util::die_jishua('没有device记录数据了', 1);
         }
-        $set_last_id($key, $device_rows[count($device_rows) - 1]->id);
 
         // * 根据任务，固定返回值中设备某项信息
         if ($app_row->fixed_device) {
@@ -275,8 +270,14 @@ class TaskController extends Controller
             ->pluck('udid')
             ->toArray();
         if ($exist_work_detail) {
-            Util::die_jishua('app存在刷过此设备信息了', 1);
+            $set_last_id($device_key, $device_rows[count($device_rows) - 1]->id);
+
+            Util::die_jishua('此app存在刷过此设备device信息了'.json_encode(['appid'=>$app_row->appid,'udids'=>$udids]), 1);
         }
+	
+	// 判断都通过后，再切换循环id
+        $set_last_id($device_key, $device_rows[count($device_rows) - 1]->id);
+        $set_last_id($email_key, $email_rows->last()->id);
 
         // * 增加刷任务记录   -> 任务数量减一
         DB::beginTransaction();
@@ -304,6 +305,7 @@ class TaskController extends Controller
                     'account_id' => $email_row->id,
                     'email'      => $email_row->email,
                     'password'   => $email_row->appleid_password,
+                    'device_id' => $device_rows[$key]->id,
                     'udid'       => empty($udid) ? $device_rows[$key]->udid : $udid,
                     'imei'       => empty($imei) ? $device_rows[$key]->imei : $imei,
                     'serial'     => empty($serial) ? $device_rows[$key]->serial_number : $serial,
