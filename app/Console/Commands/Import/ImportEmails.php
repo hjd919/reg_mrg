@@ -42,8 +42,7 @@ class ImportEmails extends Command
         $file = './emails_'.date('md').'.csv';
         $fp   = fopen($file, 'r');
         $r    = $i    = $j    = 0;
-        while (($data = fgetcsv($fp, 1000, ' ')) !== false) {
-
+        while (($data = fgetcsv($fp, 1000, ';')) !== false) {
             list($email, $appleid_password) = $data;
 
             // 去除两端空格
