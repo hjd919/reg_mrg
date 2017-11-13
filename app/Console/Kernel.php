@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\Data\ToDeviceId;
 use App\Console\Commands\DB\MobileAdd;
 use App\Console\Commands\Import\ImportDevices;
 use App\Console\Commands\Import\ImportEmails;
@@ -23,6 +24,7 @@ class Kernel extends ConsoleKernel
         MobileAdd::class,
         sendMailCommand::class,
         TaskMobileFail::class,
+        ToDeviceId::class,
     ];
 
     /**

@@ -215,7 +215,7 @@ class TaskController extends Controller
         $set_last_id('last_app_id', $app_row->id);
 
         // * 循环获取苹果账号记录
-	$email_key = 'last_email_id:appid_' . $app_row->appid;
+        $email_key     = 'last_email_id:appid_' . $app_row->appid;
         $last_email_id = $get_last_id($email_key);
         $where         = [
             'is_valid'     => 301,
@@ -245,7 +245,7 @@ class TaskController extends Controller
         }
 
         // * 循环获取手机设备记录
-	$device_key = 'last_device_id:appid_' . $app_row->appid;
+        $device_key     = 'last_device_id:appid_' . $app_row->appid;
         $last_device_id = $get_last_id($device_key);
         $device_rows    = $query_rows($last_device_id, 'devices');
         if (!$device_rows) {
@@ -272,10 +272,10 @@ class TaskController extends Controller
         if ($exist_work_detail) {
             $set_last_id($device_key, $device_rows[count($device_rows) - 1]->id);
 
-            Util::die_jishua('此app存在刷过此设备device信息了'.json_encode(['appid'=>$app_row->appid,'udids'=>$udids]), 1);
+            Util::die_jishua('此app存在刷过此设备device信息了' . json_encode(['appid' => $app_row->appid, 'udids' => $udids]), 1);
         }
-	
-	// 判断都通过后，再切换循环id
+
+        // 判断都通过后，再切换循环id
         $set_last_id($device_key, $device_rows[count($device_rows) - 1]->id);
         $set_last_id($email_key, $email_rows->last()->id);
 
@@ -305,7 +305,7 @@ class TaskController extends Controller
                     'account_id' => $email_row->id,
                     'email'      => $email_row->email,
                     'password'   => $email_row->appleid_password,
-                    'device_id' => $device_rows[$key]->id,
+                    'device_id'  => $device_rows[$key]->id,
                     'udid'       => empty($udid) ? $device_rows[$key]->udid : $udid,
                     'imei'       => empty($imei) ? $device_rows[$key]->imei : $imei,
                     'serial'     => empty($serial) ? $device_rows[$key]->serial_number : $serial,
