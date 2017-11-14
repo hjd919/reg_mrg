@@ -8,14 +8,14 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redis;
 
-class TaskMobileFail extends Command
+class CheckMobileFail extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'task:mobile-fail';
+    protected $signature = 'check:mobile-fail';
 
     /**
      * The console command description.
