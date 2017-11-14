@@ -71,7 +71,7 @@ class TaskMobileFail extends Command
             $msg = $e->getMessage();
 
             // 邮件警告异常,一小时发一条
-            $tag        = explore('|', $msg)[1];
+            $tag        = explode('|', $msg)[1];
             $send_email = Redis::get('mobile-fail-send_email:' . $tag);
             if ($send_email) {
                 die('邮件警告异常');
