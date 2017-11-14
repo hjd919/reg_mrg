@@ -109,7 +109,7 @@ class TaskMobileFail extends Command
                 echo '没有mobile_group_id=0的手机' . json_encode([
                     '$mobile_group_id' => $mobile->mobile_group_id,
                     '$device_id'       => $mobile->device_id,
-                    '$mgi0'            => $mgi0->toArray(),
+                    '$mgi0'            => $mgi0,
                 ]) . "\n";
                 throw new \Exception('no moblie_group_id=0 mobile, mobile_group_id has error mobile|' .
                     json_encode(['mobile_group_id' => $mobile->mobile_group_id, 'mobile_id' => $mobile->id]));
@@ -121,12 +121,12 @@ class TaskMobileFail extends Command
                     '$mobile_group_id' => $mobile->mobile_group_id,
                     '$device_id'       => $mobile->device_id,
                     '$res'             => $res,
-                    '$mgi0'            => $mgi0->toArray(),
+                    '$mgi0'            => $mgi0,
                 ]) . "\n";
                 throw new \Exception('update mobile mobile_group_id error|');
             }
             echo '成功更新为对应的mobile_group_id' . json_encode([
-                '$mgi0' => $mgi0->toArray(),
+                '$mgi0' => $mgi0,
             ]) . "\n";
         }
 
