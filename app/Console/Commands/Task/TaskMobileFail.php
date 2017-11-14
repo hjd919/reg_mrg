@@ -98,20 +98,36 @@ class TaskMobileFail extends Command
         // * 如果超过一定时间（10分钟），失效的手机则获取mobile_group_id=0的手机并更新为对应的mobile_group_id
         if ($this->now_time - $mobile_access_time > 600) {
             echo '有手机异常' . json_encode([
-                '$this->now_time'     => $this->now_time,
+                '$mobile_group_id'    => $mobile->mobile_group_id,
+                '$device_id'          => $mobile->device_id,
+                '$now_time'           => $this->now_time,
                 '$mobile_access_time' => $mobile_access_time,
             ]) . "\n";
             // * 获取mobile_group_id=0的手机，如果没有了则退出循环，并邮件警告
             $mgi0 = DB::table('mobiles')->select('id')->where('mobile_group_id', 0)->first();
             if (!$mgi0) {
+                echo '没有mobile_group_id=0的手机' . json_encode([
+                    '$mobile_group_id' => $mobile->mobile_group_id,
+                    '$device_id'       => $mobile->device_id,
+                    '$mgi0'            => $mgi0->toArray(),
+                ]) . "\n";
                 throw new \Exception('no moblie_group_id=0 mobile, mobile_group_id has error mobile|' .
                     json_encode(['mobile_group_id' => $mobile->mobile_group_id, 'mobile_id' => $mobile->id]));
             }
 
             $res = DB::table('mobiles')->where('id', $mgi0->id)->update(['mobile_group_id' => $mobile->mobile_group_id]);
             if (!$res) {
+                echo '更新为对应的mobile_group_id失败' . json_encode([
+                    '$mobile_group_id' => $mobile->mobile_group_id,
+                    '$device_id'       => $mobile->device_id,
+                    '$res'             => $res,
+                    '$mgi0'            => $mgi0->toArray(),
+                ]) . "\n";
                 throw new \Exception('update mobile mobile_group_id error|');
             }
+            echo '成功更新为对应的mobile_group_id' . json_encode([
+                '$mgi0' => $mgi0->toArray(),
+            ]) . "\n";
         }
 
         return true;
