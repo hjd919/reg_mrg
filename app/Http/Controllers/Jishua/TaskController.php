@@ -188,10 +188,10 @@ class TaskController extends Controller
 
         // 记录手机访问时间
         $res = Redis::hSet('mobiles_access_time', $device_id, time());
-        if (!$res) {
-            Util::errorLog('记录手机访问时间失败', $res);
-            Util::die_jishua('记录手机访问时间失败', 1);
-        }
+        // if (!$res) {
+        //     Util::errorLog('记录手机访问时间失败', $res);
+        //     Util::die_jishua('记录手机访问时间失败', 1);
+        // }
 
         // * 根据device_id获取手机组id
         // * 判断是否是新device_id，不是：则记录到数据库和缓存
