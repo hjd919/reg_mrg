@@ -111,8 +111,11 @@ class CheckMobileFail extends Command
                     '$device_id'       => $mobile->device_id,
                     '$mgi0'            => $mgi0,
                 ]) . "\n";
-                throw new \Exception('devices表中没有mobile_group_id=0的手机可以分配了|' .
-                    json_encode(['mobile_group_id' => $mobile->mobile_group_id, 'mobile_id' => $mobile->id]));
+                throw new \Exception('devices表中没有mobile_group_id=0的手机可以分配了，异常手机:' . $mobile->device_id . '|' .
+                    json_encode([
+                        'mobile_group_id' => $mobile->mobile_group_id,
+                        'mobile_id'       => $mobile->id,
+                    ]));
             }
 
             $res = DB::table('mobiles')->where('id', $mgi0->id)->update(['mobile_group_id' => $mobile->mobile_group_id]);
