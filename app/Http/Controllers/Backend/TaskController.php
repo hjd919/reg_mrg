@@ -15,14 +15,14 @@ class TaskController extends Controller
         $search       = $request->input('search', '');
 
         // total
-        $total = DB::table('orders')
+        $total = DB::table('tasks')
             ->when($search, function ($query) use ($search) {
                 $key = 'id';
                 return $query->where($key, $search);
             })
             ->count();
         // 列表
-        $list = DB::table('orders')
+        $list = DB::table('tasks')
             ->when($search, function ($query) use ($search) {
                 $key = 'id';
                 return $query->where($key, $search);
