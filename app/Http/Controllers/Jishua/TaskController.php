@@ -39,9 +39,12 @@ class TaskController extends Controller
         } elseif ('device' == $type) {
             $key = 'last_device_id:appid_' . $appid;
         }
+	    Util::log('email_key',$key);
+	    Util::log('email_id',$id);
 
         // 设置cache的id
         $res = Redis::set($key, $id);
+	    Util::log('email_res',$res);
 
         Util::die_jishua($res);
     }
@@ -86,7 +89,8 @@ class TaskController extends Controller
         ])->get();
 
         // * 循环任务，统计出设备总数
-        $mobile_total = 0;foreach ($app_rows as $app_row) {
+        $mobile_total = 0;
+	foreach ($app_rows as $app_row) {
             $mobile_total += $app_row->mobile_num;
         }
 
@@ -136,7 +140,7 @@ class TaskController extends Controller
             if (null === $value) {
                 $value = $init_value ?: self::MAX_KEY;
                 Redis::set($key, $value);
-                Redis::expire($key, 86400);
+                //Redis::expire($key, 86400);
             }
             return $value;
         };
@@ -144,7 +148,7 @@ class TaskController extends Controller
         // func setid
         $set_last_id = function ($key, $value, $prefix = '') {
             $value = Redis::set($key, $value);
-            Redis::expire($key, 86400);
+            //Redis::expire($key, 86400);
             return $value;
         };
 
@@ -163,6 +167,9 @@ class TaskController extends Controller
                 ->orderBy($order_field, $order_value)
                 ->limit($limit)
                 ->get();
+	    if($offset== '1590709'){
+		Util::log('123432523',$where);
+		}
 
             if ($rows->isEmpty()) {
                 $rows = DB::table($table)->where([['id', '<', self::MAX_KEY]])
@@ -223,6 +230,7 @@ class TaskController extends Controller
 
         // * 循环获取苹果账号记录
         $email_key     = 'last_email_id:appid_' . $app_row->appid;
+	    //Util::log('email_key',$email_key);
         $last_email_id = $get_last_id($email_key);
         $where         = [
             'is_valid'     => 301,
@@ -248,7 +256,8 @@ class TaskController extends Controller
             ->toArray();
         if ($exist_work_detail) {
             $set_last_id($email_key, $email_rows->last()->id);
-            Util::die_jishua('app存在刷过此批量账号了{appid:' . $app_row->appid . ',emails:' . json_encode($emails), 1);
+	    Util::log('title','app存在刷过此批量账号了{appid:' . $app_row->appid.',account_id:'.$email_rows->last()->id);
+            Util::die_jishua('app存在刷过此批量账号了{appid:' . $app_row->appid.',account_id:'.$email_rows->last()->id, 1);
         }
 
         // * 循环获取手机设备记录
@@ -278,8 +287,8 @@ class TaskController extends Controller
             ->toArray();
         if ($exist_work_detail) {
             $set_last_id($device_key, $device_rows[count($device_rows) - 1]->id);
-
-            Util::die_jishua('此app存在刷过此设备device信息了' . json_encode(['appid' => $app_row->appid, 'udids' => $udids]), 1);
+	    Util::log('tt','此app存在刷过此设备device信息了' . json_encode(['appid' => $app_row->appid, 'last_device_id' => $device_rows[count($device_rows) - 1]->id]));
+            Util::die_jishua('此app存在刷过此设备device信息了' . json_encode(['appid' => $app_row->appid, 'last_device_id' => $device_rows[count($device_rows) - 1]->id]), 1);
         }
 
         // 判断都通过后，再切换循环id
