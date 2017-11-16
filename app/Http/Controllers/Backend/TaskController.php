@@ -39,4 +39,44 @@ class TaskController extends Controller
 
         return response()->json(compact('pagination', 'list'));
     }
+
+    public function save(Request $request)
+    {
+        $appid = $request->input('appid');
+        $app_name = $request->input('app_name');
+        $appuri = $request->input('appuri');
+        $bundle_id = $request->input('bundle_id');
+
+        // * 添加app
+        // 判断app是否存在,不存在则添加
+        $app = DB::table('ios_apps')->where('appid', $appid)->first();
+        if ($app) {
+            return response()->json(['ios_app_id' => $app->id]);
+        }
+
+        $ios_app_id = DB::table('ios_apps')->insertGetId(compact('appid', 'app_name', 'appuri', 'bundle_id'));
+        if (!$ios_app_id) {
+            return response()->json(['error_code' => 1]);
+        }
+
+        // * 添加下单
+        $task_id = DB::table('tasks')->insertGetId(compact(
+            'ios_app_id',
+            'appid',
+            'app_name'
+        ));
+        if (!$task_id) {
+            return response()->json(['error_code' => 2]);
+        }
+        
+        return response()->json(['task_id' => $task_id]);
+    }
+
+    // 获取空闲手机数
+    public function getFreeMobileNum()
+    {
+        $free_mobile_num = DB::table('mobiles')->where('mobile_group_id', 0)->count();
+
+        return response()->json(['free_mobile_num' => $free_mobile_num]);
+    }
 }

@@ -40,10 +40,10 @@ Route::group([
     $router->get('/auth/me', 'AuthController@me');
 
     $router->get('/task/query', 'TaskController@query');
-
+    $router->post('/task/save', 'TaskController@save');
+    $router->post('/task/getFreeMobileNum', 'TaskController@getFreeMobileNum');
+    
     $router->get('/app/query_one', 'AppController@queryOne');
-
-    $router->post('/app/saveApp', 'AppController@saveApp');
 });
 
 // $app->get('/login', function (Request $request) {
