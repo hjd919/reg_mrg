@@ -4,33 +4,40 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Backend\BackendController;
 use App\Models\Task;
+use App\Models\TaskKeyword;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class TaskController extends BackendController
+class TaskKeywordController extends BackendController
 {
     public function query(Request $request)
     {
         $current_page = $request->input('currentPage', 1);
         $page_size    = $request->input('pageSize', 10);
         $search       = $request->input('search', '');
+        $task_id      = $request->input('task_id', '');
 
         // total
-        $total = DB::table('tasks')
-            ->when($search, function ($query) use ($search) {
-                $key = 'id';
-                return $query->where($key, $search);
-            })
-            ->count();
+        $total = TaskKeyword::when($task_id, function ($query) use ($task_id) {
+            return $query->where('task_id', $task_id);
+        })->count();
+
         // 列表
-        $list = DB::table('tasks')
-            ->when($search, function ($query) use ($search) {
-                $key = 'id';
-                return $query->where($key, $search);
+        $list = TaskKeyword::with('user')
+            ->with('ios_app')
+            ->when($task_id, function ($query) use ($task_id) {
+                return $query->where('task_id', $task_id);
             })
             ->limit($page_size)
             ->orderBy('id', 'desc')
             ->get();
+
+        // 获取关联
+        foreach ($list as &$row) {
+            $row->user_name = $row->user->name;
+            $row->appid     = $row->ios_app->appid;
+        }
+
         // 分页
         $pagination = [
             'current'  => $current_page,

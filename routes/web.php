@@ -45,6 +45,8 @@ Route::group([
     $router->post('/task/saveTaskKeyword', 'TaskController@saveTaskKeyword');
 
     $router->get('/app/query_one', 'AppController@queryOne');
+
+    $router->get('/task_keyword/query', 'TaskKeywordController@query');
 });
 
 // $app->get('/login', function (Request $request) {
