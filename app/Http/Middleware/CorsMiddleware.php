@@ -22,6 +22,7 @@ class CorsMiddleware
         //     'http://localhost:8000',
         //     'http://192.168.1.12:8080',
         // ];
+        // $origin = '*';
         $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
 
         // //如果origin不在允许列表内，直接返回403
