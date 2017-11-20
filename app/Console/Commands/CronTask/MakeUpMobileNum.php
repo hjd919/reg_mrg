@@ -106,6 +106,9 @@ class MakeUpMobileNum extends Command
                 '$mobile_access_time' => $mobile_access_time,
             ]) . "\n";
 
+            // 标志为不正常手机
+            DB::table('mobiles')->where('id', $mobile->id)->update(['is_normal' => 0]);
+
             $app = DB::table('apps')->where('mobile_group_id', $mobile->mobile_group_id)->select('keyword', 'task_keyword_id')->first();
 
             // * 获取mobile_group_id=0的手机，如果没有了则退出循环，并邮件警告
@@ -129,6 +132,7 @@ class MakeUpMobileNum extends Command
                 TaskKeyword::where('id', $app->task_keyword_id)->increment('fail_mobile_num');
             }
 
+            // 更新新的
             $res = DB::table('mobiles')->where('id', $mgi0->id)->update(['mobile_group_id' => $mobile->mobile_group_id]);
             if (!$res) {
                 throw new \Exception('update mobile mobile_group_id error|update error');
