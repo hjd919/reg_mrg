@@ -20,6 +20,15 @@ class TaskController extends Controller
         'wifi'   => 'bc:54:36:dd:74:05',
     ];
 
+    // 重置手机为有效
+    public function resetMobileValid()
+    {
+        $res = DB::table('mobiles')->update(['is_normal' => 1]);
+        if ($res) {
+            echo '成功重置手机为有效';
+        }
+    }
+
     // 设置appid缓存的key的id
     public function setLoopId(Request $request)
     {
