@@ -3,6 +3,8 @@
 namespace App\Console\Commands\CronTask;
 
 use App\App;
+use App\Models\Task;
+use App\Models\TaskKeyword;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
