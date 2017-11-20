@@ -39,12 +39,12 @@ class TaskController extends Controller
         } elseif ('device' == $type) {
             $key = 'last_device_id:appid_' . $appid;
         }
-	    Util::log('email_key',$key);
-	    Util::log('email_id',$id);
+        Util::log('email_key', $key);
+        Util::log('email_id', $id);
 
         // 设置cache的id
         $res = Redis::set($key, $id);
-	    Util::log('email_res',$res);
+        Util::log('email_res', $res);
 
         Util::die_jishua($res);
     }
@@ -90,7 +90,7 @@ class TaskController extends Controller
 
         // * 循环任务，统计出设备总数
         $mobile_total = 0;
-	foreach ($app_rows as $app_row) {
+        foreach ($app_rows as $app_row) {
             $mobile_total += $app_row->mobile_num;
         }
 
@@ -167,10 +167,7 @@ class TaskController extends Controller
                 ->orderBy($order_field, $order_value)
                 ->limit($limit)
                 ->get();
-	    if($offset== '1590709'){
-		Util::log('123432523',$where);
-		}
-
+          
             if ($rows->isEmpty()) {
                 $rows = DB::table($table)->where([['id', '<', self::MAX_KEY]])
                     ->when($where, function ($query) use ($where) {
@@ -229,8 +226,7 @@ class TaskController extends Controller
         $set_last_id('last_app_id', $app_row->id);
 
         // * 循环获取苹果账号记录
-        $email_key     = 'last_email_id:appid_' . $app_row->appid;
-	    //Util::log('email_key',$email_key);
+        $email_key = 'last_email_id:appid_' . $app_row->appid;
         $last_email_id = $get_last_id($email_key);
         $where         = [
             'is_valid'     => 301,

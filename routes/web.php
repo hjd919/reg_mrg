@@ -20,7 +20,6 @@ $router->group(['middleware' => [], 'namespace' => 'Jishua', 'prefix' => 'jishua
     $router->get('/task/stop', 'TaskController@stop');
     $router->get('/task/dispatch_mobile', 'TaskController@dispatchMobile');
     $router->get('/task/set_loop_id', 'TaskController@setLoopId');
-
 });
 
 Route::group([
@@ -41,6 +40,13 @@ Route::group([
     $router->get('/auth/me', 'AuthController@me');
 
     $router->get('/task/query', 'TaskController@query');
+    $router->post('/task/save', 'TaskController@save');
+    $router->get('/task/getFreeMobileNum', 'TaskController@getFreeMobileNum');
+    $router->post('/task/saveTaskKeyword', 'TaskController@saveTaskKeyword');
+
+    $router->get('/app/query_one', 'AppController@queryOne');
+
+    $router->get('/task_keyword/query', 'TaskKeywordController@query');
 });
 
 // $app->get('/login', function (Request $request) {
