@@ -27,6 +27,8 @@ class Kernel extends ConsoleKernel
         CheckMobileFail::class,
         ToDeviceId::class,
         ToIosApp::class,
+        // 定时补成功量
+        makeUpAppBrushNum::class,
     ];
 
     /**
@@ -37,8 +39,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('test:test', function () {
-            echo '111' . date('Y-m-d');
-        })->cron('*/1 * * * * *')->appendOutputTo('./test.txt');
+        // 定时补充未完成的量
+        $schedule->command('make_up:app_brush_num')->cron('*/1 * * * * *');
+        // 定时补充异常的手机量
+        $schedule->command('make_up:mobile_num')->cron('*/1 * * * * *');
+        // ->appendOutputTo('./test.txt');
     }
 }

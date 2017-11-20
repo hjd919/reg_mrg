@@ -167,7 +167,7 @@ class TaskController extends Controller
                 ->orderBy($order_field, $order_value)
                 ->limit($limit)
                 ->get();
-          
+
             if ($rows->isEmpty()) {
                 $rows = DB::table($table)->where([['id', '<', self::MAX_KEY]])
                     ->when($where, function ($query) use ($where) {
@@ -215,6 +215,7 @@ class TaskController extends Controller
         $last_app_id = $get_last_id('last_app_id');
         $where       = [
             ['brush_num', '>', 0],
+            ['start_time', '>=', date('Y-m-d H:i:s')],
             ['is_brushing', '=', 1],
             ['mobile_group_id', '=', $mobile_group_id],
         ];
@@ -226,7 +227,7 @@ class TaskController extends Controller
         $set_last_id('last_app_id', $app_row->id);
 
         // * 循环获取苹果账号记录
-        $email_key = 'last_email_id:appid_' . $app_row->appid;
+        $email_key     = 'last_email_id:appid_' . $app_row->appid;
         $last_email_id = $get_last_id($email_key);
         $where         = [
             'is_valid'     => 301,
