@@ -20,6 +20,8 @@ $router->group(['middleware' => [], 'namespace' => 'Jishua', 'prefix' => 'jishua
     $router->get('/task/stop', 'TaskController@stop');
     $router->get('/task/dispatch_mobile', 'TaskController@dispatchMobile');
     $router->get('/task/set_loop_id', 'TaskController@setLoopId');
+
+    $router->get('/task/reset_mobile_valid', 'TaskController@resetMobileValid');
 });
 
 Route::group([
