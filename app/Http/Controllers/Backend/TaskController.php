@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Backend\BackendController;
+use App\Models\Mobile;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -89,7 +90,7 @@ class TaskController extends BackendController
     // 获取空闲手机数
     public function getFreeMobileNum()
     {
-        $free_mobile_num = DB::table('mobiles')->where('mobile_group_id', 0)->count(); // 获取空闲手机数
+        $free_mobile_num = Mobile::getUsableNum(); // 获取空闲手机数
 
         return response()->json(['free_mobile_num' => $free_mobile_num]);
     }
@@ -154,8 +155,8 @@ class TaskController extends BackendController
             ]);
         }
 
-        // 更新手机分组（1000以上是自己用的）
-        DB::table('mobiles')->where('mobile_group_id', '<', 1000)->limit($mobile_num)->update(['mobile_group_id' => $mobile_group_id]);
+        // 更新手机分组（1000以上是自己用的)
+        Mobile::updateMobileGroupId($mobile_num, $mobile_group_id);
 
         // * 添加app
         $is_brushing = 1;
