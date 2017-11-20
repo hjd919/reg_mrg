@@ -70,10 +70,10 @@ class MarkFinishedTasks extends Command
             }
 
             // 通知曹亮
-            $msg = json_encode(
-                ["应用" => $app_row->app_name],
-                ["关键词" => $app_row->keyword]
-                , JSON_UNESCAPED_UNICODE);
+            $msg = json_encode([
+                "应用"  => $app_row->app_name,
+                "关键词" => $app_row->keyword,
+            ], JSON_UNESCAPED_UNICODE);
             $toMail = 'caoliang@xiaozi.com.cn';
             $cc     = ['297538600@qq.com'];
             Mail::raw($msg, function ($message) use ($toMail, $cc) {
