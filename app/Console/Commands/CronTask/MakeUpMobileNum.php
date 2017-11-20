@@ -124,7 +124,7 @@ class MakeUpMobileNum extends Command
                         'keyword'         => $app->keyword,
                         'mobile_group_id' => $mobile->mobile_group_id,
                         'mobile_id'       => $mobile->id,
-                    ]));
+                    ], JSON_UNESCAPED_UNICODE));
             }
 
             // * 统计异常手机数量

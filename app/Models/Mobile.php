@@ -14,6 +14,7 @@ class Mobile extends Model
         return self::where([['is_normal', '=', 1], ['mobile_group_id', '<', 1000]])->count();
     }
 
+    // 分配可用手机
     public static function updateMobileGroupId($mobile_num, $mobile_group_id)
     {
         return self::where('mobile_group_id', '<', 1000)
