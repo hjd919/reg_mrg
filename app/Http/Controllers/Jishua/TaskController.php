@@ -215,7 +215,7 @@ class TaskController extends Controller
         $last_app_id = $get_last_id('last_app_id');
         $where       = [
             ['brush_num', '>', 0],
-            ['start_time', '>=', date('Y-m-d H:i:s')],
+            ['start_time', '<=', date('Y-m-d H:i:s')],
             ['is_brushing', '=', 1],
             ['mobile_group_id', '=', $mobile_group_id],
         ];
