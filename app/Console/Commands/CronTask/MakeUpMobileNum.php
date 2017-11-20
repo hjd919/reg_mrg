@@ -3,7 +3,6 @@
 namespace App\Console\Commands\CronTask;
 
 use App\App;
-use App\Models\Task;
 use App\Models\TaskKeyword;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -71,7 +70,9 @@ class MakeUpMobileNum extends Command
             $msg = $e->getMessage();
 
             // 邮件警告异常,一小时发一条
-            $tag        = explode('|', $msg)[1];
+            $tag = explode('|', $msg);
+            $tag = isset($tag[1]) ? $tag[1] : $tag[0];
+            Log::error('tag' . var_export($tag, true));
             $send_email = Redis::get('mobile-fail-send_email:' . $tag);
             if ($send_email) {
                 die('邮件警告异常');
@@ -104,7 +105,7 @@ class MakeUpMobileNum extends Command
                 '$mobile_access_time' => $mobile_access_time,
             ]) . "\n";
 
-            $task = Task::where('mobile_group_id', $mobile->mobile_group_id)->select('keyword', 'task_keyword_id')->first();
+            $app = DB::table('apps')->where('mobile_group_id', $mobile->mobile_group_id)->select('keyword', 'task_keyword_id')->first();
 
             // * 获取mobile_group_id=0的手机，如果没有了则退出循环，并邮件警告
             $mgi0 = DB::table('mobiles')->select('id')->where('mobile_group_id', 0)->first();
@@ -114,17 +115,17 @@ class MakeUpMobileNum extends Command
                     '$device_id'       => $mobile->device_id,
                     '$mgi0'            => $mgi0,
                 ]) . "\n";
-                throw new \Exception('devices表中没有mobile_group_id=0的手机可以分配了，异常手机|' . $mobile->device_id . '|' .
+                throw new \Exception('devices表中没有mobile_group_id=0的手机可以分配了，异常手机:' . $mobile->device_id . '|' .
                     json_encode([
-                        'keyword'         => $task->keyword,
+                        'keyword'         => $app->keyword,
                         'mobile_group_id' => $mobile->mobile_group_id,
                         'mobile_id'       => $mobile->id,
                     ]));
             }
 
             // * 统计异常手机数量
-            if ($task->task_keyword_id) {
-                TaskKeyword::where('id', $task->task_keyword_id)->increment('fail_mobile_num');
+            if ($app->task_keyword_id) {
+                TaskKeyword::where('id', $app->task_keyword_id)->increment('fail_mobile_num');
             }
 
             $res = DB::table('mobiles')->where('id', $mgi0->id)->update(['mobile_group_id' => $mobile->mobile_group_id]);
