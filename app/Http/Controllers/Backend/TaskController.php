@@ -158,8 +158,8 @@ class TaskController extends BackendController
         DB::table('mobiles')->where('mobile_group_id', '<', 1000)->limit($mobile_num)->update(['mobile_group_id' => $mobile_group_id]);
 
         // * 添加app
-        $is_brushing = 0;
-        $app_id         = DB::table('apps')->insertGetId([
+        $is_brushing = 1;
+        $app_id      = DB::table('apps')->insertGetId([
             'user_id'         => $user_id,
             'task_id'         => $task_id,
             'task_keyword_id' => $task_keyword_id,
@@ -186,10 +186,10 @@ class TaskController extends BackendController
         }
 
         return response()->json([
-            'message' => '添加成功',
-            'app_id' => $app_id,
+            'message'  => '添加成功',
+            'app_id'   => $app_id,
             'app_name' => $ios_app->app_name,
-            'keyword' => $keyword,
-            ]);
+            'keyword'  => $keyword,
+        ]);
     }
 }
