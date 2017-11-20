@@ -56,15 +56,31 @@ class MarkFinishedTasks extends Command
                 'real_end_time' => date('Y-m-d H:i:s'),
             ]);
 
+            $valid_num = DB::table('apps')->where('id', $app_row->id)->update([
+                'is_brushing' => 0,
+            ]);
+
             // * 释放手机
             if ($app_row->mobile_group_id <= 1000) {
-                $valid_num = DB::table('mobile')->where([
+                $valid_num = DB::table('mobiles')->where([
                     ['mobile_group_id', '=', $app_row->mobile_group_id],
                 ])->update([
                     'mobile_group_id' => 0,
                 ]);
             }
 
+            // 通知曹亮
+            $msg = json_encode(
+                ["应用" => $app_row->app_name],
+                ["关键词" => $app_row->keyword]
+                , JSON_UNESCAPED_UNICODE);
+            $toMail = 'caoliang@xiaozi.com.cn';
+            $cc     = ['297538600@qq.com'];
+            Mail::raw($msg, function ($message) use ($toMail, $cc) {
+                $message->subject('jishua有应用打完了');
+                $message->to($toMail);
+                $message->cc($cc);
+            });
         }
     }
 }
