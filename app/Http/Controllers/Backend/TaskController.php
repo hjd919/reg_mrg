@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Backend\BackendController;
 use App\Models\Mobile;
 use App\Models\Task;
+use App\Models\WorkDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -88,11 +89,17 @@ class TaskController extends BackendController
     }
 
     // 获取空闲手机数
-    public function getFreeMobileNum()
+    public function getFreeMobileNum(Request $request)
     {
         $free_mobile_num = Mobile::getUsableNum(); // 获取空闲手机数
 
-        return response()->json(['free_mobile_num' => $free_mobile_num]);
+        $task_id = $request->task_id;
+        $appid   = DB::table('tasks')->where('id', $task_id)->value('appid');
+
+        // 获取可用app量
+        $usable_brush_num = WorkDetail::getUsableBrushNum($appid);
+
+        return response()->json(['free_mobile_num' => $free_mobile_num, 'usable_brush_num' => $usable_brush_num]);
     }
 
     // 添加下单关键词、添加app、手机分组

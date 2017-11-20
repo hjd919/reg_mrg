@@ -6,7 +6,6 @@ use App\App;
 use App\Models\TaskKeyword;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redis;
 
@@ -73,7 +72,7 @@ class MakeUpMobileNum extends Command
             // 邮件警告异常,一小时发一条
             $tag = explode('|', $msg);
             $tag = isset($tag[1]) ? $tag[1] : $tag[0];
-            Log::error('msg' . var_export($msg, true));
+            // Log::error('msg' . var_export($msg, true));
             $send_email = Redis::get('mobile-fail-send_email:' . $tag);
             if ($send_email) {
                 die('邮件警告异常');
