@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands\Task;
+namespace App\Console\Commands\CronTask;
 
 use App\App;
 use Illuminate\Console\Command;
@@ -8,21 +8,21 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redis;
 
-class CheckMobileFail extends Command
+class MakeUpMobileNum extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'check:mobile-fail';
+    protected $signature = 'make_up:mobile_num';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = '';
+    protected $description = '补充手机数量';
 
     protected $now_time;
 
@@ -45,8 +45,6 @@ class CheckMobileFail extends Command
      */
     public function handle()
     {
-        // * 控制手机分组量
-
         // * 判断是否有正在跑任务，没有，则退出
         $where = [
             ['brush_num', '>', 0],
@@ -82,7 +80,7 @@ class CheckMobileFail extends Command
             $toMail = 'tianlin@xiaozi.com.cn';
             $cc     = ['297538600@qq.com', 'huangshimeng@xiaozi.com.cn'];
             Mail::raw($msg, function ($message) use ($toMail, $cc) {
-                $message->subject('机刷邮件警告异常');
+                $message->subject('jishua异常-补充手机数量失败');
                 $message->to($toMail);
                 $message->cc($cc);
             });
@@ -103,6 +101,9 @@ class CheckMobileFail extends Command
                 '$now_time'           => $this->now_time,
                 '$mobile_access_time' => $mobile_access_time,
             ]) . "\n";
+
+            $task = Task::where('mobile_group_id', $mobile->mobile_group_id)->select('keyword', 'task_keyword_id')->first();
+
             // * 获取mobile_group_id=0的手机，如果没有了则退出循环，并邮件警告
             $mgi0 = DB::table('mobiles')->select('id')->where('mobile_group_id', 0)->first();
             if (!$mgi0) {
@@ -113,24 +114,21 @@ class CheckMobileFail extends Command
                 ]) . "\n";
                 throw new \Exception('devices表中没有mobile_group_id=0的手机可以分配了，异常手机:' . $mobile->device_id . '|' .
                     json_encode([
+                        'keyword'         => $task->keyword,
                         'mobile_group_id' => $mobile->mobile_group_id,
                         'mobile_id'       => $mobile->id,
                     ]));
             }
 
+            // * 统计异常手机数量
+            if ($task->task_keyword_id) {
+                TaskKeyword::where('id', $task->task_keyword_id)->increment('fail_mobile_num');
+            }
+
             $res = DB::table('mobiles')->where('id', $mgi0->id)->update(['mobile_group_id' => $mobile->mobile_group_id]);
             if (!$res) {
-                echo '更新为对应的mobile_group_id失败' . json_encode([
-                    '$mobile_group_id' => $mobile->mobile_group_id,
-                    '$device_id'       => $mobile->device_id,
-                    '$res'             => $res,
-                    '$mgi0'            => $mgi0,
-                ]) . "\n";
                 throw new \Exception('update mobile mobile_group_id error|');
             }
-            echo '成功更新为对应的mobile_group_id' . json_encode([
-                '$mgi0' => $mgi0,
-            ]) . "\n";
         }
 
         return true;
