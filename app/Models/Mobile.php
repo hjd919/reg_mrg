@@ -11,7 +11,7 @@ class Mobile extends Model
     // 获取可用手机数-正常的,小于1000
     public static function getUsableNum()
     {
-        return self::where([['is_normal', '=', 1], ['mobile_group_id', '<', 1000]])->count();
+        return self::where([['is_normal', '=', 1], ['mobile_group_id', '=', 0]])->count();
     }
 
     // 分配可用手机
