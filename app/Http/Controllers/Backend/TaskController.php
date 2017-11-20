@@ -185,6 +185,11 @@ class TaskController extends BackendController
             return response()->json(['error_code' => 2]);
         }
 
+        // 更新task_keywords中刚添加的app_id
+        DB::table('task_keywords')->where('id', $task_keyword_id)->update([
+            'app_id' => $app_id,
+        ]);
+
         return response()->json([
             'message'  => '添加成功',
             'app_id'   => $app_id,

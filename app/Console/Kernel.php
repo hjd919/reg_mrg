@@ -2,6 +2,9 @@
 
 namespace App\Console;
 
+use App\Console\Commands\CronTask\MakeUpAppBrushNum;
+use App\Console\Commands\CronTask\MakeUpMobileNum;
+use App\Console\Commands\CronTask\MarkFinishedTasks;
 use App\Console\Commands\Data\ToDeviceId;
 use App\Console\Commands\Data\ToIosApp;
 use App\Console\Commands\DB\MobileAdd;
@@ -28,7 +31,11 @@ class Kernel extends ConsoleKernel
         ToDeviceId::class,
         ToIosApp::class,
         // 定时补成功量
-        makeUpAppBrushNum::class,
+        MakeUpAppBrushNum::class,
+        // 定时补手机量
+        MakeUpMobileNum::class,
+        // 标志任务完成
+        MarkFinishedTasks::class,
     ];
 
     /**
@@ -44,5 +51,6 @@ class Kernel extends ConsoleKernel
         // 定时补充异常的手机量
         $schedule->command('make_up:mobile_num')->cron('*/1 * * * * *');
         // ->appendOutputTo('./test.txt');
+        $schedule->command('mark:finished_tasks')->cron('*/1 * * * * *');
     }
 }
