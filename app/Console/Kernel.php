@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\Data\ToDeviceId;
+use App\Console\Commands\Data\ToIosApp;
 use App\Console\Commands\DB\MobileAdd;
 use App\Console\Commands\Import\ImportDevices;
 use App\Console\Commands\Import\ImportEmails;
@@ -25,6 +26,7 @@ class Kernel extends ConsoleKernel
         sendMailCommand::class,
         CheckMobileFail::class,
         ToDeviceId::class,
+        ToIosApp::class,
     ];
 
     /**
@@ -35,6 +37,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('task:mobile-fail')->cron('*/2 * * * * *')->appendOutputTo('./task_mobile_fail.txt');
+        $schedule->command('test:test', function () {
+            echo '111' . date('Y-m-d');
+        })->cron('*/1 * * * * *')->appendOutputTo('./test.txt');
     }
 }
