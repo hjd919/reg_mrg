@@ -160,7 +160,7 @@ class TaskController extends BackendController
 
         // * 添加app
         $is_brushing = 0;
-        $res         = DB::table('apps')->insert([
+        $app_id         = DB::table('apps')->insertGetId([
             'user_id'         => $user_id,
             'task_id'         => $task_id,
             'task_keyword_id' => $task_keyword_id,
@@ -176,7 +176,7 @@ class TaskController extends BackendController
             'is_brushing'     => $is_brushing,
             'mobile_group_id' => $mobile_group_id,
         ]);
-        if (!$res) {
+        if (!$app_id) {
             return response()->json(['error_code' => 1]);
         }
 
@@ -186,6 +186,11 @@ class TaskController extends BackendController
             return response()->json(['error_code' => 2]);
         }
 
-        return response()->json(['message' => '添加成功']);
+        return response()->json([
+            'message' => '添加成功',
+            'app_id' => $app_id,
+            'app_name' => $ios_app->app_name,
+            'keyword' => $keyword,
+            ]);
     }
 }
