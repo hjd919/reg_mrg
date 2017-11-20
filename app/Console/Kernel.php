@@ -11,7 +11,6 @@ use App\Console\Commands\DB\MobileAdd;
 use App\Console\Commands\Import\ImportDevices;
 use App\Console\Commands\Import\ImportEmails;
 use App\Console\Commands\sendMailCommand;
-use App\Console\Commands\Task\CheckMobileFail;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 
@@ -27,7 +26,6 @@ class Kernel extends ConsoleKernel
         ImportEmails::class,
         MobileAdd::class,
         sendMailCommand::class,
-        CheckMobileFail::class,
         ToDeviceId::class,
         ToIosApp::class,
         // 定时补成功量
