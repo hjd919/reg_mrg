@@ -4,6 +4,7 @@ namespace App\Console\Commands\CronTask;
 
 use App\App;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 
 class MarkFinishedTasks extends Command
 {
