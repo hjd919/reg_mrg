@@ -114,7 +114,7 @@ class MakeUpMobileNum extends Command
                     '$device_id'       => $mobile->device_id,
                     '$mgi0'            => $mgi0,
                 ]) . "\n";
-                throw new \Exception('devices表中没有mobile_group_id=0的手机可以分配了，异常手机:' . $mobile->device_id . '|' .
+                throw new \Exception('devices表中没有mobile_group_id=0的手机可以分配了，异常手机|' . $mobile->device_id . '|' .
                     json_encode([
                         'keyword'         => $task->keyword,
                         'mobile_group_id' => $mobile->mobile_group_id,
@@ -129,7 +129,7 @@ class MakeUpMobileNum extends Command
 
             $res = DB::table('mobiles')->where('id', $mgi0->id)->update(['mobile_group_id' => $mobile->mobile_group_id]);
             if (!$res) {
-                throw new \Exception('update mobile mobile_group_id error|');
+                throw new \Exception('update mobile mobile_group_id error|update error');
             }
         }
 
