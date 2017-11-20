@@ -2,13 +2,14 @@
 
 namespace App\Console;
 
-use App\Console\Commands\Data\ToDeviceId;
 use App\Console\Commands\DB\MobileAdd;
-use App\Console\Commands\Import\ImportDevices;
-use App\Console\Commands\Import\ImportEmails;
+use App\Console\Commands\Data\ToIosApp;
+use App\Console\Commands\Data\ToDeviceId;
 use App\Console\Commands\sendMailCommand;
-use App\Console\Commands\Task\CheckMobileFail;
 use Illuminate\Console\Scheduling\Schedule;
+use App\Console\Commands\Import\ImportEmails;
+use App\Console\Commands\Import\ImportDevices;
+use App\Console\Commands\Task\CheckMobileFail;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -25,6 +26,7 @@ class Kernel extends ConsoleKernel
         sendMailCommand::class,
         CheckMobileFail::class,
         ToDeviceId::class,
+        ToIosApp::class,
     ];
 
     /**

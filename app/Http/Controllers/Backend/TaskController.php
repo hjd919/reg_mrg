@@ -47,14 +47,13 @@ class TaskController extends BackendController
         $user_id   = $user->id;
         $appid     = $request->input('appid');
         $app_name  = $request->input('app_name');
-        $appuri    = $request->input('appuri');
         $bundle_id = $request->input('bundle_id');
 
         // * 添加app
         // 判断app是否存在,不存在则添加
         $app = DB::table('ios_apps')->select('id')->where('appid', $appid)->first();
         if (!$app) {
-            $ios_app_id = DB::table('ios_apps')->insertGetId(compact('appid', 'app_name', 'appuri', 'bundle_id'));
+            $ios_app_id = DB::table('ios_apps')->insertGetId(compact('appid', 'app_name', 'bundle_id'));
             if (!$ios_app_id) {
                 return response()->json(['error_code' => 2]);
             }
