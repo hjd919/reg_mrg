@@ -132,6 +132,13 @@ class TaskController extends BackendController
             return response()->json(['error_code' => 3, 'message' => '手机组id是测试用，且需要小于1000']);
         }
 
+        // 判断日期时间
+        if (!$start_time || !$end_time
+            || strtotime($start_time) >= strtotime($end_time)
+            || strtotime($end_time) <= time()) {
+            return response()->json(['error_code' => 3, 'message' => '开始时间应该小于结束时间，且结束时间大于当前时间']);
+        }
+
         $task    = Task::find($task_id);
         $ios_app = $task->ios_app;
 
