@@ -5,6 +5,7 @@ namespace App\Console\Commands\CronTask;
 use App\App;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class MarkFinishedTasks extends Command
 {
@@ -50,24 +51,27 @@ class MarkFinishedTasks extends Command
 
         foreach ($app_rows as $app_row) {
 
-            // * 标志已完成和完成时间
-            $valid_num = DB::table('task_keywords')->where([['app_id', '=', $app_row->id]])->update([
+            // * 标志已完成,完成时间
+            $res = DB::table('task_keywords')->where([['app_id', '=', $app_row->id]])->update([
                 'is_finish'     => 1,
                 'real_end_time' => date('Y-m-d H:i:s'),
             ]);
 
-            $valid_num = DB::table('apps')->where('id', $app_row->id)->update([
+            // * 标志不在刷了
+            $res = DB::table('apps')->where('id', $app_row->id)->update([
                 'is_brushing' => 0,
             ]);
 
             // * 释放手机
-            if ($app_row->mobile_group_id <= 1000) {
-                $valid_num = DB::table('mobiles')->where([
+            if ($app_row->mobile_group_id < 1000) {
+                $res = DB::table('mobiles')->where([
                     ['mobile_group_id', '=', $app_row->mobile_group_id],
                 ])->update([
                     'mobile_group_id' => 0,
                 ]);
             }
+
+            // * 统计各种情况，总数，按时间，按结果
 
             // 通知曹亮
             $msg = json_encode([
