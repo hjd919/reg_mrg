@@ -108,22 +108,33 @@ class TaskController extends BackendController
         $user    = $this->guard()->user();
         $user_id = $user->id;
 
-        $task_id     = $request->input('task_id');
-        $keyword     = $request->input('keyword');
-        $success_num = $request->input('success_num');
-        $start_time  = $request->input('start_time');
-        $mobile_num  = $request->input('mobile_num');
-        $hot         = $request->input('hot');
-        $before_rank = $request->input('before_rank');
-        $remark      = $request->input('remark');
+        $task_id         = $request->input('task_id');
+        $keyword         = $request->input('keyword');
+        $success_num     = $request->input('success_num');
+        $start_time      = $request->input('start_time');
+        $mobile_num      = $request->input('mobile_num');
+        $mobile_group_id = $request->input('mobile_group_id');
+        $hot             = $request->input('hot');
+        $before_rank     = $request->input('before_rank');
+        $remark          = $request->input('remark');
+
+        // 判断mobile_num和mobile_group_id必须存在一个
+        if (!$mobile_num && !$mobile_group_id) {
+            return response()->json(['error_code' => 2, 'message' => '空闲手机数或者手机组id必须填一个']);
+        }
+        if ($mobile_group_id && $mobile_group_id < 1000) {
+            return response()->json(['error_code' => 3, 'message' => '手机组id是测试用，且需要小于1000']);
+        }
 
         $task    = Task::find($task_id);
         $ios_app = $task->ios_app;
 
         // * 判断是否多于空闲手机数
-        $free_mobile_num = DB::table('mobiles')->where('mobile_group_id', 0)->count(); // 获取空闲手机数
-        if ($mobile_num > $free_mobile_num) {
-            return response()->json(['error_code' => 1, 'message' => '已经多于空闲手机数']);
+        if (!$mobile_group_id) {
+            $free_mobile_num = DB::table('mobiles')->where('mobile_group_id', 0)->count(); // 获取空闲手机数
+            if ($mobile_num > $free_mobile_num) {
+                return response()->json(['error_code' => 1, 'message' => '已经多于空闲手机数']);
+            }
         }
 
         // * 添加下单关键词
@@ -140,30 +151,33 @@ class TaskController extends BackendController
             'remark'      => $remark,
         ]);
 
-        // * 设置手机分组
+        // 判断是否已预设mobile_group_id
+        if (!$mobile_group_id) {
+            // * 设置手机分组
 
-        // 获取当前分组号
-        $mobile_group_id = DB::table('config')->where('keyword', 'next_mobile_group_id')->value('value');
+            // 获取当前分组号
+            $mobile_group_id = DB::table('config')->where('keyword', 'next_mobile_group_id')->value('value');
 
-        // 设置下一个mobile_group_id
-        if ($mobile_group_id >= 999) {
-            $value = 1;
-        } else {
-            $value = $mobile_group_id + 1;
+            // 设置下一个mobile_group_id
+            if ($mobile_group_id >= 999) {
+                $value = 1;
+            } else {
+                $value = $mobile_group_id + 1;
+            }
+            DB::table('config')->where('keyword', 'next_mobile_group_id')->update(['value' => $value]);
+
+            // 如果不存在分组，则添加分组表
+            if (!DB::table('mobile_group')->find($mobile_group_id)) {
+                DB::table('mobile_group')->insert([
+                    'id'     => $mobile_group_id,
+                    'name'   => '随机' . $mobile_group_id,
+                    'remark' => 'no remark',
+                ]);
+            }
+
+            // 更新手机分组（1000以上是自己用的)
+            Mobile::updateMobileGroupId($mobile_num, $mobile_group_id);
         }
-        DB::table('config')->where('keyword', 'next_mobile_group_id')->update(['value' => $value]);
-
-        // 如果不存在分组，则添加分组表
-        if (!DB::table('mobile_group')->find($mobile_group_id)) {
-            DB::table('mobile_group')->insert([
-                'id'     => $mobile_group_id,
-                'name'   => '随机' . $mobile_group_id,
-                'remark' => 'no remark',
-            ]);
-        }
-
-        // 更新手机分组（1000以上是自己用的)
-        Mobile::updateMobileGroupId($mobile_num, $mobile_group_id);
 
         // * 添加app
         $is_brushing = 1;
