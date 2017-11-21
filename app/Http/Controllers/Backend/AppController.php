@@ -9,6 +9,43 @@ use Illuminate\Support\Facades\DB;
 
 class AppController extends Controller
 {
+    public function query(Request $request)
+    {
+        $current_page = $request->input('currentPage', 1);
+        $page_size    = $request->input('pageSize', 10);
+        $search       = $request->input('search', '');
+
+        // * total
+        $total = DB::table('apps')
+            ->when($search, function ($query) use ($search) {
+                $key = 'id';
+                return $query->where($key, $search);
+            })
+            ->count();
+
+        // * 列表
+        // offset
+        $offset = ($current_page - 1) * $page_size;
+        $list   = DB::table('apps')
+            ->when($search, function ($query) use ($search) {
+                $key = 'id';
+                return $query->where($key, $search);
+            })
+            ->limit($page_size)
+            ->offset($offset)
+            ->orderBy('id', 'desc')
+            ->get();
+
+        // 整理分页
+        $pagination = [
+            'current'  => (int) $current_page,
+            'pageSize' => (int) $page_size,
+            'total'    => (int) $total,
+        ];
+
+        return response()->json(compact('pagination', 'list'));
+    }
+
     public function queryOne(Request $request)
     {
         $appid = $request->input('appid', 0);

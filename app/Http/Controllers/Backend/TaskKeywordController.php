@@ -7,6 +7,7 @@ use App\Models\Task;
 use App\Models\TaskKeyword;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class TaskKeywordController extends BackendController
 {
@@ -16,19 +17,24 @@ class TaskKeywordController extends BackendController
         $page_size    = $request->input('pageSize', 10);
         $search       = $request->input('search', '');
         $task_id      = $request->input('task_id', '');
-
+        // DB::listen(function ($query) {
+        //     echo $query->sql;
+        // });
         // total
         $total = TaskKeyword::when($task_id, function ($query) use ($task_id) {
             return $query->where('task_id', $task_id);
         })->count();
 
         // 列表
-        $list = TaskKeyword::with('user')
+        // offset
+        $offset = ($current_page - 1) * $page_size;
+        $list   = TaskKeyword::with('user')
             ->with('ios_app')
             ->when($task_id, function ($query) use ($task_id) {
                 return $query->where('task_id', $task_id);
             })
             ->limit($page_size)
+            ->offset($offset)
             ->orderBy('id', 'desc')
             ->get();
 
@@ -40,10 +46,12 @@ class TaskKeywordController extends BackendController
 
         // 分页
         $pagination = [
-            'current'  => $current_page,
-            'pageSize' => $page_size,
-            'total'    => $total,
+            'current'  => (int) $current_page,
+            'pageSize' => (int) $page_size,
+            'total'    => (int) $total,
         ];
+
+        Log::error(var_export($pagination, true));
 
         return response()->json(compact('pagination', 'list'));
     }
@@ -167,7 +175,7 @@ class TaskKeywordController extends BackendController
 
         // * 添加app
         $is_brushing = 0;
-        $app_id         = DB::table('apps')->insertGetId([
+        $app_id      = DB::table('apps')->insertGetId([
             'user_id'         => $user_id,
             'task_id'         => $task_id,
             'task_keyword_id' => $task_keyword_id,
