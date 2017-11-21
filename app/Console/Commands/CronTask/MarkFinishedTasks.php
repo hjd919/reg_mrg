@@ -110,7 +110,7 @@ class MarkFinishedTasks extends Command
                     "应用"  => $app_row->app_name,
                     "关键词" => $app_row->keyword,
                 ], JSON_UNESCAPED_UNICODE);
-                $toMail = 'tianling@xiaozi.com.cn';
+                $toMail = 'tianlin@xiaozi.com.cn';
                 $cc     = ['297538600@qq.com', 'huangshimeng@xiaozi.com.cn'];
                 Mail::raw($msg, function ($message) use ($toMail, $cc) {
                     $message->subject('jishua有应用打完了');
