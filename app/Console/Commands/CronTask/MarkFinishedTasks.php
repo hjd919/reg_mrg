@@ -45,7 +45,7 @@ class MarkFinishedTasks extends Command
         $app_rows = DB::table('apps')->where('is_brushing', '=', 1)
             ->where(function ($query) {
                 $query->where('brush_num', '<=', 0)
-                    ->orWhere('end_time', '<=', time());
+                    ->orWhere('end_time', '<=', date('Y-m-d H:i:s'));
             })
             ->get();
         if ($app_rows->isEmpty()) {
