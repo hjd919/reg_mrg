@@ -222,9 +222,11 @@ class TaskController extends Controller
 
         // * 循环获取任务记录 正在刷、有数量
         $last_app_id = $get_last_id('last_app_id');
+        $now_date    = date('Y-m-d H:i:s');
         $where       = [
             ['brush_num', '>', 0],
-            ['start_time', '<=', date('Y-m-d H:i:s')],
+            ['start_time', '<=', $now_date],
+            ['end_time', '>=', $now_date],
             ['is_brushing', '=', 1],
             ['mobile_group_id', '=', $mobile_group_id],
         ];

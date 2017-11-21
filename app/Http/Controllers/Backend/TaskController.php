@@ -112,6 +112,7 @@ class TaskController extends BackendController
         $keyword         = $request->input('keyword');
         $success_num     = $request->input('success_num');
         $start_time      = $request->input('start_time');
+        $end_time        = $request->input('end_time');
         $mobile_num      = $request->input('mobile_num');
         $mobile_group_id = $request->input('mobile_group_id');
         $hot             = $request->input('hot');
@@ -145,6 +146,7 @@ class TaskController extends BackendController
             'keyword'     => $keyword,
             'success_num' => $success_num,
             'start_time'  => $start_time,
+            'end_time'    => $end_time,
             'mobile_num'  => $mobile_num,
             'hot'         => $hot,
             'before_rank' => $before_rank,
@@ -190,6 +192,7 @@ class TaskController extends BackendController
             'brush_num'       => $success_num,
             'success_num'     => $success_num,
             'start_time'      => $start_time,
+            'end_time'        => $end_time,
             'mobile_num'      => $mobile_num,
             'appid'           => $ios_app->appid,
             'app_name'        => $ios_app->app_name,
