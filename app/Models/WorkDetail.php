@@ -31,4 +31,21 @@ class WorkDetail extends Model
         $success_brushed_num = self::where(['app_id' => $app_id, 'status' => 3])->count();
         return $success_brushed_num;
     }
+
+    public static function test()
+    {
+        $success_brushed_num = self::getWorkDetailTable($appid)->limit(10)->get();
+        return $success_brushed_num;
+    }
+
+    // 获取workdetail表
+    public static function getWorkDetailTable($appid)
+    {
+        // 根据appid获取表后缀
+        $table_key = Redis::hGet('work_detail_table', $appid);
+        $table     = $table_key ? $table_key : '';
+        $obj       = new self;
+        $obj->setTable($table);
+        return $obj;
+    }
 }
