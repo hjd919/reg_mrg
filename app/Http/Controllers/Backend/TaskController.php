@@ -18,17 +18,16 @@ class TaskController extends BackendController
         $search       = $request->input('search', '');
 
         // * total
-        $total = DB::table('tasks')
-            ->when($search, function ($query) use ($search) {
-                $key = 'id';
-                return $query->where($key, $search);
-            })
+        $total = Task::when($search, function ($query) use ($search) {
+            $key = 'id';
+            return $query->where($key, $search);
+        })
             ->count();
 
         // * 列表
         // offset
         $offset = ($current_page - 1) * $page_size;
-        $list   = DB::table('tasks')
+        $list   = Task::with('user')
             ->when($search, function ($query) use ($search) {
                 $key = 'id';
                 return $query->where($key, $search);
@@ -37,6 +36,12 @@ class TaskController extends BackendController
             ->offset($offset)
             ->orderBy('id', 'desc')
             ->get();
+
+        // 获取关联
+        foreach ($list as &$row) {
+            $row->user_name = $row->user->name;
+            unset($row->user);
+        }
 
         // 整理分页
         $pagination = [
@@ -69,8 +74,7 @@ class TaskController extends BackendController
         }
 
         // * 查询未完成添加的下单
-        $task = DB::table('tasks')
-            ->select('id')
+        $task = Task::select('id')
             ->where('step', 1)
             ->where('ios_app_id', $ios_app_id)
             ->first();
