@@ -41,7 +41,9 @@ class TaskKeywordController extends BackendController
         // 获取关联
         foreach ($list as &$row) {
             $row->user_name = $row->user->name;
-            $row->appid     = $row->ios_app->appid;
+            $row->app_name  = $row->ios_app->app_name;
+            unset($row->ios_app);
+            unset($row->user);
         }
 
         // 分页
