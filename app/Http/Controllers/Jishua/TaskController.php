@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Jishua;
 
 use App\Http\Controllers\Controller;
+use App\Models\WorkDetail;
 use App\Support\Util;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -257,11 +258,8 @@ class TaskController extends Controller
         Util::log($query->sql,$query->bindings);
         });
          */
-        $exist_work_detail = DB::table('work_detail')
-            ->where('appid', $app_row->appid)
-            ->whereIn('email', $emails)
-            ->pluck('email')
-            ->toArray();
+        // 判断是否app刷过此批量账号
+        $exist_work_detail = WorkDetail::isAppBrushEmails($app_row->appid, $emails);
         if ($exist_work_detail) {
             $set_last_id($email_key, $email_rows->last()->id);
             Util::log('title', 'app存在刷过此批量账号了{appid:' . $app_row->appid . ',account_id:' . $email_rows->last()->id);
@@ -288,11 +286,8 @@ class TaskController extends Controller
         foreach ($device_rows as $key => $device_row) {
             $udids[] = $device_row->udid;
         }
-        $exist_work_detail = DB::table('work_detail')
-            ->where('appid', $app_row->appid)
-            ->whereIn('udid', $udids)
-            ->pluck('udid')
-            ->toArray();
+        $exist_work_detail = WorkDetail::isAppBrushDevices($app_row->appid, $udids);
+
         if ($exist_work_detail) {
             $set_last_id($device_key, $device_rows[count($device_rows) - 1]->id);
             Util::log('tt', '此app存在刷过此设备device信息了' . json_encode(['appid' => $app_row->appid, 'last_device_id' => $device_rows[count($device_rows) - 1]->id]));
@@ -344,8 +339,9 @@ class TaskController extends Controller
                 $data['app_id']   = (string) $app_row->appid;
                 $response[]       = $data;
             }
-            DB::table('work_detail')->insert($work_detail);
 
+            // 添加work_detail记录
+            WorkDetail::add($app_row->appid, $work_detail);
         } catch (Exception $e) {
             Util::errorLog('transaction error:file_' . __FILE__, $e->getMessage());
 
@@ -376,14 +372,9 @@ class TaskController extends Controller
         if ($succ_num) {
             $status = 3;
         }
+
         // * 根据任务id和账号id更新刷任务记录状态
-        DB::table('work_detail')->where([
-            'work_id'    => $work_id,
-            'account_id' => $account_id,
-        ])->update([
-            'status'      => $status,
-            'report_time' => date('Y-m-d H:i:s'),
-        ]);
+        WorkDetail::updateStatus($work_id, $account_id, $status);
 
         Util::die_jishua('ok');
     }

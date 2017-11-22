@@ -39,6 +39,7 @@ class ToDeviceId extends Command
      */
     public function handle()
     {
+        die('work_detail gaile');
         // * to device_id
         $i = 0;
         while (1) {

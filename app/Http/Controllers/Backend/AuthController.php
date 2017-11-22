@@ -17,6 +17,11 @@ class AuthController extends Controller
     {
     }
 
+    public function login2()
+    {
+
+    }
+
     /**
      * Get a JWT token via given credentials.
      *

@@ -8,6 +8,7 @@ use App\Models\Task;
 use App\Models\WorkDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 
 class TaskController extends BackendController
 {
@@ -65,10 +66,56 @@ class TaskController extends BackendController
         // 判断app是否存在,不存在则添加
         $app = DB::table('ios_apps')->select('id')->where('appid', $appid)->first();
         if (!$app) {
-            $ios_app_id = DB::table('ios_apps')->insertGetId(compact('appid', 'app_name', 'bundle_id'));
+
+            // * 获取work_detail_table的值,判断是否超过100个app，创建一个表
+            $work_detail_table = DB::table('ios_apps')->max('work_detail_table');
+            $work_detail_count = DB::table('ios_apps')->where('work_detail_table', $work_detail_table)->count();
+            if ($work_detail_count > 2) {
+
+                // 表id+1
+                $work_detail_table++;
+
+                // 建表
+                $table_sql = <<<EOF
+CREATE TABLE `work_detail{$work_detail_table}` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `status` tinyint(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT '1进行中 2失败 3成功 4老数据',
+  `work_id` int(11) NOT NULL,
+  `appid` bigint(20) NOT NULL,
+  `app_id` int(11) NOT NULL,
+  `email` varchar(64) NOT NULL,
+  `account_id` int(11) NOT NULL,
+  `password` varchar(20) NOT NULL,
+  `device_id` int(11) NOT NULL DEFAULT '0',
+  `udid` varchar(64) NOT NULL,
+  `imei` varchar(64) NOT NULL,
+  `serial` varchar(64) NOT NULL,
+  `bt` varchar(64) NOT NULL,
+  `wifi` varchar(64) NOT NULL,
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `report_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `work_id_2` (`work_id`,`account_id`),
+  KEY `appid_email` (`appid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+EOF;
+                DB::statement($table_sql);
+
+                // 记录appid和table映射
+                Redis::hSet('work_detail_table', $appid, $work_detail_table);
+            }
+
+            $ios_app_id = DB::table('ios_apps')->insertGetId(compact(
+                'appid',
+                'app_name',
+                'work_detail_table',
+                'bundle_id'));
             if (!$ios_app_id) {
                 return response()->json(['error_code' => 2]);
             }
+
+            // 添加扩展数据表
         } else {
             $ios_app_id = $app->id;
         }

@@ -30,6 +30,7 @@ Route::group([
     'prefix'     => 'backend',
 ], function ($router) {
     $router->post('/auth/login', 'AuthController@login');
+    $router->get('/auth/login2', 'AuthController@login2');
 });
 
 Route::group([

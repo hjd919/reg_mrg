@@ -3,6 +3,7 @@
 namespace App\Console\Commands\CronTask;
 
 use App\App;
+use App\Models\WorkDetail;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
@@ -53,11 +54,7 @@ class MakeUpAppBrushNum extends Command
         foreach ($app_rows as $app_row) {
 
             // 统计这个app的有效量：app_id,app时间段,有效
-            $valid_num = DB::table('work_detail')->where([
-                ['app_id', '=', $app_row->id],
-                ['create_time', '>=', $app_row->start_time],
-                ['status', '=', 3],
-            ])->count();
+            $valid_num = WorkDetail::countSuccessBrushNum($app_row->appid, $app_row->id, $app_row->start_time);
 
             $unsuccess_num = $app_row->success_num - $valid_num;
             if ($unsuccess_num > 0) {
