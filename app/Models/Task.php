@@ -13,4 +13,10 @@ class Task extends Model
     {
         return $this->belongsTo('App\Models\IosApp');
     }
+
+    // 一对多（反向 user
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User');
+    }
 }
