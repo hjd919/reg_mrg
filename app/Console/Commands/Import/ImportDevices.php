@@ -44,12 +44,12 @@ class ImportDevices extends Command
         echo $file;
         $fp   = fopen($file, 'r');
         $r    = $i    = $j    = 0;
-        while (($data = fgetcsv($fp)) !== false) {
+        while (($data = fgetcsv($fp, 1000, ';')) !== false) {
             list($SerialNumber, $IMEI, $Bluetooth, $WIFI, $UDID) = $data;
-            if (empty($SerialNumber) || empty($IMEI) || empty($Bluetooth) || empty($WIFI) || empty($UDID)) {
+            /*if (empty($SerialNumber) || empty($IMEI) || empty($Bluetooth) || empty($WIFI) || empty($UDID)) {
                 $i++;
                 continue;
-            }
+            }*/
 
             // 判断文件中是否有重复的udid
             $exist = DB::table('devices')->where(['udid' => $UDID])->first();
