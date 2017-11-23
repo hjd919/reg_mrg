@@ -91,33 +91,21 @@ class MarkFinishedTasks extends Command
                     'mobile_group_id' => 0,
                 ]);
 
-                // 通知曹亮
-                $msg = json_encode([
-                    "应用"  => $app_row->app_name,
-                    "关键词" => $app_row->keyword,
-                ], JSON_UNESCAPED_UNICODE);
-                $toMail = 'caoliang@xiaozi.com.cn';
-                $cc     = ['297538600@qq.com'];
-                Mail::raw($msg, function ($message) use ($toMail, $cc) {
-                    $message->subject('jishua有应用打完了');
-                    $message->to($toMail);
-                    $message->cc($cc);
-                });
-            } else {
-                // 测试
-                // 通知tianlin
-                $msg = json_encode([
-                    "应用"  => $app_row->app_name,
-                    "关键词" => $app_row->keyword,
-                ], JSON_UNESCAPED_UNICODE);
-                $toMail = 'tianlin@xiaozi.com.cn';
-                $cc     = ['297538600@qq.com', 'huangshimeng@xiaozi.com.cn'];
-                Mail::raw($msg, function ($message) use ($toMail, $cc) {
-                    $message->subject('jishua有应用打完了');
-                    $message->to($toMail);
-                    $message->cc($cc);
-                });
             }
+
+            // 邮箱通知
+            $msg = json_encode([
+                "应用"  => $app_row->app_name,
+                "关键词" => $app_row->keyword,
+            ], JSON_UNESCAPED_UNICODE);
+            // 按照用户表的email去通知
+            $toMail = DB::table('users')->where('id', $app_row->user_id)->select('email')->value('email');
+            $cc     = ['297538600@qq.com'];
+            Mail::raw($msg, function ($message) use ($toMail, $cc) {
+                $message->subject('jishua有应用打完了');
+                $message->to($toMail);
+                $message->cc($cc);
+            });
         }
     }
 }
