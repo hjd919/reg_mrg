@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Redis;
 class WorkDetail extends Model
 {
     protected $table   = 'work_detail';
+    public $timestamps = false;
     protected $guarded = [];
 
     // 获取可刷数
@@ -64,7 +65,7 @@ class WorkDetail extends Model
     public static function isAppBrushDevices($appid, $udids)
     {
         return self::getWorkDetailTable($appid)
-            ->where('appid', $app_row->appid)
+            ->where('appid', $appid)
             ->whereIn('udid', $udids)
             ->pluck('udid')
             ->toArray();
@@ -80,7 +81,7 @@ class WorkDetail extends Model
     public static function updateStatus($work_id, $account_id, $status)
     {
         // 根据work_id查询appid
-        $appid = DB::table('work')->select('appid')->where('id', $work_id)->value('appid');
+        $appid = DB::table('works')->select('appid')->where('id', $work_id)->value('appid');
 
         return self::getWorkDetailTable($appid)->where([
             'work_id'    => $work_id,
