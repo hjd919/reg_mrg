@@ -5,6 +5,7 @@ namespace App\Console;
 use App\Console\Commands\CronTask\MakeUpAppBrushNum;
 use App\Console\Commands\CronTask\MakeUpMobileNum;
 use App\Console\Commands\CronTask\MarkFinishedTasks;
+use App\Console\Commands\CronTask\ResetAppleidState;
 use App\Console\Commands\Data\ToDeviceId;
 use App\Console\Commands\Data\ToIosApp;
 use App\Console\Commands\DB\MobileAdd;
@@ -36,6 +37,8 @@ class Kernel extends ConsoleKernel
         MakeUpMobileNum::class,
         // 标志任务完成
         MarkFinishedTasks::class,
+        // 定时重置未上报的邮箱
+        ResetAppleidState::class,
     ];
 
     /**
@@ -52,5 +55,7 @@ class Kernel extends ConsoleKernel
         //        $schedule->command('make_up:mobile_num')->cron('*/1 * * * * *');
         // ->appendOutputTo('./test.txt');
         $schedule->command('mark:finished_tasks')->cron('*/1 * * * * *');
+
+        $schedule->command('reset:appleid_state')->cron('*/10 * * * * *');
     }
 }
