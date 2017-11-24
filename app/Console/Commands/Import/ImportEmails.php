@@ -13,7 +13,7 @@ class ImportEmails extends Command
      *
      * @var string
      */
-    protected $signature = 'import:emails {--file} {--file_type=txt} {--glue=----}';
+    protected $signature = 'import:emails {--file=} {--file_type=txt} {--glue=----}';
 
     protected $i = 0;
     protected $r = 0;
