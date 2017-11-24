@@ -15,10 +15,12 @@ class Pop3
         Util::log('$email', $password);
         Util::log('$aaa', $email);
         // 直接调用
-        $output = system('/usr/local/php/bin/php /home/webapps/jishua_api/pop3.php');
+        // $output = system('/usr/local/php/bin/php /home/webapps/jishua_api/pop3.php');
         // 引入再调用
+        Util::log('$include', 'include');
+        include '/home/webapps/jishua_api/pop3.php';
         Util::log('$output', $output);
-        return $output;
+        return false;
 
         $curl = curl_init();
 
