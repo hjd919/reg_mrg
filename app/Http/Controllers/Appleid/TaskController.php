@@ -120,7 +120,7 @@ class TaskController extends Controller
         return response()->json([
             'errno'  => 0,
             'errmsg' => 'success',
-            'data'   => $row,
+            'data'   => [$row],
         ]);
     }
 
