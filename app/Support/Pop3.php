@@ -9,8 +9,41 @@ use App\Support\Util;
  */
 class Pop3
 {
-    // 获取苹果邮箱内容
     public static function getAppleEmail($email, $password, $content_id = '')
+    {
+        $curl = curl_init();
+
+        if ($curl) {
+            /* Set username and password */
+            curl_setopt($curl, CURLOPT_USERNAME, "AurikaFomina1997@mail.ua");
+            curl_setopt($curl, CURLOPT_PASSWORD, "7bwlHGHxh");
+
+            //curl_setopt($curl, CURLOPT_URL, "pop3s://pop.qq.com/1");
+            //curl_setopt($curl, CURLOPT_URL, "pop3://pop.mail.ua/");
+            //curl_setopt($curl, CURLOPT_PORT, 110);
+            //curl_setopt($curl, CURLOPT_URL, "pop3s://pop.mail.ru/5");
+            curl_setopt($curl, CURLOPT_URL, "pop3s://pop.mail.ru/");
+            curl_setopt($curl, CURLOPT_PORT, 995);
+
+            curl_setopt($curl, CURLOPT_USE_SSL, CURLUSESSL_ALL);
+
+            //curl_setopt($curl, CURLOPT_CAINFO, "./certificate.pem");
+
+            //curl_setopt($curl, CURLOPT_VERBOSE, true);
+
+            //return the transfer as a string
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+
+            // $output contains the output string
+            $output = curl_exec($curl);
+        }
+        curl_close($curl);
+        return $output;
+    }
+    // 获取苹果邮箱内容
+    public static function getAppleEmail2($email, $password, $content_id = '')
     {
         list($username, $email_host) = explode('@', $email);
         Util::log($email_host, $username);
