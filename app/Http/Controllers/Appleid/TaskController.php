@@ -17,8 +17,16 @@ class TaskController extends Controller
         Request $request
     ) {
         $email    = $request->email;
-        $password = DB::table('appleids')->select('pwd')->where('strRegName', $email)->value('pwd');
-        $list     = Pop3::getAppleEmail($email, $password, $content_id = '');
+        $password = $request->pas;
+        if (!$email || !$password) {
+            return response()->json([
+                'errno'  => 1,
+                'errmsg' => 'pas或者email缺少',
+                'code'   => '',
+            ]);
+        }
+        //$password = DB::table('appleids')->select('pwd')->where('strRegName', $email)->value('pwd');
+        $list = Pop3::getAppleEmail($email, $password, $content_id = '');
         if (!$list) {
             return response()->json([
                 'errno'  => 1,
