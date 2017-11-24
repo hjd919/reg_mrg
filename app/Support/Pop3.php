@@ -16,9 +16,7 @@ class Pop3
         Util::log($email_host, $username);
 
         // * 获取请求地址配置信息
-        $port     = '995';
-        $username = $email;
-        Util::log('email_host', $email_host);
+        $port = '995';
         switch ($email_host) {
             case 'qq.com':
                 $comand_url = 'pop3s://pop.qq.com/' . $content_id;
@@ -31,9 +29,12 @@ class Pop3
                 return false;
                 break;
         }
+        Util::log('comand_url', $comand_url);
+        Util::log('email', $email);
+        Util::log('password', $password);
         $curl = curl_init();
         /* Set username and password */
-        curl_setopt($curl, CURLOPT_USERNAME, $username);
+        curl_setopt($curl, CURLOPT_USERNAME, $email);
         curl_setopt($curl, CURLOPT_PASSWORD, $password);
 
         curl_setopt($curl, CURLOPT_URL, $comand_url);
