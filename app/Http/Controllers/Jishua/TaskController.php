@@ -242,7 +242,6 @@ class TaskController extends Controller
         $email_key     = 'last_email_id:appid_' . $app_row->appid;
         $last_email_id = $get_last_id($email_key);
         $where         = [
-            'is_valid'     => 301,
             'valid_status' => 1,
         ];
         $email_rows = $query_rows($last_email_id, 'emails', $where);
@@ -261,9 +260,9 @@ class TaskController extends Controller
         // 判断是否app刷过此批量账号
         $exist_work_detail = WorkDetail::isAppBrushEmails($app_row->appid, $emails);
         if ($exist_work_detail) {
-            $set_last_id($email_key, $email_rows->last()->id-100);
-	    Util::log('title','app存在刷过此批量账号了{appid:' . $app_row->appid.',account_id:'.$email_rows->last()->id);
-            Util::die_jishua('app存在刷过此批量账号了{appid:' . $app_row->appid.',account_id:'.$email_rows->last()->id, 1);
+            $set_last_id($email_key, $email_rows->last()->id - 100);
+            Util::log('title', 'app存在刷过此批量账号了{appid:' . $app_row->appid . ',account_id:' . $email_rows->last()->id);
+            Util::die_jishua('app存在刷过此批量账号了{appid:' . $app_row->appid . ',account_id:' . $email_rows->last()->id, 1);
         }
 
         // * 循环获取手机设备记录
@@ -289,8 +288,8 @@ class TaskController extends Controller
         $exist_work_detail = WorkDetail::isAppBrushDevices($app_row->appid, $udids);
 
         if ($exist_work_detail) {
-            $set_last_id($device_key, $device_rows[count($device_rows) - 1]->id-100);
-	    Util::log('tt','此app存在刷过此设备device信息了' . json_encode(['appid' => $app_row->appid, 'last_device_id' => $device_rows[count($device_rows) - 1]->id]));
+            $set_last_id($device_key, $device_rows[count($device_rows) - 1]->id - 100);
+            Util::log('tt', '此app存在刷过此设备device信息了' . json_encode(['appid' => $app_row->appid, 'last_device_id' => $device_rows[count($device_rows) - 1]->id]));
             Util::die_jishua('此app存在刷过此设备device信息了' . json_encode(['appid' => $app_row->appid, 'last_device_id' => $device_rows[count($device_rows) - 1]->id]), 1);
         }
 
