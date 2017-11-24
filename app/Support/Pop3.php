@@ -2,6 +2,8 @@
 
 namespace App\Support;
 
+use App\Support\Util;
+
 /**
  *
  */
@@ -11,10 +13,12 @@ class Pop3
     public static function getAppleEmail($email, $password, $content_id = '')
     {
         list($username, $email_host) = explode('@', $email);
+        Util::log($email_host, $username);
 
         // * 获取请求地址配置信息
         $port     = '995';
         $username = $email;
+        Util::log('email_host', $email_host);
         switch ($email_host) {
             case 'qq.com':
                 $comand_url = 'pop3s://pop.qq.com/' . $content_id;
@@ -49,6 +53,7 @@ class Pop3
 
         // $output contains the output string
         $output = curl_exec($curl);
+        Util::log('output', $output);
 
         return $output;
     }
