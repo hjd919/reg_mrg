@@ -60,7 +60,6 @@ class Pop3
     public static function getAppleEmail($email, $password, $content_id = '')
     {
         list($username, $email_host) = explode('@', $email);
-        Util::log($email_host, $username);
 
         // * 获取请求地址配置信息
         $port = '995';
@@ -79,6 +78,10 @@ class Pop3
         Util::log('comand_url', $comand_url);
         Util::log('email', $email);
         Util::log('password', $password);
+
+        $output = system("/usr/local/php/bin/php /home/webapps/jishua_api/pop3.php {$email} {$password} {$comand_url} {$port}");
+        Util::log('output', $output);
+        return $output;
         $curl = curl_init();
         /* Set username and password */
         curl_setopt($curl, CURLOPT_USERNAME, $email);
