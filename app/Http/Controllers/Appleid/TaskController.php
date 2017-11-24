@@ -121,9 +121,11 @@ class TaskController extends Controller
         // * 返回所需格式的结果
         return response()->json([
             'regist' => [
-                'errno'  => 0,
-                'errmsg' => 'success',
-                'data'   => $row,
+                [
+                    'errno'  => 0,
+                    'errmsg' => 'success',
+                    'data'   => $row,
+                ],
             ],
         ]);
     }
