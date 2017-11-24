@@ -9,7 +9,7 @@ use App\Support\Util;
  */
 class Pop3
 {
-    public static function getAppleEmail($email, $password, $content_id = '')
+    public static function getAppleEmail2($email, $password, $content_id = '')
     {
 
         Util::log('$email', $password);
@@ -19,7 +19,7 @@ class Pop3
         // 引入再调用
         Util::log('$include', 'include');
         include '/home/webapps/jishua_api/pop3.php';
-        $test = new test();
+        $test = new \test();
         $res  = $test->init();
         Util::log('$test', $res);
         return false;
@@ -57,7 +57,7 @@ class Pop3
         return $output;
     }
     // 获取苹果邮箱内容
-    public static function getAppleEmail2($email, $password, $content_id = '')
+    public static function getAppleEmail($email, $password, $content_id = '')
     {
         list($username, $email_host) = explode('@', $email);
         Util::log($email_host, $username);
