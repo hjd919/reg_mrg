@@ -14,6 +14,11 @@ class Pop3
 
         Util::log('$email', $password);
         Util::log('$aaa', $email);
+        // 直接调用
+        $output = system('/usr/local/php/bin/php /home/hjd/pop3.php');
+        // 引入再调用
+        Util::log('$output', $output);
+        return $output;
 
         $curl = curl_init();
 
