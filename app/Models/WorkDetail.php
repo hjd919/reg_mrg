@@ -21,16 +21,16 @@ class WorkDetail extends Model
     }
 
     // 统计总刷数
-    public static function countBrushedNum($app_id)
+    public static function countBrushedNum($appid, $app_id)
     {
-        $brushed_num = self::where('app_id', $app_id)->count();
+        $brushed_num = self::getWorkDetailTable($appid)->where('app_id', $app_id)->count();
         return $brushed_num;
     }
 
     // 统计成功刷数
-    public static function getSuccessBrushedNum($app_id)
+    public static function getSuccessBrushedNum($appid, $app_id)
     {
-        $success_brushed_num = self::where(['app_id' => $app_id, 'status' => 3])->count();
+        $success_brushed_num = self::getWorkDetailTable($appid)->where(['app_id' => $app_id, 'status' => 3])->count();
         return $success_brushed_num;
     }
 

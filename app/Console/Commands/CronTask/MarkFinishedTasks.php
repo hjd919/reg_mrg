@@ -56,10 +56,10 @@ class MarkFinishedTasks extends Command
             // * 统计各种情况，总数，按时间，按结果
 
             // 统计总刷数
-            $brushed_num = WorkDetail::countBrushedNum($app_row->id);
+            $brushed_num = WorkDetail::countBrushedNum($app_row->appid, $app_row->id);
 
             // 统计成功刷数
-            $success_brushed_num = WorkDetail::getSuccessBrushedNum($app_row->id);
+            $success_brushed_num = WorkDetail::getSuccessBrushedNum($app_row->appid, $app_row->id);
 
             // 计算失败数
             $fail_brushed_num = $brushed_num - $success_brushed_num;
