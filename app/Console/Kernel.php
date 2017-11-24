@@ -56,6 +56,6 @@ class Kernel extends ConsoleKernel
         // ->appendOutputTo('./test.txt');
         $schedule->command('mark:finished_tasks')->cron('*/1 * * * * *');
 
-        $schedule->command('reset:appleid_state')->cron('*/10 * * * * *');
+        // $schedule->command('reset:appleid_state')->cron('*/10 * * * * *');
     }
 }

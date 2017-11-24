@@ -40,7 +40,7 @@ class ResetAppleidState extends Command
     public function handle()
     {
         // 获取超时未任务
-        $app_rows = DB::table('apps')->where([
+        $app_rows = DB::table('appleids')->where([
             ['state', '=', 3],
             ['updated_at', '<', date('Y-m-d H:i:s', strtotime('-50 minutes'))],
         ])->get();
@@ -51,7 +51,7 @@ class ResetAppleidState extends Command
 
         // reset回状态
         foreach ($app_rows as $row) {
-            DB::table('apps')->where('id', $row->id)->update(['strAn3' => '好啊了', 'state' => 0]);
+            DB::table('appleids')->where('id', $row->id)->update(['strAn3' => '好啊了', 'state' => 0]);
         }
 
     }
