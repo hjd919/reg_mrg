@@ -24,6 +24,12 @@ $router->group(['middleware' => [], 'namespace' => 'Jishua', 'prefix' => 'jishua
     $router->get('/task/reset_mobile_valid', 'TaskController@resetMobileValid');
 });
 
+$router->group(['middleware' => [], 'namespace' => 'Appleid', 'prefix' => 'appleid'], function () use ($router) {
+    $router->get('/task/gettask', 'TaskController@get');
+    $router->get('/task/report', 'TaskController@report');
+    $router->get('/task/getverifycode', 'TaskController@getverifycode');
+});
+
 Route::group([
     'middleware' => ['cors'],
     'namespace'  => 'Backend',

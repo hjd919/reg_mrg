@@ -51,45 +51,52 @@ class ImportEmails extends Command
         // $file = './emails_' . date('md') . '.csv';
         // $file = '/Users/jdhu/Downloads/20171123200040011100650054162040.txt';
 
-        // 根据file_type去读取文件
-        if ($file_type == 'txt') {
+        try {
+            // 根据file_type去读取文件
+            if ($file_type == 'txt') {
 
-            // 1.fopen+feof+fgets
-            $file_handle = fopen($file, 'r');
-            while (!feof($file_handle)) {
-                $line     = fgets($file_handle);
-                $line_arr = explode($glue, rtrim($line));
+                // 1.fopen+feof+fgets
+                $file_handle = fopen($file, 'r');
+                while (!feof($file_handle)) {
+                    $line     = fgets($file_handle);
+                    $line_arr = explode($glue, rtrim($line));
 
-                // * 判重并插入
-                $this->queryAndInsert($line_arr);
+                    // * 判重并插入
+                    $this->queryAndInsert($line_arr);
+                }
+                fclose($file_handle);
+
+                // 2.file()
+                // $file_arr = file($file);
+                // foreach ($file_arr as $line_no => $line) {
+                //     $line_arr = explode($glue, rtrim($line));
+
+                //     // * 判重并插入
+                //     $this->queryAndInsert($line_arr);
+                // }
+
+            } elseif ($file_type == 'csv') {
+                $fp = fopen($file, 'r');
+                while (($line_arr = fgetcsv($fp, 1000, ';')) !== false) {
+                    // * 判重并插入
+                    $this->queryAndInsert($line_arr);
+                }
             }
-            fclose($file_handle);
-
-            // 2.file()
-            // $file_arr = file($file);
-            // foreach ($file_arr as $line_no => $line) {
-            //     $line_arr = explode($glue, rtrim($line));
-
-            //     // * 判重并插入
-            //     $this->queryAndInsert($line_arr);
-            // }
-
-        } elseif ($file_type == 'csv') {
-            $fp = fopen($file, 'r');
-            while (($line_arr = fgetcsv($fp, 1000, ';')) !== false) {
-
-                // * 判重并插入
-                $this->queryAndInsert($line_arr);
-            }
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+            return false;
         }
-
-        // echo 'empty:' . $this->i . '--good:' . $this->j . '--repeat:' . $this->r;
-        // die("\n ok");
+        echo 'empty:' . $this->i . '--good:' . $this->j . '--repeat:' . $this->r;
+        die("\n ok");
     }
 
     // * 判重并插入
     public function queryAndInsert($line_arr)
     {
+        // 判断值
+        if (!isset($line_arr[1])) {
+            throw new \Exception("该文件格式不对");
+        }
         list($email, $appleid_password) = $line_arr;
         // 去除两端空格
         $email            = trim($email);

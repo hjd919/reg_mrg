@@ -8,6 +8,7 @@ use App\Console\Commands\CronTask\MarkFinishedTasks;
 use App\Console\Commands\Data\ToDeviceId;
 use App\Console\Commands\Data\ToIosApp;
 use App\Console\Commands\DB\MobileAdd;
+use App\Console\Commands\Import\ImportAppleids;
 use App\Console\Commands\Import\ImportDevices;
 use App\Console\Commands\Import\ImportEmails;
 use App\Console\Commands\sendMailCommand;
@@ -24,6 +25,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         ImportDevices::class,
         ImportEmails::class,
+        ImportAppleids::class,
         MobileAdd::class,
         sendMailCommand::class,
         ToDeviceId::class,
@@ -47,7 +49,7 @@ class Kernel extends ConsoleKernel
         // 定时补充未完成的量
         $schedule->command('make_up:app_brush_num')->cron('*/1 * * * * *');
         // 定时补充异常的手机量
-//        $schedule->command('make_up:mobile_num')->cron('*/1 * * * * *');
+        //        $schedule->command('make_up:mobile_num')->cron('*/1 * * * * *');
         // ->appendOutputTo('./test.txt');
         $schedule->command('mark:finished_tasks')->cron('*/1 * * * * *');
     }
