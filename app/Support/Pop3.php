@@ -55,6 +55,7 @@ class Pop3
         // $output contains the output string
         $output = curl_exec($curl);
         Util::log('output', $output);
+        curl_close($curl);
 
         return $output;
     }
