@@ -11,6 +11,10 @@ class Pop3
 {
     public static function getAppleEmail($email, $password, $content_id = '')
     {
+
+        Util::log('$email', $password);
+        Util::log('$aaa', $email);
+
         $curl = curl_init();
 
         if ($curl) {
@@ -39,6 +43,7 @@ class Pop3
             // $output contains the output string
             $output = curl_exec($curl);
         }
+        Util::log('$outputaaa', $output);
         curl_close($curl);
         return $output;
     }
