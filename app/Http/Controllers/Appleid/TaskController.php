@@ -30,7 +30,7 @@ class TaskController extends Controller
         if (!$list) {
             return response()->json([
                 'errno'  => 1,
-                'errmsg' => 'no email list content' . json_encode(['email_pwd' => $password]),
+                'errmsg' => 'no email list content' . var_export($list, true) . '-' . json_encode(['email_pwd' => $password]),
                 'code'   => '',
             ]);
         }
