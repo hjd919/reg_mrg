@@ -48,14 +48,18 @@ class TaskController extends Controller
                     break;
             }
             exec("php ./pop3_content.php {$email} {$password} {$comand_url} {$port}", $output);
-            Util::log('output:' . $content_id, $output);
+            // Util::log('output:' . $content_id, $output);
             return isset($output[0]) ? $output[0] : $output;
         };
 
         // 循环获取邮件内容
         $verify_code = '';
+        $content_ids = array_reverse($content_ids); //取最新的邮箱
         foreach ($content_ids as $content_id) {
             $verify_code = $get_email_content($email, $password, $content_id);
+            if ($verify_code) {
+                break;
+            }
             // $content = POP3::getAppleEmail($email, $password, $content_id);
         }
 
@@ -66,9 +70,12 @@ class TaskController extends Controller
             //     'errmsg' => 'not find code' . json_encode(['email_pwd' => $password]),
             //     'code'   => '',
             // ]);
-            $content_ids = range(1, 7);
+            $content_ids = array_reverse(range(1, 7));
             foreach ($content_ids as $content_id) {
                 $verify_code = $get_email_content($email, $password, $content_id);
+                if ($verify_code) {
+                    break;
+                }
             }
             if (!$verify_code) {
                 return response()->json([
