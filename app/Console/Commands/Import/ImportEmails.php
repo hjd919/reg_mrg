@@ -14,7 +14,7 @@ class ImportEmails extends Command
      * @var string
      */
     protected $signature = 'import:emails {--file=} {--file_type=txt} {--glue=----}';
-
+    protected $import_date;
     protected $i = 0;
     protected $r = 0;
     protected $j = 0;
@@ -34,6 +34,7 @@ class ImportEmails extends Command
     public function __construct()
     {
         parent::__construct();
+        $this->import_date = date('Y-m-d');
     }
 
     /**
@@ -93,6 +94,7 @@ class ImportEmails extends Command
     // * 判重并插入
     public function queryAndInsert($line_arr)
     {
+        $import_date = $this->import_date;
         // 判断值
         if (!isset($line_arr[1])) {
             throw new \Exception("该文件格式不对");
@@ -120,8 +122,7 @@ class ImportEmails extends Command
         DB::table('emails')->insert([
             'email'            => $email,
             'appleid_password' => $appleid_password,
-            'password'         => $appleid_password,
-            'is_valid'         => 301,
+            'import_date'      => $import_date,
         ]);
         $this->j++;
         return true;
