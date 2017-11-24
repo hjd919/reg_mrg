@@ -19,7 +19,9 @@ class Pop3
         // 引入再调用
         Util::log('$include', 'include');
         include '/home/webapps/jishua_api/pop3.php';
-        Util::log('$output', $output);
+        $test = new test();
+        $res  = $test->init();
+        Util::log('$test', $res);
         return false;
 
         $curl = curl_init();
