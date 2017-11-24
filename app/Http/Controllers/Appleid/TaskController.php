@@ -107,9 +107,11 @@ class TaskController extends Controller
         if (!$row) {
             // 没有
             return response()->json([
-                'errno'  => 1,
-                'errmsg' => 'no email',
-                'data'   => (object) [],
+                'regist' => [
+                    'errno'  => 1,
+                    'errmsg' => 'no email',
+                    'data'   => (object) [],
+                ],
             ]);
         }
 
@@ -118,9 +120,11 @@ class TaskController extends Controller
 
         // * 返回所需格式的结果
         return response()->json([
-            'errno'  => 0,
-            'errmsg' => 'success',
-            'data'   => [$row],
+            'regist' => [
+                'errno'  => 0,
+                'errmsg' => 'success',
+                'data'   => $row,
+            ],
         ]);
     }
 
