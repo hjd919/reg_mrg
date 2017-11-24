@@ -79,16 +79,16 @@ class Pop3
         Util::log('email', $email);
         Util::log('password', $password);
 
-	unset($output);
-	unset($output2);
+        unset($output);
+        unset($output2);
 
         //$output = system("/usr/local/php/bin/php /home/webapps/jishua_api/pop3.php {$email} {$password} {$comand_url} {$port}");
-        exec("/usr/local/php/bin/php /home/webapps/jishua_api/pop3.php {$email} {$password} {$comand_url} {$port}", $output,$output2);
+        exec("/usr/local/php/bin/php /home/webapps/jishua_api/pop3.php {$email} {$password} {$comand_url} {$port}", $output);
         //$output2 = passthru("/usr/local/php/bin/php /home/webapps/jishua_api/pop3.php {$email} {$password} {$comand_url} {$port}", $output);
 
         Util::log('output', $output);
         Util::log('output2', $output2);
-        return join("\r\n",$output);
+        return join("\r\n", $output);
         return false;
         $curl = curl_init();
         /* Set username and password */

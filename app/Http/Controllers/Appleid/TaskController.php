@@ -2,7 +2,6 @@
 namespace App\Http\Controllers\Appleid;
 
 use App\Http\Controllers\Controller;
-use App\Support\Pop3;
 use App\Support\Util;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -25,68 +24,51 @@ class TaskController extends Controller
                 'code'   => '',
             ]);
         }
-        //$password = DB::table('appleids')->select('pwd')->where('strRegName', $email)->value('pwd');
-        $list = Pop3::getAppleEmail($email, $password, $content_id = '');
-        if (!$list) {
-            return response()->json([
-                'errno'  => 1,
-                'errmsg' => 'no email list content' . var_export($list, true) . '-' . json_encode(['email_pwd' => $password]),
-                'code'   => '',
-            ]);
-        }
+        list($username, $email_host) = explode('@', $email);
 
-        // 查找出在区间(21164-24000)内的邮件id
-        $line = explode("\r\n", $list);
-        Util::log('列表切割后内容', $line);
-        $content_ids = [];
-        foreach ($line as $l) {
-            if (!trim($l)) {
-                continue;
-            }
-            // id => contentlength
-            list($content_id, $content_length) = explode(" ", $l);
+        // * 获取请求地址配置信息
+        $port = '995';
 
-            if ($content_length >= 20000 && $content_length <= 24000) {
-                $content_ids[] = $content_id;
+        // 获取列表
+        // $list = Pop3::getAppleEmail($email, $password, $content_id = '');
+        exec("php ./pop3_list.php {$email} {$password} pop3s://pop.mail.ru/ {$port}", $output);
+        $content_ids = json_decode($output[0]);
+
+        $get_email_content = function ($email, $password, $content_id) use ($email_host, $port) {
+            switch ($email_host) {
+                case 'qq.com':
+                    $comand_url = 'pop3s://pop.qq.com/' . $content_id;
+                    break;
+                case 'mail.ua':
+                case 'mail.ru':
+                    $comand_url = 'pop3s://pop.mail.ru/' . $content_id;
+                    break;
+                default:
+                    return false;
+                    break;
             }
-        }
-        if (!$content_ids) {
-            $content_ids = range(1, 10);
-        }
-        Util::log('列表切割后找到苹果邮件content_id', $content_ids);
+            exec("php ./pop3_content.php {$email} {$password} {$comand_url} {$port}", $output);
+            Util::log('output:' . $content_id, $output);
+            return isset($output[0]) ? $output[0] : $output;
+        };
 
         // 循环获取邮件内容
         $verify_code = '';
         foreach ($content_ids as $content_id) {
-            $content = POP3::getAppleEmail($email, $password, $content_id);
-
-            // 判断是否是苹果邮件
-            if (strpos($content, 'x-ds-vetting-token:') === false) {
-                continue;
-            }
-
-            // 从苹果邮件匹配获取code
-            if (preg_match('#x-ds-vetting-token: (.*?)\r\n#', $content, $match)) {
-                $verify_code = $match[1];
-                break;
-            }
+            $verify_code = $get_email_content($email, $password, $content_id);
+            // $content = POP3::getAppleEmail($email, $password, $content_id);
         }
 
         // 如果找不到，就从头来找一遍
         if (!$verify_code) {
-            $content_ids = range(1, 10);
+            // return response()->json([
+            //     'errno'  => 1,
+            //     'errmsg' => 'not find code' . json_encode(['email_pwd' => $password]),
+            //     'code'   => '',
+            // ]);
+            $content_ids = range(1, 7);
             foreach ($content_ids as $content_id) {
-                $content = POP3::getAppleEmail($email, $password, $content_id);
-
-                // 判断是否是苹果邮件
-                if (strpos($content, 'x-ds-vetting-token:') === false) {
-                    continue;
-                }
-
-                if (preg_match('#x-ds-vetting-token: (.*?)\r\n#', $content, $match)) {
-                    $verify_code = $match[1];
-                    break;
-                }
+                $verify_code = $get_email_content($email, $password, $content_id);
             }
             if (!$verify_code) {
                 return response()->json([
