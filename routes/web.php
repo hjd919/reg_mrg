@@ -56,8 +56,10 @@ Route::group([
     $router->get('/app/query_one', 'AppController@queryOne');
 
     $router->get('/task_keyword/query', 'TaskKeywordController@query');
+    $router->get('/task_keyword/stop', 'TaskKeywordController@stop');
 
     $router->get('/app/query', 'AppController@query');
+
 });
 
 // $app->get('/login', function (Request $request) {
