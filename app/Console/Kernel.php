@@ -52,7 +52,7 @@ class Kernel extends ConsoleKernel
         // 定时补充未完成的量
         $schedule->command('make_up:app_brush_num')->cron('*/1 * * * * *');
         // 定时补充异常的手机量
-        //        $schedule->command('make_up:mobile_num')->cron('*/1 * * * * *');
+        $schedule->command('make_up:mobile_num')->cron('*/1 * * * * *');
         // ->appendOutputTo('./test.txt');
         $schedule->command('mark:finished_tasks')->cron('*/1 * * * * *');
 
