@@ -62,8 +62,6 @@ class TaskKeywordController extends BackendController
     {
         $app_id = $request->app_id;
 
-        DB::beginTransaction();
-
         // 停止任务=修改app表的结束时间
         $res = DB::table('apps')->where('id', $app_id)->update(['end_time' => date('Y-m-d H:i:s')]);
 
