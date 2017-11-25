@@ -5,11 +5,43 @@ use App\Http\Controllers\Controller;
 use App\Support\Util;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 
 class TaskController extends Controller
 {
     const MAX_KEY      = 9999999999;
     const STOP_GET_APP = 'stop_get_app';
+
+    // 获取代理
+    public function getproxy()
+    {
+        $uid = Redis::get('proxy_ip_uid');
+        Redis::incr('proxy_ip_uid');
+        Util::log('proxy_uid', $uid);
+        // $uid       = md5((int) $uid);
+        $uid       = 'uid';
+        $did       = 'did';
+        $pid       = -1;
+        $cid       = -1;
+        $timestamp = time();
+        $key       = "test";
+
+        $str1 = "did={$did}&uid={$uid}&pid={$pid}&cid={$cid}&t={$timestamp}&key={$key}";
+        $sign = md5($str1);
+        $pwd  = "did={$did}&uid={$uid}&pid={$pid}&cid={$cid}&t={$timestamp}&sign={$sign}";
+        // $pwd2 = "{$username}:{$pwd}";
+        // $auth = base64_encode($pwd2);
+
+        $res = [
+            "id"       => "1",
+            "ip"       => "120.26.2.114",
+            "port"     => "14202",
+            "user"     => "zx_proxy_socks5_test",
+            "password" => $pwd,
+            "type"     => "sock5",
+        ];
+        return response()->json($res);
+    }
 
     // * 获取苹果验证吗
     public function getverifycode(

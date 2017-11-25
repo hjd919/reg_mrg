@@ -28,6 +28,8 @@ $router->group(['middleware' => [], 'namespace' => 'Appleid', 'prefix' => 'apple
     $router->get('/task/gettask', 'TaskController@get');
     $router->get('/task/report', 'TaskController@report');
     $router->get('/task/getverifycode', 'TaskController@getverifycode');
+    $router->get('/task/getproxy', 'TaskController@getproxy');
+
 });
 
 Route::group([
