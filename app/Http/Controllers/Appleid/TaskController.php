@@ -9,22 +9,19 @@ use Illuminate\Support\Facades\Redis;
 
 class TaskController extends Controller
 {
-    const MAX_KEY      = 9999999999;
-    const STOP_GET_APP = 'stop_get_app';
 
     // 获取代理
     public function getproxy()
     {
-        $uid = Redis::get('proxy_ip_uid');
+        $uid1 = Redis::get('proxy_ip_uid');
         Redis::incr('proxy_ip_uid');
-        Util::log('proxy_uid', $uid);
-        // $uid       = md5((int) $uid);
-        $uid       = 'uid';
+        $uid = md5($uid1);
+        // $uid       = 'uid';
         $did       = 'did';
         $pid       = -1;
         $cid       = -1;
         $timestamp = time();
-        $key       = "test";
+        $key       = "Al0MF4fizqjbM9Ql";
 
         $str1 = "did={$did}&uid={$uid}&pid={$pid}&cid={$cid}&t={$timestamp}&key={$key}";
         $sign = md5($str1);
@@ -32,11 +29,18 @@ class TaskController extends Controller
         // $pwd2 = "{$username}:{$pwd}";
         // $auth = base64_encode($pwd2);
 
+        // 新uid 还是用 旧uid
+        // log
+        $id = DB::table('proxy_uids')->insertGetId([
+            'uid' => $uid1,
+            'pwd' => $pwd,
+        ]);
+
         $res = [
-            "id"       => "1",
-            "ip"       => "120.26.2.114",
+            "id"       => $id,
+            "ip"       => "118.31.212.185",
             "port"     => "14202",
-            "user"     => "zx_proxy_socks5_test",
+            "user"     => "cn_xs",
             "password" => $pwd,
             "type"     => "sock5",
         ];
