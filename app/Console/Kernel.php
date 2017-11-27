@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\CronTask\CountUpHourlyTask;
 use App\Console\Commands\CronTask\MakeUpAppBrushNum;
 use App\Console\Commands\CronTask\MakeUpMobileNum;
 use App\Console\Commands\CronTask\MarkFinishedTasks;
@@ -42,6 +43,8 @@ class Kernel extends ConsoleKernel
         ResetAppleidState::class,
         // 定时还原手机
         MarkMobileValid::class,
+        // 定时还原手机
+        CountUpHourlyTask::class,
     ];
 
     /**
@@ -65,6 +68,6 @@ class Kernel extends ConsoleKernel
         // $schedule->command('reset:appleid_state')->cron('*/10 * * * * *');
 
         // 统计每小时的任务情况
-        $schedule->command('count_up:hourly_task')->hourly();
+        $schedule->command('count_up:hourly_task')->cron('*/1 * * * * *');
     }
 }
