@@ -34,12 +34,6 @@ class WorkDetail extends Model
         return $success_brushed_num;
     }
 
-    public static function test()
-    {
-        $success_brushed_num = self::getWorkDetailTable($appid)->limit(10)->get();
-        return $success_brushed_num;
-    }
-
     // 获取workdetail表
     public static function getWorkDetailTable($appid)
     {
@@ -100,5 +94,17 @@ class WorkDetail extends Model
             ['create_time', '>=', $start_time],
             ['status', '=', 3],
         ])->count();
+    }
+
+    // 统计这个任务上一小时的量级情况
+    public static function countBrushedNumLastHour($appid, $app_id, $start_hour = null, $where = [])
+    {
+        $brushed_num = self::getWorkDetailTable($appid)
+            ->where('app_id', $app_id)
+            ->where('create_time', '>=', $start_hour)
+            ->where('create_time', '<=', date('Y-m-d H', strtotime('+1 hours', $start_hour)))
+            ->where($where)
+            ->count();
+        return $brushed_num;
     }
 }
