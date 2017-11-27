@@ -67,14 +67,12 @@ class TaskController extends BackendController
         $app = DB::table('ios_apps')->select('id')->where('appid', $appid)->first();
         if (!$app) {
 
-            // * 获取work_detail_table的值,判断是否超过100个app，创建一个表
-            $work_detail_table      = DB::table('ios_apps')->max('work_detail_table');
-            $work_detail_count      = DB::table('ios_apps')->where('work_detail_table', $work_detail_table)->count();
-            $next_work_detail_table = DB::table('config')->where('keyword', 'next_work_detail_table')->value('value');
-            $work_detail_table++;
-            if ($work_detail_count == $next_work_detail_table) {
+            // * 如果work_detail最近的表数据量大于10000数据，则新建表
+            $work_detail_table = DB::table('ios_apps')->max('work_detail_table');
 
-                // 建表
+            $total_rows = DB::table("work_detail{$work_detail_table}")->count();
+            if ($total_rows >= 10000) {
+                $work_detail_table++;
                 $table_sql = <<<EOF
 CREATE TABLE `work_detail{$work_detail_table}` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -98,14 +96,13 @@ CREATE TABLE `work_detail{$work_detail_table}` (
   KEY `appid_email` (`appid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TRIGGER `t_work_detail{$work_detail_table}_decr_num`
+BEFORE INSERT ON `work_detail{$work_detail_table}`
+FOR EACH ROW
+update apps set brush_num=brush_num-1 where id=new.app_id;
 EOF;
                 DB::statement($table_sql);
 
-                // 记录appid和table缓存
-                Redis::hSet('work_detail_table', $appid, $work_detail_table);
-
-                // 更新下一个work_detail_table
-                DB::table('config')->where('keyword', 'next_work_detail_table')->increment('value');
             }
 
             $ios_app_id = DB::table('ios_apps')->insertGetId(compact(
@@ -117,7 +114,9 @@ EOF;
                 return response()->json(['error_code' => 2]);
             }
 
-            // 添加扩展数据表
+            // 记录appid和table缓存
+            Redis::hSet('work_detail_table', $appid, $work_detail_table);
+
         } else {
             $ios_app_id = $app->id;
         }
