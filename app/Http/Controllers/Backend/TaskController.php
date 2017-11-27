@@ -71,7 +71,7 @@ class TaskController extends BackendController
             $work_detail_table = DB::table('ios_apps')->max('work_detail_table');
 
             $total_rows = DB::table("work_detail{$work_detail_table}")->count();
-            if ($total_rows >= 10000) {
+            if ($total_rows >= 500000) {
                 $work_detail_table++;
                 $table_sql = <<<EOF
 CREATE TABLE `work_detail{$work_detail_table}` (
