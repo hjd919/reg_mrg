@@ -6,7 +6,6 @@ use App\Http\Controllers\Backend\BackendController;
 use App\Models\TaskKeyword;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class TaskKeywordController extends BackendController
 {
@@ -52,8 +51,6 @@ class TaskKeywordController extends BackendController
             'pageSize' => (int) $page_size,
             'total'    => (int) $total,
         ];
-
-        Log::error(var_export($pagination, true));
 
         return response()->json(compact('pagination', 'list'));
     }
