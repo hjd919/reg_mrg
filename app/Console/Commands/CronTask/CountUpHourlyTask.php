@@ -52,8 +52,8 @@ class CountUpHourlyTask extends Command
             return true;
         }
 
+        $hour_time = date('Y-m-d H', strtotime('-1 hours'));
         foreach ($rows as $app) {
-            $hour_time = date('Y-m-d H', strtotime('-1 hours'));
 
             // 判断是否已经统计了
             $hourl_app_stat = DB::table('hourl_app_stat')->where([
@@ -65,10 +65,10 @@ class CountUpHourlyTask extends Command
             }
 
             // 统计上小时总刷数
-            $brushed_num = WorkDetail::countBrushedNumLastHour($app_row->appid, $app_row->id, $hour_time);
+            $brushed_num = WorkDetail::countBrushedNumLastHour($app->appid, $app->id, $hour_time);
 
             // 统计成功刷数
-            $success_brushed_num = WorkDetail::countBrushedNumLastHour($app_row->appid, $app_row->id, $hour_time, ['status' => 3]);
+            $success_brushed_num = WorkDetail::countBrushedNumLastHour($app->appid, $app->id, $hour_time, ['status' => 3]);
 
             // 计算失败数
             $fail_brushed_num = $brushed_num - $success_brushed_num;
