@@ -56,18 +56,18 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // 定时补充未完成的量
-        $schedule->command('make_up:app_brush_num')->cron('*/1 * * * * *');
+        $schedule->command('make_up:app_brush_num')->cron('*/1 * * * * *')->withoutOverlapping();
 
         // 定时补充异常的手机量
-        $schedule->command('make_up:mobile_num')->cron('*/3 * * * * *');
+        $schedule->command('make_up:mobile_num')->cron('*/3 * * * * *')->withoutOverlapping();
 
-        $schedule->command('mark:finished_tasks')->cron('*/1 * * * * *');
+        $schedule->command('mark:finished_tasks')->cron('*/1 * * * * *')->withoutOverlapping();
 
-        $schedule->command('mark:mobile_valid')->cron('*/3 * * * * *');
+        $schedule->command('mark:mobile_valid')->cron('*/3 * * * * *')->withoutOverlapping();
 
         // $schedule->command('reset:appleid_state')->cron('*/10 * * * * *');
 
         // 统计每小时的任务情况
-        $schedule->command('count_up:hourly_task')->cron('*/1 * * * * *');
+        $schedule->command('count_up:hourly_task')->cron('*/1 * * * * *')->withoutOverlapping();
     }
 }
