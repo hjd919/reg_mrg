@@ -70,7 +70,7 @@ class TaskController extends BackendController
             // * 获取work_detail_table的值,判断是否超过100个app，创建一个表
             $work_detail_table = DB::table('ios_apps')->max('work_detail_table');
             $work_detail_count = DB::table('ios_apps')->where('work_detail_table', $work_detail_table)->count();
-            if ($work_detail_count > 2) {
+            if ($work_detail_count > 50) {
 
                 // 表id+1
                 $work_detail_table++;
