@@ -106,7 +106,7 @@ class MakeUpMobileNum extends Command
             // ]) . "\n";
 
             // 标志为不正常手机
-            DB::table('mobiles')->where('id', $mobile->id)->update(['is_normal' => 0]);
+            DB::table('mobiles')->where('id', $mobile->id)->increment('error_num', 1, ['is_normal' => 0]);
 
             $app = DB::table('apps')->where('mobile_group_id', $mobile->mobile_group_id)->select('keyword', 'task_keyword_id')->first();
 
