@@ -5,6 +5,7 @@ namespace App\Console;
 use App\Console\Commands\CronTask\MakeUpAppBrushNum;
 use App\Console\Commands\CronTask\MakeUpMobileNum;
 use App\Console\Commands\CronTask\MarkFinishedTasks;
+use App\Console\Commands\CronTask\MarkMobileValid;
 use App\Console\Commands\CronTask\ResetAppleidState;
 use App\Console\Commands\Data\ToDeviceId;
 use App\Console\Commands\Data\ToIosApp;
@@ -39,6 +40,8 @@ class Kernel extends ConsoleKernel
         MarkFinishedTasks::class,
         // 定时重置未上报的邮箱
         ResetAppleidState::class,
+        // 定时还原手机
+        MarkMobileValid::class,
     ];
 
     /**
@@ -52,10 +55,12 @@ class Kernel extends ConsoleKernel
         // 定时补充未完成的量
         $schedule->command('make_up:app_brush_num')->cron('*/1 * * * * *');
         // 定时补充异常的手机量
-        $schedule->command('make_up:mobile_num')->cron('*/1 * * * * *');
+        $schedule->command('make_up:mobile_num')->cron('*/3 * * * * *');
+
         // ->appendOutputTo('./test.txt');
         $schedule->command('mark:finished_tasks')->cron('*/1 * * * * *');
 
+        $schedule->command('mark:mobile_valid')->cron('*/3 * * * * *');
         // $schedule->command('reset:appleid_state')->cron('*/10 * * * * *');
     }
 }
