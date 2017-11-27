@@ -57,7 +57,9 @@ class MakeUpMobileNum extends Command
         }
 
         // * 获取手机，并循环
-        $mobiles = DB::table('mobiles')->where('mobile_group_id', '>', 0)->get();
+        $mobiles = DB::table('mobiles')->where('mobile_group_id', '>', 0)
+            ->where('mobile_group_id', '<', 1000)
+            ->get();
 
         try {
             foreach ($mobiles as $key => $mobile) {
