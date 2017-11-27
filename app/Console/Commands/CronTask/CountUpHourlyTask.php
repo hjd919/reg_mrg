@@ -40,17 +40,21 @@ class CountUpHourlyTask extends Command
      */
     public function handle()
     {
-        $now_date = date('Y-m-d H:i:s');
+        $now_date = date('Y-m-d H:i:s', strtotime('-59 minutes'));
 
         // 获取当前在跑的任务
         $rows = DB::table('apps')->where([
             ['start_time', '<=', $now_date],
-            ['end_time', '>=', date('Y-m-d H:i:s', strtotime('-30 minutes'))],
+            ['end_time', '>=', $now_date],
         ])->get();
         if ($rows->isEmpty()) {
             // 获取不到，退出
             return true;
         }
+        DB::listen(function ($query) {
+            Util::log('获取当前在跑的任务sql', $query->sql . var_export($query->bindings, true));
+        });
+        Util::log('获取当前在跑的任务app_rows', $app_rows);
 
         $hour_time = date('Y-m-d H', strtotime('-1 hours'));
         foreach ($rows as $app) {
@@ -58,9 +62,9 @@ class CountUpHourlyTask extends Command
             // 判断是否已经统计了
             $hourl_app_stat = DB::table('hourl_app_stat')->where([
                 'app_id'    => $app->id,
-                'hour_time' => $hour_time,
-            ])->get();
-            if (!$hourl_app_stat->isEmpty()) {
+                'hour_time' => $hour_time . ':00:00',
+            ])->first();
+            if ($hourl_app_stat) {
                 continue;
             }
 
