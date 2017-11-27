@@ -69,6 +69,17 @@ class TaskController extends Controller
         // 获取列表
         // $list = Pop3::getAppleEmail($email, $password, $content_id = '');
         exec("php ./pop3_list.php {$email} {$password} pop3s://pop.mail.ru/ {$port}", $output);
+        if (empty($output[0])) {
+            // 获取不到邮件，邮箱通知
+            $msg    = "php ./pop3_list.php {$email} {$password} pop3s://pop.mail.ru/ {$port}";
+            $toMail = '297538600@qq.com';
+            $cc     = [];
+            Mail::raw($msg, function ($message) use ($toMail, $cc) {
+                $message->subject('jishua-获取不到邮箱了');
+                $message->to($toMail);
+                $message->cc($cc);
+            });
+        }
         $content_ids = json_decode($output[0]);
 
         $get_email_content = function ($email, $password, $content_id) use ($email_host, $port) {

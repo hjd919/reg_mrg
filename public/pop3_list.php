@@ -42,6 +42,10 @@ if ($curl) {
 }
 curl_close($curl);
 
+if (!$output) {
+    die('');
+}
+
 // 查找出在区间(21164-24000)内的邮件id
 $line = explode("\r\n", $output);
 // Util::log('列表切割后内容', $line);
