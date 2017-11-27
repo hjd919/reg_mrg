@@ -46,22 +46,24 @@ class WorkDetail extends Model
     }
 
     // 判断是否app刷过此批量账号
-    public static function isAppBrushEmails($appid, $emails)
+    public static function isAppBrushEmails($appid, $account_ids)
     {
         return self::getWorkDetailTable($appid)
             ->where('appid', $appid)
-            ->whereIn('email', $emails)
-            ->pluck('email')
+            ->whereIn('account_id', $account_ids)
+            ->select('id')
+            ->get()
             ->toArray();
     }
 
     // 判断是否app刷过此批量设备信息
-    public static function isAppBrushDevices($appid, $udids)
+    public static function isAppBrushDevices($appid, $device_ids)
     {
         return self::getWorkDetailTable($appid)
             ->where('appid', $appid)
-            ->whereIn('udid', $udids)
-            ->pluck('udid')
+            ->whereIn('device_id', $device_ids)
+            ->select('id')
+            ->get()
             ->toArray();
     }
 

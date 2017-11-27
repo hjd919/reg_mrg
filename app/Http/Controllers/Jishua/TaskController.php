@@ -251,14 +251,14 @@ class TaskController extends Controller
 
         // * 判断app是否刷过此设备信息
         foreach ($email_rows as $key => $email_row) {
-            $emails[] = $email_row->email;
+            $account_ids[] = $email_row->id;
         }
         /*DB::listen(function ($query) {
         Util::log($query->sql,$query->bindings);
         });
          */
         // 判断是否app刷过此批量账号
-        $exist_work_detail = WorkDetail::isAppBrushEmails($app_row->appid, $emails);
+        $exist_work_detail = WorkDetail::isAppBrushEmails($app_row->appid, $account_ids);
         if ($exist_work_detail) {
             $set_last_id($email_key, $email_rows->last()->id - 100);
             Util::log('title', 'app存在刷过此批量账号了{appid:' . $app_row->appid . ',account_id:' . $email_rows->last()->id);
@@ -283,9 +283,9 @@ class TaskController extends Controller
 
         // * 判断app是否刷过此设备信息
         foreach ($device_rows as $key => $device_row) {
-            $udids[] = $device_row->udid;
+            $device_ids[] = $device_row->id;
         }
-        $exist_work_detail = WorkDetail::isAppBrushDevices($app_row->appid, $udids);
+        $exist_work_detail = WorkDetail::isAppBrushDevices($app_row->appid, $device_ids);
 
         if ($exist_work_detail) {
             $set_last_id($device_key, $device_rows[count($device_rows) - 1]->id - 100);
