@@ -102,7 +102,7 @@ class WorkDetail extends Model
         $brushed_num = self::getWorkDetailTable($appid)
             ->where('app_id', $app_id)
             ->where('create_time', '>=', $start_hour)
-            ->where('create_time', '<=', date('Y-m-d H', strtotime('+1 hours', $start_hour)))
+            ->where('create_time', '<=', date('Y-m-d H', strtotime('+1 hours', strtotime($start_hour))))
             ->where($where)
             ->count();
         return $brushed_num;
