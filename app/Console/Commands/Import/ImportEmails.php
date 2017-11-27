@@ -85,7 +85,6 @@ class ImportEmails extends Command
             }
         } catch (\Exception $e) {
             echo $e->getMessage();
-            return false;
         }
         echo 'empty:' . $this->i . '--good:' . $this->j . '--repeat:' . $this->r;
         die("\n ok");
@@ -97,7 +96,7 @@ class ImportEmails extends Command
         $import_date = $this->import_date;
         // 判断值
         if (!isset($line_arr[1])) {
-            throw new \Exception("该文件格式不对");
+            return true;
         }
         list($email, $appleid_password) = $line_arr;
         // 去除两端空格
