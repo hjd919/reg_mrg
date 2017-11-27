@@ -45,6 +45,7 @@ class CountUpHourlyTask extends Command
 
         // 获取当前在跑的任务
         $rows = DB::table('apps')->where([
+            ['create_time', '>', date('Y-m-d', strtotime('-1 days'))],
             ['start_time', '<=', $now_date],
             ['end_time', '>=', $now_date],
         ])->get();
@@ -55,7 +56,7 @@ class CountUpHourlyTask extends Command
         DB::listen(function ($query) {
             Util::log('获取当前在跑的任务sql', $query->sql . var_export($query->bindings, true));
         });
-        Util::log('获取当前在跑的任务app_rows', $app_rows);
+        Util::log('获取当前在跑的任务app_rows', $rows);
 
         $hour_time = date('Y-m-d H', strtotime('-1 hours'));
         foreach ($rows as $app) {
