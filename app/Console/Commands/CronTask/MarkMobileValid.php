@@ -43,7 +43,7 @@ class MarkMobileValid extends Command
     {
         $now_time = time();
         // 获取到时、已完成的任务
-        $rows = DB::table('mobiles')->where('is_normal', 0)->get();
+        $rows = DB::table('mobiles')->whereIn('is_normal', [0, 2])->get();
         if ($rows->isEmpty()) {
             return true;
         }
@@ -59,6 +59,8 @@ class MarkMobileValid extends Command
 
             // 超过2个小时，还没请求，标志为2 邮件通知
             if ($diff_time > 7200) {
+                // 标示为2状态
+                DB::table('mobiles')->where('id', $mobile->id)->update(['is_normal' => 2]);
 
                 // 邮箱通知
                 $msg = 'jishua-有超2小时不请求的异常手机了';
