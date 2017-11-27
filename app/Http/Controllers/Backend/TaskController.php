@@ -68,12 +68,11 @@ class TaskController extends BackendController
         if (!$app) {
 
             // * 获取work_detail_table的值,判断是否超过100个app，创建一个表
-            $work_detail_table = DB::table('ios_apps')->max('work_detail_table');
-            $work_detail_count = DB::table('ios_apps')->where('work_detail_table', $work_detail_table)->count();
-            if ($work_detail_count > 50) {
-
-                // 表id+1
-                $work_detail_table++;
+            $work_detail_table      = DB::table('ios_apps')->max('work_detail_table');
+            $work_detail_count      = DB::table('ios_apps')->where('work_detail_table', $work_detail_table)->count();
+            $next_work_detail_table = DB::table('config')->where('keyword', 'next_work_detail_table')->value('value');
+            $work_detail_table++;
+            if ($work_detail_count == $next_work_detail_table) {
 
                 // 建表
                 $table_sql = <<<EOF
@@ -102,8 +101,11 @@ CREATE TABLE `work_detail{$work_detail_table}` (
 EOF;
                 DB::statement($table_sql);
 
-                // 记录appid和table映射
+                // 记录appid和table缓存
                 Redis::hSet('work_detail_table', $appid, $work_detail_table);
+
+                // 更新下一个work_detail_table
+                DB::table('config')->where('keyword', 'next_work_detail_table')->increment('value');
             }
 
             $ios_app_id = DB::table('ios_apps')->insertGetId(compact(
