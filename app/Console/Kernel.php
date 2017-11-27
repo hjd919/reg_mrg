@@ -68,6 +68,6 @@ class Kernel extends ConsoleKernel
         // $schedule->command('reset:appleid_state')->cron('*/10 * * * * *');
 
         // 统计每小时的任务情况
-        $schedule->command('count_up:hourly_task')->cron('*/1 * * * * *')->withoutOverlapping();
+        // $schedule->command('count_up:hourly_task')->cron('*/1 * * * * *')->withoutOverlapping();
     }
 }
