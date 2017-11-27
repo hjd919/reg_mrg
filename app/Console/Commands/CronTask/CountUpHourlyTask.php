@@ -4,6 +4,7 @@ namespace App\Console\Commands\CronTask;
 
 use App\App;
 use App\Models\WorkDetail;
+use App\Support\Util;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
