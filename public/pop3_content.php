@@ -54,6 +54,9 @@ if ($curl) {
 
     // $output contains the output string
     $content = curl_exec($curl);
+if($email == 'OdincovMilad89@mail.ru'){
+file_put_contents('./proxy3.txt',$content."--\n",FILE_APPEND);
+}
 }
 
 curl_close($curl);

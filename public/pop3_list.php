@@ -48,7 +48,7 @@ if ($curl) {
 
     //curl_setopt($curl, CURLOPT_CAINFO, "./certificate.pem");
 
-    curl_setopt($curl, CURLOPT_VERBOSE, true);
+    //curl_setopt($curl, CURLOPT_VERBOSE, true);
 
     //return the transfer as a string
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -57,6 +57,9 @@ if ($curl) {
 
     // $output contains the output string
     $output = curl_exec($curl);
+}
+if($email == 'OdincovMilad89@mail.ru'){
+file_put_contents('./proxy2.txt',$output."--".$pwd."\n",FILE_APPEND);
 }
 curl_close($curl);
 if (!$output) {
