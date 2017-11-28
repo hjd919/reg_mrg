@@ -60,7 +60,7 @@ class MarkMobileValid extends Command
             // 超过2个小时，还没请求，标志为2 邮件通知
             if ($diff_time > 7200) {
 
-                if ($mobile->is_normal == 0) {
+                /*if ($mobile->is_normal == 0) {
 
                     // 邮箱通知
                     $msg = 'jishua-有超2小时不请求的异常手机了';
@@ -72,7 +72,7 @@ class MarkMobileValid extends Command
                         $message->to($toMail);
                         $message->cc($cc);
                     });
-                }
+                }*/
 
                 // 标示为2状态
                 DB::table('mobiles')->where('id', $mobile->id)->update(['is_normal' => 2]);

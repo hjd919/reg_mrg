@@ -78,6 +78,15 @@ class TaskController extends Controller
         // $list = Pop3::getAppleEmail($email, $password, $content_id = '');
         exec("php ./pop3_list.php {$email} {$password} pop3s://pop.mail.ru/ {$port}", $output);
         if (empty($output[0])) {
+	// 标志该邮箱不能用
+
+	    DB::table('appleids')->where('strRegName',$email)->update(['state'=>5]);
+
+            return response()->json([
+                'errno'  => 1,
+                'errmsg' => 'pas或者email缺少',
+                'code'   => '',
+            ]);
             // 获取不到邮件，邮箱通知
             $msg    = "php ./pop3_list.php {$email} {$password} pop3s://pop.mail.ru/ {$port}";
             $toMail = '297538600@qq.com';
@@ -87,6 +96,11 @@ class TaskController extends Controller
                 $message->to($toMail);
                 $message->cc($cc);
             });
+            return response()->json([
+                'errno'  => 1,
+                'errmsg' => 'pas或者email缺少',
+                'code'   => '',
+            ]);
         }
         $content_ids = json_decode($output[0]);
 
