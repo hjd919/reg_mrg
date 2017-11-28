@@ -16,12 +16,11 @@ class TaskController extends BackendController
     {
         $current_page = $request->input('currentPage', 1);
         $page_size    = $request->input('pageSize', 10);
-        $search       = $request->input('search', '');
+        $appid        = $request->input('appid', '');
 
         // * total
-        $total = Task::when($search, function ($query) use ($search) {
-            $key = 'id';
-            return $query->where($key, $search);
+        $total = Task::when($appid, function ($query) use ($appid) {
+            return $query->where('appid', $appid);
         })
             ->count();
 
@@ -29,9 +28,8 @@ class TaskController extends BackendController
         // offset
         $offset = ($current_page - 1) * $page_size;
         $list   = Task::with('user')
-            ->when($search, function ($query) use ($search) {
-                $key = 'id';
-                return $query->where($key, $search);
+            ->when($appid, function ($query) use ($appid) {
+                return $query->where('appid', $appid);
             })
             ->limit($page_size)
             ->offset($offset)
