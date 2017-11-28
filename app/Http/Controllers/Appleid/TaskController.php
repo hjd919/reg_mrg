@@ -10,6 +10,13 @@ use Illuminate\Support\Facades\Redis;
 
 class TaskController extends Controller
 {
+    public function querySuccess(Request $request)
+    {
+        $success_num = DB::table('appleids')->where('state', 1)->count();
+        return response()->json([
+            'success_num' => $success_num,
+        ]);
+    }
 
     // 获取代理
     public function getproxy()

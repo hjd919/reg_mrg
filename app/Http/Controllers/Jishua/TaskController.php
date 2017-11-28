@@ -49,8 +49,23 @@ class TaskController extends Controller
         } elseif ('device' == $type) {
             $key = 'last_device_id:appid_' . $appid;
         }
-        Util::log('email_key', $key);
-        Util::log('email_id', $id);
+
+        if ($type == 'email') {
+            // 记录当前account_id状态
+            // 1. 获取table
+            $work_detail_table = DB::table('ios_apps')->where('appid', $appid)->value('work_detail_table');
+            $table             = 'work_detail' . ($work_detail_table ? $work_detail_table : '');
+
+            // 2. 统计table最大最小
+            $max_account_id = DB::table($table)->max('account_id');
+            $min_account_id = DB::table($table)->min('account_id');
+
+            // 3. 更新到ios_app表
+            DB::table('ios_apps')->where('appid', $appid)->update([
+                'min_account_id' => $min_account_id,
+                'max_account_id' => $max_account_id,
+            ]);
+        }
 
         // 设置cache的id
         $res = Redis::set($key, $id);

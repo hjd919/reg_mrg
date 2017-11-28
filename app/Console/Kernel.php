@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\CronTask\CopyAppleids;
 use App\Console\Commands\CronTask\CountUpHourlyTask;
 use App\Console\Commands\CronTask\MakeUpAppBrushNum;
 use App\Console\Commands\CronTask\MakeUpMobileNum;
@@ -45,6 +46,8 @@ class Kernel extends ConsoleKernel
         MarkMobileValid::class,
         // 定时还原手机
         CountUpHourlyTask::class,
+        // 复制成功的账号
+        CopyAppleids::class,
     ];
 
     /**
@@ -70,6 +73,10 @@ class Kernel extends ConsoleKernel
         // 每小时00分统计每小时的任务情况
         $schedule->command('count_up:hourly_task')->cron('0 */1 * * * *')->withoutOverlapping();
 
-        // $schedule->command('reset:appleid_state')->cron('*/10 * * * * *');
+        // 账号状态重置
+        $schedule->command('reset:appleid_state')->cron('*/10 * * * * *');
+
+        // 复制成功账号
+        // $schedule->command('copy:appleids')->cron('*/30 * * * * *');
     }
 }

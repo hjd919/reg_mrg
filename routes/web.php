@@ -30,7 +30,7 @@ $router->group(['middleware' => [], 'namespace' => 'Appleid', 'prefix' => 'apple
     $router->get('/task/report', 'TaskController@report');
     $router->get('/task/getverifycode', 'TaskController@getverifycode');
     $router->get('/task/getproxy', 'TaskController@getproxy');
-
+    $router->get('/task/query_success', 'TaskController@querySuccess');
 });
 
 // 后台
