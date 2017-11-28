@@ -3,12 +3,61 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\App;
+use App\Models\HourlAppStat;
 use App\Models\WorkDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class AppController extends Controller
 {
+    public function queryHourlyStat(Request $request)
+    {
+        $current_page = $request->input('currentPage', 1);
+        $page_size    = $request->input('pageSize', 10);
+        $appid        = $request->input('appid', '');
+        $keyword      = $request->input('keyword', '');
+
+        // 查询条件
+        $where = [];
+        if ($appid) {
+            $where['appid'] = $appid;
+        }
+        if ($keyword) {
+            $keyword         = trim(urldecode($keyword));
+            $app_id          = App::where(['keyword' => $keyword])->orderBy('id', 'desc')->value('id');
+            $where['app_id'] = $app_id;
+        }
+
+        // * total
+        $total = HourlAppStat::where($where)->count();
+
+        // * 列表
+        // offset
+        $offset = ($current_page - 1) * $page_size;
+        $list   = HourlAppStat::where($where)
+            ->limit($page_size)
+            ->offset($offset)
+            ->orderBy('id', 'desc')
+            ->get();
+
+        // 获取关联
+        foreach ($list as &$row) {
+            $row->app_name = $row->app->app_name;
+            $row->keyword  = $row->app->keyword;
+            unset($row->app);
+        }
+
+        // 整理分页
+        $pagination = [
+            'current'  => (int) $current_page,
+            'pageSize' => (int) $page_size,
+            'total'    => (int) $total,
+        ];
+
+        return response()->json(compact('pagination', 'list'));
+    }
+
     public function query(Request $request)
     {
         $current_page = $request->input('currentPage', 1);

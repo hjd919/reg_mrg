@@ -11,6 +11,7 @@
 |
  */
 
+// 接口
 $router->group(['middleware' => [], 'namespace' => 'Jishua', 'prefix' => 'jishua'], function () use ($router) {
     $router->get('/task/get', 'TaskController@get');
     $router->get('/task/report', 'TaskController@report');
@@ -32,6 +33,7 @@ $router->group(['middleware' => [], 'namespace' => 'Appleid', 'prefix' => 'apple
 
 });
 
+// 后台
 Route::group([
     'middleware' => ['cors'],
     'namespace'  => 'Backend',
@@ -61,15 +63,5 @@ Route::group([
     $router->get('/task_keyword/stop', 'TaskKeywordController@stop');
 
     $router->get('/app/query', 'AppController@query');
-
+    $router->get('/app/query_hourly_stat', 'AppController@queryHourlyStat');
 });
-
-// $app->get('/login', function (Request $request) {
-//     $token = app('auth')->attempt($request->only('username', 'password'));
-
-//     return response()->json(compact('token'));
-// });
-
-// $app->get('/me', function (Request $request) {
-//     return $request->user();
-// });
