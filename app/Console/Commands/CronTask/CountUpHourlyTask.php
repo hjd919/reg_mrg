@@ -23,7 +23,7 @@ class CountUpHourlyTask extends Command
      * @var string
      */
     protected $description = '';
-
+    protected $hour_time;
     /**
      * Create a new command instance.
      *
@@ -41,8 +41,19 @@ class CountUpHourlyTask extends Command
      */
     public function handle()
     {
-        $now_date = date('Y-m-d H:i:s', strtotime('-59 minutes'));
+        $this->hour_time = date('Y-m-d H:00:00', strtotime('-1 hours'));
 
+        // * 获取一小时前的work_detail表
+        $max_table = DB::table('ios_apps')->max('work_detail_table');
+        for ($i = 0; $i <= $max_table; $i++) {
+            // 获取work_detail表
+            $key               = $i ? $i : '';
+            $work_detail_table = "work_detail" . $key;
+
+            $this->handleCountTable($work_detail_table);
+        }
+        die;
+        $now_date = date('Y-m-d H:i:s', strtotime('-59 minutes'));
         // 获取当前在跑的任务
         $rows = DB::table('apps')->where([
             ['create_time', '>', date('Y-m-d', strtotime('-1 days'))],
@@ -92,5 +103,60 @@ class CountUpHourlyTask extends Command
             ]);
         }
 
+    }
+
+    // * 获取一小时前的work_detail表
+    public function handleCountTable($table)
+    {
+        $hour_time = $this->hour_time;
+        // total_count
+        $total_count_rows = DB::table($table)
+            ->select(DB::raw('count(app_id) as app_id_count,app_id,appid'))
+            ->where([
+                ['create_time', '>=', $hour_time],
+                ['create_time', '<=', date('Y-m-d H', strtotime('+1 hours', strtotime($hour_time)))],
+            ])->groupBy('app_id')->get();
+
+        // DB::listen(function ($query) {
+        //     $sql      = $query->sql;
+        //     $bindings = $query->bindings;
+        //     foreach ($bindings as $replace) {
+        //         $value = is_numeric($replace) ? $replace : "'" . $replace . "'";
+        //         $sql   = preg_replace('/\?/', $value, $sql, 1);
+        //     }
+        //     dd($sql);
+        // });
+
+        // valid_count
+        $valid_count_rows = DB::table($table)
+            ->select(DB::raw('count(app_id) as app_id_count,app_id'))
+            ->where([
+                ['create_time', '>=', $hour_time],
+                ['create_time', '<=', date('Y-m-d H', strtotime('+1 hours', strtotime($hour_time)))],
+                ['status', '=', 3],
+            ])->groupBy('app_id')->get();
+
+        // 获取valid_rows app_id=>valid_count
+        $app_id_valid_count = [];
+        foreach ($valid_count_rows as $valid_count_row) {
+            $app_id_valid_count[$valid_count_row->app_id] = $valid_count_row->app_id_count;
+        }
+
+        // 整理数据并入库
+        foreach ($total_count_rows as $total_count_row) {
+            $brushed_num         = $total_count_row->app_id_count;
+            $success_brushed_num = isset($app_id_valid_count[$total_count_row->app_id])
+            ? $app_id_valid_count[$total_count_row->app_id]
+            : 0;
+
+            DB::table('hourl_app_stat')->insert([
+                'app_id'              => $total_count_row->app_id,
+                'appid'               => $total_count_row->appid,
+                'hour_time'           => $hour_time,
+                'brushed_num'         => $brushed_num,
+                'success_brushed_num' => $success_brushed_num,
+                'fail_brushed_num'    => $brushed_num - $success_brushed_num,
+            ]);
+        }
     }
 }
