@@ -57,8 +57,8 @@ class TaskController extends Controller
             $table             = 'work_detail' . ($work_detail_table ? $work_detail_table : '');
 
             // 2. 统计table最大最小
-            $max_account_id = DB::table($table)->max('account_id');
-            $min_account_id = DB::table($table)->min('account_id');
+            $max_account_id = DB::table($table)->where('appid', $appid)->max('account_id');
+            $min_account_id = DB::table($table)->where('appid', $appid)->min('account_id');
 
             // 3. 更新到ios_app表
             DB::table('ios_apps')->where('appid', $appid)->update([
