@@ -15,8 +15,10 @@ class WorkDetail extends Model
     // 获取可刷数
     public static function getUsableBrushNum($appid)
     {
-        $used_num  = self::getWorkDetailTable($appid)->where('appid', $appid)->count();
-        $total_num = DB::table('emails')->where('valid_status', 1)->count();
+        $used_num = self::getWorkDetailTable($appid)->where('appid', $appid)->count();
+        $max_id   = DB::table('emails')->where('valid_status', 1)->max('id');
+        $min_id   = DB::table('emails')->where('valid_status', 1)->min('id');
+        return 50000;
         return $total_num - $used_num;
     }
 
