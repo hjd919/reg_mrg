@@ -17,8 +17,9 @@ class WorkDetail extends Model
     {
         // $used_num = self::getWorkDetailTable($appid)->where('appid', $appid)->count();
         $ios_app = DB::table('ios_apps')->where('appid', $appid)->first();
-        $min_num = DB::table('emails')->where('valid_status', 1)->where('id', '<', $ios_app->max_account_id)->count();
-        $max_num = DB::table('emails')->where('valid_status', 1)->where('id', '>', $ios_app->min_account_id)->count();
+
+        $min_num = DB::table('emails')->where('id', '>', $ios_app->max_account_id)->where('valid_status', 1)->count();
+        $max_num = DB::table('emails')->where('id', '<', $ios_app->min_account_id)->where('valid_status', 1)->count();
         return $min_num + $max_num;
     }
 
