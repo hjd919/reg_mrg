@@ -20,7 +20,11 @@ class WorkDetail extends Model
 
         $min_num = DB::table('emails')->where('id', '>', $ios_app->max_account_id)->where('valid_status', 1)->count();
         $max_num = DB::table('emails')->where('id', '<', $ios_app->min_account_id)->where('valid_status', 1)->count();
-        return $min_num + $max_num;
+
+        $used_num = Redis::get('used_appid:' . $appid);
+        $used_num = (int) $used_num;
+
+        return $min_num + $max_num - $used_num;
     }
 
     // 统计总刷数
