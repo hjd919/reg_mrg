@@ -11,6 +11,7 @@ use App\Console\Commands\CronTask\MarkMobileValid;
 use App\Console\Commands\CronTask\ResetAppleidState;
 use App\Console\Commands\Data\ToDeviceId;
 use App\Console\Commands\Data\ToIosApp;
+use App\Console\Commands\Data\ToMaxMinId;
 use App\Console\Commands\DB\MobileAdd;
 use App\Console\Commands\Import\ImportAppleids;
 use App\Console\Commands\Import\ImportDevices;
@@ -34,6 +35,7 @@ class Kernel extends ConsoleKernel
         sendMailCommand::class,
         ToDeviceId::class,
         ToIosApp::class,
+        ToMaxMinId::class,
         // 定时补成功量
         MakeUpAppBrushNum::class,
         // 定时补手机量

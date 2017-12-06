@@ -15,11 +15,11 @@ class WorkDetail extends Model
     // 获取可刷数
     public static function getUsableBrushNum($appid)
     {
-        $used_num = self::getWorkDetailTable($appid)->where('appid', $appid)->count();
-        $max_id   = DB::table('emails')->where('valid_status', 1)->max('id');
-        $min_id   = DB::table('emails')->where('valid_status', 1)->min('id');
-        return 50000;
-        return $total_num - $used_num;
+        // $used_num = self::getWorkDetailTable($appid)->where('appid', $appid)->count();
+        $ios_app = DB::table('ios_apps')->where('appid', $appid)->first();
+        $min_num = DB::table('emails')->where('valid_status', 1)->where('id', '<', $ios_app->max_account_id)->count();
+        $max_num = DB::table('emails')->where('valid_status', 1)->where('id', '>', $ios_app->min_account_id)->count();
+        return $min_num + $max_num;
     }
 
     // 统计总刷数
@@ -110,5 +110,16 @@ class WorkDetail extends Model
             ->where($where)
             ->count();
         return $brushed_num;
+    }
+
+    // 获取该app最小最大account_id
+    public static function getMinMaxAccountId($appid)
+    {
+        $min_id = self::getWorkDetailTable($appid)->where('appid', $appid)->min('account_id');
+        $max_id = self::getWorkDetailTable($appid)->where('appid', $appid)->max('account_id');
+        return [
+            'min_account_id' => $min_id,
+            'max_account_id' => $max_id,
+        ];
     }
 }
