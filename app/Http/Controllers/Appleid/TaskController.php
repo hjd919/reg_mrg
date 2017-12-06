@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Log;
+
 
 class TaskController extends Controller
 {
@@ -83,8 +85,8 @@ class TaskController extends Controller
 	    DB::table('appleids')->where('strRegName',$email)->update(['state'=>5]);
 
             return response()->json([
-                'errno'  => 1,
-                'errmsg' => 'pas或者email缺少',
+                'errno'  => 2,
+                'errmsg' => '获取pop3邮箱的列表失败'.json_encode(compact('email','password')),
                 'code'   => '',
             ]);
             // 获取不到邮件，邮箱通知

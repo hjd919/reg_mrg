@@ -77,6 +77,6 @@ class Kernel extends ConsoleKernel
         $schedule->command('reset:appleid_state')->cron('*/30 * * * * *');
 
         // 复制成功账号
-        $schedule->command('copy:appleids')->cron('*/30 * * * * *');
+        $schedule->command('copy:appleids')->cron('*/1 * * * * *');
     }
 }

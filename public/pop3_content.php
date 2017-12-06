@@ -20,12 +20,14 @@ if ($curl) {
     curl_setopt($curl, CURLOPT_PASSWORD, $password);
     curl_setopt($curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
     curl_setopt($curl, CURLOPT_PROXY, "118.31.212.185:14202");
+    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 5);
+    curl_setopt($curl, CURLOPT_TIMEOUT, 20);
 
     $username = "cn_xs";
     $did       = 'did';
-    $uid       = md5(time());
-    $pid       = -1;
-    $cid       = -1;
+    $uid       = md5(microtime(true));
+    $pid       = 0;
+    $cid       = 0;
     $timestamp = time();
     $key       = "Al0MF4fizqjbM9Ql";
 
@@ -54,17 +56,18 @@ if ($curl) {
 
     // $output contains the output string
     $content = curl_exec($curl);
-if($email == 'OdincovMilad89@mail.ru'){
-file_put_contents('./proxy3.txt',$content."--\n",FILE_APPEND);
+if($email == 'mr.KonstantinSchukin1991@mail.ru'){
+file_put_contents('./content.txt',$content."--\n",FILE_APPEND);
 }
 }
 
+
 curl_close($curl);
-// file_put_contents('content.txt', $command_url . $content, FILE_APPEND);
 
 // 从苹果邮件匹配获取code
 if (preg_match('#x-ds-vetting-token: (.*?)\r\n#', $content, $match)) {
     echo $match[1];
 } else {
+    file_put_contents('content.txt', json_encode(compact('content'))."\n", FILE_APPEND);
     echo '';
 }

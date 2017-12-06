@@ -18,15 +18,17 @@ if ($curl) {
     /* Set username and password */
     curl_setopt($curl, CURLOPT_USERNAME, $email);
     curl_setopt($curl, CURLOPT_PASSWORD, $password);
+    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 5);
+    curl_setopt($curl, CURLOPT_TIMEOUT, 10);
 
     curl_setopt($curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
     curl_setopt($curl, CURLOPT_PROXY, "118.31.212.185:14202");
 
     $username = "cn_xs";
     $did       = 'did';
-    $uid       = md5(time());
-    $pid       = -1;
-    $cid       = -1;
+    $uid       = md5(microtime(true));
+    $pid       = 0;
+    $cid       = 0;
     $timestamp = time();
     $key       = "Al0MF4fizqjbM9Ql";
 
@@ -58,12 +60,9 @@ if ($curl) {
     // $output contains the output string
     $output = curl_exec($curl);
 }
-if($email == 'OdincovMilad89@mail.ru'){
-file_put_contents('./proxy2.txt',$output."--".$pwd."\n",FILE_APPEND);
-}
 curl_close($curl);
 if (!$output) {
-file_put_contents('./proxy.txt',$username."--".$pwd."\n",FILE_APPEND);
+	file_put_contents('./empty_pop_list.txt',$email."--".$password."\n",FILE_APPEND);
     die('');
 }
 
@@ -86,5 +85,8 @@ if (!$content_ids) {
     $content_ids = range(1, 10);
 }
 // Util::log('列表切割后找到苹果邮件content_id', $content_ids);
+if($email == 'mr.KonstantinSchukin1991@mail.ru'){
+file_put_contents('./proxy2.txt',json_encode($content_ids)."\n",FILE_APPEND);
+}
 
 echo json_encode($content_ids);

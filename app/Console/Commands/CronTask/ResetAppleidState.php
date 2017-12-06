@@ -51,7 +51,7 @@ class ResetAppleidState extends Command
 
         // reset回状态
         foreach ($app_rows as $row) {
-            DB::table('appleids')->where('id', $row->id)->update(['strAn3' => '好啊了', 'state' => 0]);
+            DB::table('appleids')->where('id', $row->id)->limit(5)->update(['strAn3' => '好啊了', 'state' => 0]);
         }
 
     }
