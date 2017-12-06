@@ -77,6 +77,10 @@ class MarkFinishedTasks extends Command
             // * 删除无效的刷记录
             // WorkDetail::delFailWork($app_row->id);
 
+            // * 标志最小最大account_id
+            $max_min_account_id = WorkDetail::getMinMaxAccountId($app_row->appid);
+            DB::table('ios_apps')->where('appid', $app_row->appid)->update($max_min_account_id);
+
             // * 标志不在刷了
             $res = DB::table('apps')->where('id', $app_row->id)->update([
                 'is_brushing' => 0,
