@@ -78,8 +78,13 @@ class ImportAppleids extends Command
                 }
             }
         }
-        echo 'empty:' . $this->i . '--good:' . $this->j . '--repeat:' . $this->r . '--geshi:' . $this->k;
-        die("\n ok");
+        echo json_encode([
+            'empty'      => $this->i,
+            'good'       => $this->j,
+            'repeat'     => $this->r,
+            'line_error' => $this->k,
+        ]);
+        return true;
     }
 
     public function handleLineArr($line_arr)

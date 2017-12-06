@@ -51,13 +51,21 @@ $app->singleton(
     App\Console\Kernel::class
 );
 
-$app->singleton('filesystem', function ($app) {
-    return $app->loadComponent(
-        'filesystems',
-        'Illuminate\Filesystem\FilesystemServiceProvider',
-        'filesystem'
-    );
-});
+// $app->singleton('filesystem', function ($app) {
+//     return $app->loadComponent(
+//         'filesystems',
+//         'Illuminate\Filesystem\FilesystemServiceProvider',
+//         'filesystem'
+//     );
+// });
+$app->singleton(
+    Illuminate\Contracts\Filesystem\Factory::class,
+    function ($app) {
+        return new Illuminate\Filesystem\FilesystemManager($app);
+    }
+);
+$app->configure('filesystems');
+
 $app->singleton('mailer', function () use ($app) {
     return $app->loadComponent('mail', Illuminate\Mail\MailServiceProvider::class, 'mailer');
 });

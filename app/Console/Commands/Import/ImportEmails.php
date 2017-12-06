@@ -86,8 +86,13 @@ class ImportEmails extends Command
         } catch (\Exception $e) {
             echo $e->getMessage();
         }
-        echo 'empty:' . $this->i . '--good:' . $this->j . '--repeat:' . $this->r;
-        die("\n ok");
+        echo json_encode([
+            'success' => $this->j,
+            'repeat'  => $this->r,
+            'empty'   => $this->i,
+        ]);
+
+        return true;
     }
 
     // * 判重并插入
