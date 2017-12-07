@@ -318,6 +318,17 @@ class TaskController extends Controller
         if ($exist_work_detail) {
             $set_last_id($email_key, $account_ids[0] - 50);
 
+            /* 判断是否在刷新账号 x
+            $is_new_email = Redis::get("is_new_email:appid_{$appid}");
+            if ($is_new_email) {
+            // 获取最小的email_id
+            // $min_account_id = DB::table('ios_apps')->where('appid', $appid)->value('min_account_id');
+            // Redis::set("is_new_email:appid_{$appid}", 0);
+            } else {
+            $set_last_id($email_key, 99999999999);
+            Redis::set("is_new_email:appid_{$appid}", 1);
+            }*/
+
             Util::log('title', 'app存在刷过此批量账号了{appid:' . $appid . ',account_id:' . $email_rows->last()->id);
             Util::die_jishua('app存在刷过此批量账号了{appid:' . $appid . ',account_id:' . $email_rows->last()->id, 1);
         }
