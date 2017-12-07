@@ -253,8 +253,10 @@ class TaskController extends Controller
         $app_row = $app_rows->first();
         $set_last_id('last_app_id', $app_row->id);
 
+        $appid = $app_row->appid;
+
         // * 循环获取苹果账号记录
-        $email_key     = 'last_email_id:appid_' . $app_row->appid;
+        $email_key     = 'last_email_id:appid_' . $appid;
         $last_email_id = $get_last_id($email_key);
         $where         = [
             'valid_status' => 1,
@@ -273,15 +275,26 @@ class TaskController extends Controller
         });
          */
         // 判断是否app刷过此批量账号
-        $exist_work_detail = WorkDetail::isAppBrushEmails($app_row->appid, $account_ids);
+        $exist_work_detail = WorkDetail::isAppBrushEmails($appid, $account_ids);
         if ($exist_work_detail) {
-            $set_last_id($email_key, $email_rows->last()->id - 100);
-            Util::log('title', 'app存在刷过此批量账号了{appid:' . $app_row->appid . ',account_id:' . $email_rows->last()->id);
-            Util::die_jishua('app存在刷过此批量账号了{appid:' . $app_row->appid . ',account_id:' . $email_rows->last()->id, 1);
+
+            // 判断是否在刷新账号
+            $is_new_email = Redis::get("is_new_email:appid_{$appid}");
+            if ($is_new_email) {
+                // 获取最小的email_id
+                $min_account_id = DB::table('ios_apps')->where('appid', $appid)->value('min_account_id');
+                $set_last_id($email_key, $min_account_id);
+            } else {
+                $set_last_id($email_key, 99999999999);
+                Redis::set("is_new_email:appid_{$appid}", 1);
+            }
+
+            Util::log('title', 'app存在刷过此批量账号了{appid:' . $appid . ',account_id:' . $email_rows->last()->id);
+            Util::die_jishua('app存在刷过此批量账号了{appid:' . $appid . ',account_id:' . $email_rows->last()->id, 1);
         }
 
         // * 循环获取手机设备记录
-        $device_key     = 'last_device_id:appid_' . $app_row->appid;
+        $device_key     = 'last_device_id:appid_' . $appid;
         $last_device_id = $get_last_id($device_key);
         $device_rows    = $query_rows($last_device_id, 'devices');
         if (!$device_rows) {
@@ -300,12 +313,12 @@ class TaskController extends Controller
         foreach ($device_rows as $key => $device_row) {
             $device_ids[] = $device_row->id;
         }
-        $exist_work_detail = WorkDetail::isAppBrushDevices($app_row->appid, $device_ids);
+        $exist_work_detail = WorkDetail::isAppBrushDevices($appid, $device_ids);
 
         if ($exist_work_detail) {
             $set_last_id($device_key, $device_rows[count($device_rows) - 1]->id - 100);
-            Util::log('tt', '此app存在刷过此设备device信息了' . json_encode(['appid' => $app_row->appid, 'last_device_id' => $device_rows[count($device_rows) - 1]->id]));
-            Util::die_jishua('此app存在刷过此设备device信息了' . json_encode(['appid' => $app_row->appid, 'last_device_id' => $device_rows[count($device_rows) - 1]->id]), 1);
+            Util::log('tt', '此app存在刷过此设备device信息了' . json_encode(['appid' => $appid, 'last_device_id' => $device_rows[count($device_rows) - 1]->id]));
+            Util::die_jishua('此app存在刷过此设备device信息了' . json_encode(['appid' => $appid, 'last_device_id' => $device_rows[count($device_rows) - 1]->id]), 1);
         }
 
         // 判断都通过后，再切换循环id
@@ -319,7 +332,7 @@ class TaskController extends Controller
             // 插入works
             $work_id = DB::table('works')->insertGetId([
                 'app_id'    => $app_row->id,
-                'appid'     => $app_row->appid,
+                'appid'     => $appid,
                 'app_name'  => $app_row->app_name,
                 'bundle_id' => $app_row->bundle_id,
                 'device_id' => $device_id,
@@ -333,7 +346,7 @@ class TaskController extends Controller
             foreach ($email_rows as $key => $email_row) {
                 $data = [
                     'work_id'    => $work_id,
-                    'appid'      => $app_row->appid,
+                    'appid'      => $appid,
                     'app_id'     => $app_row->id,
                     'account_id' => $email_row->id,
                     'email'      => $email_row->email,
@@ -350,12 +363,12 @@ class TaskController extends Controller
                 // 构造所需格式的结果
                 $data['keyword']  = $app_row->keyword;
                 $data['app_name'] = $app_row->bundle_id;
-                $data['app_id']   = (string) $app_row->appid;
+                $data['app_id']   = (string) $appid;
                 $response[]       = $data;
             }
 
             // 添加work_detail记录
-            WorkDetail::add($app_row->appid, $work_detail);
+            WorkDetail::add($appid, $work_detail);
         } catch (Exception $e) {
             Util::errorLog('transaction error:file_' . __FILE__, $e->getMessage());
 
