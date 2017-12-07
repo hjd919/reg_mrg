@@ -316,18 +316,7 @@ class TaskController extends Controller
         // 判断是否app刷过此批量账号
         $exist_work_detail = WorkDetail::isAppBrushEmails($appid, $account_ids);
         if ($exist_work_detail) {
-
-            // 判断是否在刷新账号
-            $is_new_email = Redis::get("is_new_email:appid_{$appid}");
-            if ($is_new_email) {
-                // 获取最小的email_id
-                $set_last_id($email_key, $account_ids[0] - 100);
-                // $min_account_id = DB::table('ios_apps')->where('appid', $appid)->value('min_account_id');
-                // Redis::set("is_new_email:appid_{$appid}", 0);
-            } else {
-                $set_last_id($email_key, 99999999999);
-                Redis::set("is_new_email:appid_{$appid}", 1);
-            }
+            $set_last_id($email_key, $account_ids[0] - 50);
 
             Util::log('title', 'app存在刷过此批量账号了{appid:' . $appid . ',account_id:' . $email_rows->last()->id);
             Util::die_jishua('app存在刷过此批量账号了{appid:' . $appid . ',account_id:' . $email_rows->last()->id, 1);
