@@ -78,7 +78,12 @@ class TaskController extends Controller
     // 让app跑新账号
     public function brushNewEmail($appid)
     {
-        $value = Redis::set(Email::get_last_id($appid), $value);
+        // 缓存email的last_id
+        Redis::set(Email::get_last_id($appid), 99999999999);
+
+        // 设置正在跑新账号
+        Redis::set("is_new_email:appid_{$appid}", 1);
+
         return $value;
     }
 
@@ -292,6 +297,7 @@ class TaskController extends Controller
                 // 获取最小的email_id
                 $min_account_id = DB::table('ios_apps')->where('appid', $appid)->value('min_account_id');
                 $set_last_id($email_key, $min_account_id);
+                Redis::set("is_new_email:appid_{$appid}", 0);
             } else {
                 $set_last_id($email_key, 99999999999);
                 Redis::set("is_new_email:appid_{$appid}", 1);
