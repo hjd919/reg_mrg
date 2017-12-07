@@ -36,7 +36,7 @@ class WorkDetail extends Model
         $used_num = Redis::get('used_appid:' . $appid);
         $used_num = (int) $used_num;
 
-        return $min_num + $max_num - $used_num;
+        return $brush_num + $min_num + $max_num - $used_num;
     }
 
     // 统计总刷数
