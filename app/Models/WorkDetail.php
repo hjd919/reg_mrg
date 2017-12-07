@@ -18,13 +18,23 @@ class WorkDetail extends Model
         // $used_num = self::getWorkDetailTable($appid)->where('appid', $appid)->count();
         $ios_app = DB::table('ios_apps')->where('appid', $appid)->first();
 
-        $min_num = DB::table('emails')->where('id', '>', $ios_app->max_account_id)->where('valid_status', 1)->count();
-        $max_num = DB::table('emails')->where('id', '<', $ios_app->min_account_id)->where('valid_status', 1)->count();
+        $last_id = Redis::get(Email::get_last_id_key($appid));
+
+        $max_account_id = WorkDetail::getMaxAccountId($appid);
+
+        $max_num      = DB::table('emails')->where('id', '>', $max_account_id)->where('valid_status', 1)->count();
+        $is_new_email = Redis::get("is_new_email:appid_{$appid}");
+        // 判断是否在刷新账号中
+        if ($is_new_email) {
+            $brush_num = DB::table('emails')->where('id', '>', $ios_app->max_account_id)->where('id', '<', $last_id)->where('valid_status', 1)->count();
+            $min_num   = DB::table('emails')->where('id', '<', $ios_app->min_account_id)->where('valid_status', 1)->count();
+        } else {
+            $min_num   = DB::table('emails')->where('id', '<', $last_id)->where('valid_status', 1)->count();
+            $brush_num = 0;
+        }
 
         $used_num = Redis::get('used_appid:' . $appid);
         $used_num = (int) $used_num;
-
-        return 50000;
 
         return $min_num + $max_num - $used_num;
     }
