@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Jishua;
 
 use App\Http\Controllers\Controller;
+use App\Models\Email;
 use App\Models\WorkDetail;
 use App\Support\Util;
 use Illuminate\Http\Request;
@@ -72,6 +73,13 @@ class TaskController extends Controller
         Util::log('email_res', $res);
 
         Util::die_jishua($res);
+    }
+
+    // 让app跑新账号
+    public function brushNewEmail($appid)
+    {
+        $value = Redis::set(Email::get_last_id($appid), $value);
+        return $value;
     }
 
     // * 开始任务
