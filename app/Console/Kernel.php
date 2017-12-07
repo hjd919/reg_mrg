@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\Check\isNoAppleids;
 use App\Console\Commands\CronTask\CopyAppleids;
 use App\Console\Commands\CronTask\CountUpHourlyTask;
 use App\Console\Commands\CronTask\MakeUpAppBrushNum;
@@ -50,6 +51,7 @@ class Kernel extends ConsoleKernel
         CountUpHourlyTask::class,
         // 复制成功的账号
         CopyAppleids::class,
+        isNoAppleids::class,
     ];
 
     /**
@@ -80,5 +82,11 @@ class Kernel extends ConsoleKernel
 
         // 复制成功账号
         $schedule->command('copy:appleids')->cron('*/30 * * * * *');
+
+        // 判断是否需要添加邮箱
+        $schedule->command('check:is_no_appleids')->cron('0 */1 * * * *');
+
+        // 判断是否有新邮箱跑
+        // $schedule->command('check:has_new_emails')->cron('*/5 * * * * *');
     }
 }
