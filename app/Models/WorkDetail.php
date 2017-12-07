@@ -20,9 +20,9 @@ class WorkDetail extends Model
 
         $last_id = Redis::get(Email::get_last_id_key($appid));
 
-        $max_account_id = WorkDetail::getMaxAccountId($appid);
+        $max_account_id = self::getMaxAccountId($appid);
 
-        $max_num      = DB::table('emails')->where('id', '>', $max_account_id)->where('valid_status', 1)->count();
+        $max_num      = DB::table('emails')->where('id', '>', (int) $max_account_id)->where('valid_status', 1)->count();
         $is_new_email = Redis::get("is_new_email:appid_{$appid}");
         // 判断是否在刷新账号中
         if ($is_new_email) {
