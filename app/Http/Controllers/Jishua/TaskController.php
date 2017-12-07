@@ -198,7 +198,7 @@ class TaskController extends Controller
             $order_field = 'id',
             $order_value = 'desc'
         ) {
-            $rows = DB::table($table)->where([['id', '<', $offset]])
+            $rows = DB::table($table)->where('id', '<', $offset)
                 ->when($where, function ($query) use ($where) {
                     return $query->where($where);
                 })
@@ -270,35 +270,67 @@ class TaskController extends Controller
         $appid = $app_row->appid;
 
         // * 循环获取苹果账号记录
+        // 1.在刷旧账号
+        // 2.发现新账号 is_new_email:appid=1 id>max_id的存在
+        // 3.跳转刷新账号->刷完新账号了
+        // 4.刷完继续刷旧账号 is_new_email:appid=0
         $email_key     = 'last_email_id:appid_' . $appid;
         $last_email_id = $get_last_id($email_key);
-        $where         = [
-            'valid_status' => 1,
-        ];
         // $email_rows = $query_rows($last_email_id,'emails',$where);
-        $email_rows = DB::table('emails')->where('id', '<', $last_email_id)
-            ->where($where)
-            ->orderBy('id', 'desc')
-            ->limit(3)
-            ->get();
+        $is_new_email = Redis::set("is_new_email:appid_{$appid}", 0); // 判断是否在刷新账号
+        if ($is_new_email) {
+            // 3.刷新账号
+            $max_account_id = DB::table('ios_apps')->where('appid', $appid)->value('max_account_id');
+            $email_rows     = DB::table('emails')
+                ->where('id', '<', $last_email_id)
+                ->where('id', '>', $max_account_id)
+                ->where('valid_status', 1)
+                ->orderBy('id', 'desc')
+                ->limit(3)
+                ->get();
 
-        if ($email_rows->isEmpty()) {
+            if ($email_rows->isEmpty()) {
+                // 4.刷完新账号了，继续刷旧账号
+                // 4.1 标志在刷旧账号
+                Redis::set("is_new_email:appid_{$appid}", 0);
+                // 4.2 获取原来旧账号min_account_id
+                $min_account_id = DB::table('ios_apps')->where('appid', $appid)->value('min_account_id');
+                // 4.3 更新新账号的max_id
+                $max_account_id = WorkDetail::getMaxAccountId($appid);
+                DB::table('ios_apps')->where('appid', $appid)->update(['max_account_id' => $max_account_id]);
+                // 4.4 获取旧账号
+                $email_rows = DB::table('emails')->where('id', '<', $min_account_id)
+                    ->where('valid_status', 1)
+                    ->orderBy('id', 'desc')
+                    ->limit(3)
+                    ->get();
+                if ($email_rows->isEmpty()) {
+                    $email_rows = false;
+                }
+            }
 
-            // 标志不再刷新账号
-            Redis::set("is_new_email:appid_{$appid}", 0);
-
-            // 更新最新的max_id
-            $max_account_id = WorkDetail::getMaxAccountId($appid);
-            DB::table('ios_apps')->where('appid', $appid)->update(['max_account_id' => $max_account_id]);
-
-            $email_rows = DB::table('emails')->where([['id', '<', self::MAX_KEY]])
-                ->where($where)
+        } else {
+            // 1.在刷旧账号
+            $email_rows = DB::table('emails')
+                ->where('id', '<', $last_email_id)
+                ->where('valid_status', 1)
                 ->orderBy('id', 'desc')
                 ->limit(3)
                 ->get();
             if ($email_rows->isEmpty()) {
-                $email_rows = false;
+                // 1.1 刷完旧账号了，从头开始刷，标志为新账号
+                Redis::set("is_new_email:appid_{$appid}", 1);
+                // 1.2 获取新账号
+                $email_rows = DB::table('emails')->where('id', '<', self::MAX_KEY)
+                    ->where('valid_status', 1)
+                    ->orderBy('id', 'desc')
+                    ->limit(3)
+                    ->get();
+                if ($email_rows->isEmpty()) {
+                    $email_rows = false;
+                }
             }
+
         }
 
         if (!$email_rows) {
@@ -309,25 +341,11 @@ class TaskController extends Controller
         foreach ($email_rows as $key => $email_row) {
             $account_ids[] = $email_row->id;
         }
-        /*DB::listen(function ($query) {
-        Util::log($query->sql,$query->bindings);
-        });
-         */
+
         // 判断是否app刷过此批量账号
         $exist_work_detail = WorkDetail::isAppBrushEmails($appid, $account_ids);
         if ($exist_work_detail) {
             $set_last_id($email_key, $account_ids[0] - 50);
-
-            /* 判断是否在刷新账号 x
-            $is_new_email = Redis::get("is_new_email:appid_{$appid}");
-            if ($is_new_email) {
-            // 获取最小的email_id
-            // $min_account_id = DB::table('ios_apps')->where('appid', $appid)->value('min_account_id');
-            // Redis::set("is_new_email:appid_{$appid}", 0);
-            } else {
-            $set_last_id($email_key, 99999999999);
-            Redis::set("is_new_email:appid_{$appid}", 1);
-            }*/
 
             Util::log('title', 'app存在刷过此批量账号了{appid:' . $appid . ',account_id:' . $email_rows->last()->id);
             Util::die_jishua('app存在刷过此批量账号了{appid:' . $appid . ',account_id:' . $email_rows->last()->id, 1);
