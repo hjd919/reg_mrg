@@ -56,9 +56,7 @@ if ($curl) {
 
     // $output contains the output string
     $content = curl_exec($curl);
-if($email == 'mr.KonstantinSchukin1991@mail.ru'){
-file_put_contents('./content.txt',$content."--\n",FILE_APPEND);
-}
+    if(!$content) die('');
 }
 
 
@@ -68,6 +66,6 @@ curl_close($curl);
 if (preg_match('#x-ds-vetting-token: (.*?)\r\n#', $content, $match)) {
     echo $match[1];
 } else {
-    file_put_contents('content.txt', json_encode(compact('content'))."\n", FILE_APPEND);
+//    file_put_contents('content.txt', json_encode(compact('content'))."\n", FILE_APPEND);
     echo '';
 }

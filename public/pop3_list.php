@@ -62,7 +62,7 @@ if ($curl) {
 }
 curl_close($curl);
 if (!$output) {
-	file_put_contents('./empty_pop_list.txt',$email."--".$password."\n",FILE_APPEND);
+	//file_put_contents('./empty_pop_list.txt',$email."--".$password."\n",FILE_APPEND);
     die('');
 }
 
