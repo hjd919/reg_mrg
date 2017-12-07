@@ -10,6 +10,8 @@ class EmailController extends BackendController
 {
     public function import(Request $request)
     {
+        set_time_limit(0);
+
         // 文件名
         $extension   = $request->upload_email->extension();
         $upload_name = time() . '.' . $extension;
