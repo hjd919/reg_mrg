@@ -321,9 +321,9 @@ class TaskController extends Controller
             $is_new_email = Redis::get("is_new_email:appid_{$appid}");
             if ($is_new_email) {
                 // 获取最小的email_id
-                $min_account_id = DB::table('ios_apps')->where('appid', $appid)->value('min_account_id');
-                $set_last_id($email_key, $min_account_id);
-                Redis::set("is_new_email:appid_{$appid}", 0);
+                $set_last_id($email_key, $account_ids[0] - 100);
+                // $min_account_id = DB::table('ios_apps')->where('appid', $appid)->value('min_account_id');
+                // Redis::set("is_new_email:appid_{$appid}", 0);
             } else {
                 $set_last_id($email_key, 99999999999);
                 Redis::set("is_new_email:appid_{$appid}", 1);
