@@ -12,6 +12,11 @@ class WorkDetail extends Model
     public $timestamps = false;
     protected $guarded = [];
 
+    public static function countAppNum($appid)
+    {
+        return self::getWorkDetailTable($appid)->where('appid', $appid)->count();
+    }
+
     // 获取可刷数
     public static function getUsableBrushNum($appid)
     {

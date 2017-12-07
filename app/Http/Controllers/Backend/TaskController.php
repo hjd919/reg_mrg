@@ -148,13 +148,25 @@ EOF;
     {
         $free_mobile_num = Mobile::getUsableNum(); // 获取空闲手机数
 
+        $exception_mobile_num = Mobile::getExceptionNum(); // 获取异常手机数
+
         $task_id = $request->task_id;
         $appid   = DB::table('tasks')->where('id', $task_id)->value('appid');
 
         // 获取可用app量
         $usable_brush_num = WorkDetail::getUsableBrushNum($appid);
 
-        return response()->json(['free_mobile_num' => $free_mobile_num, 'usable_brush_num' => $usable_brush_num]);
+        // 获取可刷设备信息数 total-已使用设备数
+        $total_device_num    = DB::table('devices')->count();
+        $used_device_num     = WorkDetail::countAppNum($appid);
+        $usable_brush_device = $total_device_num - $used_device_num;
+
+        return response()->json([
+            'free_mobile_num'      => $free_mobile_num,
+            'usable_brush_num'     => $usable_brush_num,
+            'exception_mobile_num' => $exception_mobile_num,
+            'usable_brush_device'  => $usable_brush_device,
+        ]);
     }
 
     // 添加下单关键词、添加app、手机分组
