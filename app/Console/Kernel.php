@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\Check\hasNewEmails;
 use App\Console\Commands\Check\isNoAppleids;
 use App\Console\Commands\CronTask\CopyAppleids;
 use App\Console\Commands\CronTask\CountUpHourlyTask;
@@ -52,6 +53,7 @@ class Kernel extends ConsoleKernel
         // 复制成功的账号
         CopyAppleids::class,
         isNoAppleids::class,
+        hasNewEmails::class,
     ];
 
     /**

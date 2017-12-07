@@ -23,6 +23,8 @@ $router->group(['middleware' => [], 'namespace' => 'Jishua', 'prefix' => 'jishua
     $router->get('/task/set_loop_id', 'TaskController@setLoopId');
 
     $router->get('/task/reset_mobile_valid', 'TaskController@resetMobileValid');
+
+    $router->get('/task/brush_new_email/appid_{appid}', 'TaskController@brushNewEmail');
 });
 
 $router->group(['middleware' => [], 'namespace' => 'Appleid', 'prefix' => 'appleid'], function () use ($router) {

@@ -78,13 +78,16 @@ class TaskController extends Controller
     // 让app跑新账号
     public function brushNewEmail($appid)
     {
-        // 缓存email的last_id
+        // 1.1 标志在跑新邮箱
+        Redis::set("is_new_email:appid_{$appid}", 1);
+        // 1.2 更新新账号的max_id，min_id
+        $max_account_id = WorkDetail::getMaxAccountId($appid);
+        $min_account_id = WorkDetail::getMinAccountId($appid);
+        DB::table('ios_apps')->where('appid', $appid)->update(compact('max_account_id', 'min_account_id'));
+        // 1.3 更新last_id为最大id
         Redis::set(Email::get_last_id_key($appid), 99999999999);
 
-        // 设置正在跑新账号
-        Redis::set("is_new_email:appid_{$appid}", 1);
-
-        return $value;
+        return '';
     }
 
     // * 开始任务
@@ -231,10 +234,6 @@ class TaskController extends Controller
 
         // 记录手机访问时间
         $res = Redis::hSet('mobiles_access_time', $device_id, time());
-        // if (!$res) {
-        //     Util::errorLog('记录手机访问时间失败', $res);
-        //     Util::die_jishua('记录手机访问时间失败', 1);
-        // }
 
         // * 根据device_id获取手机组id
         // * 判断是否是新device_id，不是：则记录到数据库和缓存
@@ -280,7 +279,7 @@ class TaskController extends Controller
         $is_new_email = Redis::get("is_new_email:appid_{$appid}"); // 判断是否在刷新账号
         if ($is_new_email) {
             // 3.刷新账号
-            $max_account_id = DB::table('ios_apps')->where('appid', $appid)->value('max_account_id');
+            $max_account_id = DB::table('ios_apps')->select('max_account_id')->where('appid', $appid)->value('max_account_id');
             $email_rows     = DB::table('emails')
                 ->where('id', '<', $last_email_id)
                 ->where('id', '>', $max_account_id)
