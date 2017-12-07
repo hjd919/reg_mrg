@@ -79,7 +79,7 @@ class TaskController extends Controller
     public function brushNewEmail($appid)
     {
         // 缓存email的last_id
-        Redis::set(Email::get_last_id($appid), 99999999999);
+        Redis::set(Email::get_last_id_key($appid), 99999999999);
 
         // 设置正在跑新账号
         Redis::set("is_new_email:appid_{$appid}", 1);
@@ -207,6 +207,7 @@ class TaskController extends Controller
                 ->get();
 
             if ($rows->isEmpty()) {
+
                 $rows = DB::table($table)->where([['id', '<', self::MAX_KEY]])
                     ->when($where, function ($query) use ($where) {
                         return $query->where($where);
@@ -274,7 +275,32 @@ class TaskController extends Controller
         $where         = [
             'valid_status' => 1,
         ];
-        $email_rows = $query_rows($last_email_id, 'emails', $where);
+        // $email_rows = $query_rows($last_email_id,'emails',$where);
+        $email_rows = DB::table('emails')->where('id', '<', $last_email_id)
+            ->where($where)
+            ->orderBy('id', 'desc')
+            ->limit(3)
+            ->get();
+
+        if ($email_rows->isEmpty()) {
+
+            // 标志不再刷新账号
+            Redis::set("is_new_email:appid_{$appid}", 0);
+
+            // 更新最新的max_id
+            $max_account_id = WorkDetail::getMaxAccountId($appid);
+            DB::table('ios_apps')->where('appid', $appid)->update(['max_account_id' => $max_account_id]);
+
+            $email_rows = DB::table('emails')->where([['id', '<', self::MAX_KEY]])
+                ->where($where)
+                ->orderBy('id', 'desc')
+                ->limit(3)
+                ->get();
+            if ($email_rows->isEmpty()) {
+                $email_rows = false;
+            }
+        }
+
         if (!$email_rows) {
             Util::die_jishua('该app没有苹果账号可用了', 1);
         }

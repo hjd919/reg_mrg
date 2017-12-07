@@ -119,14 +119,17 @@ class WorkDetail extends Model
         return $brushed_num;
     }
 
-    // 获取该app最小最大account_id
-    public static function getMinMaxAccountId($appid)
+    // 获取该app最小account_id
+    public static function getMinAccountId($appid)
     {
         $min_id = self::getWorkDetailTable($appid)->where('appid', $appid)->min('account_id');
-        $max_id = self::getWorkDetailTable($appid)->where('appid', $appid)->max('account_id');
-        return [
-            'min_account_id' => $min_id,
-            'max_account_id' => $max_id,
-        ];
+        return $min_id;
+    }
+
+    // 获取该app最大account_id
+    public static function getMaxAccountId($appid)
+    {
+        $min_id = self::getWorkDetailTable($appid)->where('appid', $appid)->max('account_id');
+        return $min_id;
     }
 }
