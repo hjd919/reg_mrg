@@ -277,7 +277,7 @@ class TaskController extends Controller
         $email_key     = 'last_email_id:appid_' . $appid;
         $last_email_id = $get_last_id($email_key);
         // $email_rows = $query_rows($last_email_id,'emails',$where);
-        $is_new_email = Redis::set("is_new_email:appid_{$appid}", 0); // 判断是否在刷新账号
+        $is_new_email = Redis::get("is_new_email:appid_{$appid}"); // 判断是否在刷新账号
         if ($is_new_email) {
             // 3.刷新账号
             $max_account_id = DB::table('ios_apps')->where('appid', $appid)->value('max_account_id');
