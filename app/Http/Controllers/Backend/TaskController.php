@@ -278,10 +278,10 @@ EOF;
         ]);
 
         // 记录appid已经用过的量
-        $old_used_num = Redis::get('used_appid:' . $appid);
+        $old_used_num = Redis::get('used_appid:' . $ios_app->appid);
         $old_used_num = (int) $old_used_num;
-        Redis::set('used_appid:' . $appid, $old_used_num + $success_num);
-        Redis::expire('used_appid:' . $appid, 3600);
+        Redis::set('used_appid:' . $ios_app->appid, $old_used_num + $success_num);
+        Redis::expire('used_appid:' . $ios_app->appid, 3600);
 
         return response()->json([
             'message'  => '添加成功',
