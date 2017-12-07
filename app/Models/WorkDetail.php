@@ -24,6 +24,8 @@ class WorkDetail extends Model
         $used_num = Redis::get('used_appid:' . $appid);
         $used_num = (int) $used_num;
 
+        return 50000;
+
         return $min_num + $max_num - $used_num;
     }
 
