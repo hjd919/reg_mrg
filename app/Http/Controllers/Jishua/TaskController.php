@@ -216,7 +216,7 @@ class TaskController extends Controller
 
             if ($rows->isEmpty()) {
 
-                $rows = DB::table($table)->where([['id', '<', self::MAX_KEY]])
+                $rows = DB::table($table)->where('id', '<', self::MAX_KEY)
                     ->when($where, function ($query) use ($where) {
                         return $query->where($where);
                     })
@@ -357,7 +357,14 @@ class TaskController extends Controller
         // * 循环获取手机设备记录
         $device_key     = 'last_device_id:appid_' . $appid;
         $last_device_id = $get_last_id($device_key);
-        $device_rows    = $query_rows($last_device_id, 'devices');
+
+        if ($mobile_group_id >= 1008 && $mobile_group_id <= 1013) {
+            // 假设备
+            $where = [
+                'is_real' => 0,
+            ];
+        }
+        $device_rows = $query_rows($last_device_id, 'devices');
         if (!$device_rows) {
             Util::die_jishua('没有device记录数据了', 1);
         }
