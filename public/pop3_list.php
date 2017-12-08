@@ -10,7 +10,7 @@ $password = '7bwlHGHxh';
 $command_url = 'pop3s://pop.mail.ru/5';
 $port = '995';
  */
-list($script, $email, $password, $command_url, $port) = $argv;
+list($script, $email, $password, $command_url, $port, $pwd) = $argv;
 // create curl resource
 $curl = curl_init();
 
@@ -25,16 +25,7 @@ if ($curl) {
     curl_setopt($curl, CURLOPT_PROXY, "118.31.212.185:14202");
 
     $username = "cn_xs";
-    $did       = 'did';
-    $uid       = md5(microtime(true));
-    $pid       = 0;
-    $cid       = 0;
-    $timestamp = time();
-    $key       = "Al0MF4fizqjbM9Ql";
 
-    $str1 = "did={$did}&uid={$uid}&pid={$pid}&cid={$cid}&t={$timestamp}&key={$key}";
-    $sign = md5($str1);
-    $pwd  = "did={$did}&uid={$uid}&pid={$pid}&cid={$cid}&t={$timestamp}&sign={$sign}";
     curl_setopt($curl, CURLOPT_PROXYUSERPWD, "{$username}:{$pwd}");
 
 //file_put_contents('./proxy.txt',$username."--".$pwd."\n",FILE_APPEND);
@@ -62,7 +53,7 @@ if ($curl) {
 }
 curl_close($curl);
 if (!$output) {
-	//file_put_contents('./empty_pop_list.txt',$email."--".$password."\n",FILE_APPEND);
+    //file_put_contents('./empty_pop_list.txt',$email."--".$password."\n",FILE_APPEND);
     die('');
 }
 
@@ -85,8 +76,8 @@ if (!$content_ids) {
     $content_ids = range(1, 10);
 }
 // Util::log('列表切割后找到苹果邮件content_id', $content_ids);
-if($email == 'mr.KonstantinSchukin1991@mail.ru'){
-file_put_contents('./proxy2.txt',json_encode($content_ids)."\n",FILE_APPEND);
+if ($email == 'mr.KonstantinSchukin1991@mail.ru') {
+    file_put_contents('./proxy2.txt', json_encode($content_ids) . "\n", FILE_APPEND);
 }
 
 echo json_encode($content_ids);

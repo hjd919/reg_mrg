@@ -10,7 +10,7 @@ $password = '7bwlHGHxh';
 $command_url = 'pop3s://pop.mail.ru/5';
 $port = '995';
  */
-list($script, $email, $password, $command_url, $port) = $argv;
+list($script, $email, $password, $command_url, $port, $pwd) = $argv;
 // create curl resource
 $curl = curl_init();
 
@@ -24,16 +24,7 @@ if ($curl) {
     curl_setopt($curl, CURLOPT_TIMEOUT, 20);
 
     $username = "cn_xs";
-    $did       = 'did';
-    $uid       = md5(microtime(true));
-    $pid       = 0;
-    $cid       = 0;
-    $timestamp = time();
-    $key       = "Al0MF4fizqjbM9Ql";
 
-    $str1 = "did={$did}&uid={$uid}&pid={$pid}&cid={$cid}&t={$timestamp}&key={$key}";
-    $sign = md5($str1);
-    $pwd  = "did={$did}&uid={$uid}&pid={$pid}&cid={$cid}&t={$timestamp}&sign={$sign}";
     curl_setopt($curl, CURLOPT_PROXYUSERPWD, "{$username}:{$pwd}");
 
     //curl_setopt($curl, CURLOPT_URL, "pop3s://pop.qq.com/1");
@@ -56,9 +47,11 @@ if ($curl) {
 
     // $output contains the output string
     $content = curl_exec($curl);
-    if(!$content) die('');
-}
+    if (!$content) {
+        die('');
+    }
 
+}
 
 curl_close($curl);
 

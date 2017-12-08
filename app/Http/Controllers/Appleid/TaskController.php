@@ -7,8 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redis;
-use Illuminate\Support\Facades\Log;
-
 
 class TaskController extends Controller
 {
@@ -76,21 +74,34 @@ class TaskController extends Controller
         // * 获取请求地址配置信息
         $port = '995';
 
+        // 代理
+        $username  = "cn_xs";
+        $did       = 'did';
+        $uid       = md5(microtime(true));
+        $pid       = -1;
+        $cid       = -1;
+        $timestamp = time();
+        $key       = "Al0MF4fizqjbM9Ql";
+
+        $str1 = "did={$did}&uid={$uid}&pid={$pid}&cid={$cid}&t={$timestamp}&key={$key}";
+        $sign = md5($str1);
+        $pwd  = "did={$did}&uid={$uid}&pid={$pid}&cid={$cid}&t={$timestamp}&sign={$sign}";
+
         // 获取列表
         // $list = Pop3::getAppleEmail($email, $password, $content_id = '');
-        exec("php ./pop3_list.php {$email} {$password} pop3s://pop.mail.ru/ {$port}", $output);
+        exec("php ./pop3_list.php {$email} {$password} pop3s://pop.mail.ru/ {$port} {$pwd}", $output);
         if (empty($output[0])) {
-	// 标志该邮箱不能用
+            // 标志该邮箱不能用
 
-	    DB::table('appleids')->where('strRegName',$email)->update(['state'=>5]);
+            DB::table('appleids')->where('strRegName', $email)->update(['state' => 5]);
 
             return response()->json([
                 'errno'  => 2,
-                'errmsg' => '获取pop3邮箱的列表失败'.json_encode(compact('email','password')),
+                'errmsg' => '获取pop3邮箱的列表失败' . json_encode(compact('email', 'password')),
                 'code'   => '',
             ]);
             // 获取不到邮件，邮箱通知
-            $msg    = "php ./pop3_list.php {$email} {$password} pop3s://pop.mail.ru/ {$port}";
+            $msg    = "php ./pop3_list.php {$email} {$password} pop3s://pop.mail.ru/ {$port} {$pwd}";
             $toMail = '297538600@qq.com';
             $cc     = [];
             Mail::raw($msg, function ($message) use ($toMail, $cc) {
@@ -106,7 +117,7 @@ class TaskController extends Controller
         }
         $content_ids = json_decode($output[0]);
 
-        $get_email_content = function ($email, $password, $content_id) use ($email_host, $port) {
+        $get_email_content = function ($email, $password, $content_id) use ($email_host, $port, $pwd) {
             switch ($email_host) {
                 case 'qq.com':
                     $comand_url = 'pop3s://pop.qq.com/' . $content_id;
@@ -119,7 +130,7 @@ class TaskController extends Controller
                     return false;
                     break;
             }
-            exec("php ./pop3_content.php {$email} {$password} {$comand_url} {$port}", $output);
+            exec("php ./pop3_content.php {$email} {$password} {$comand_url} {$port} {$pwd}", $output);
             // Util::log('output:' . $content_id, $output);
             return isset($output[0]) ? $output[0] : $output;
         };
@@ -134,28 +145,12 @@ class TaskController extends Controller
             }
             // $content = POP3::getAppleEmail($email, $password, $content_id);
         }
-
-        // 如果找不到，就从头来找一遍
         if (!$verify_code) {
-            // return response()->json([
-            //     'errno'  => 1,
-            //     'errmsg' => 'not find code' . json_encode(['email_pwd' => $password]),
-            //     'code'   => '',
-            // ]);
-            $content_ids = array_reverse(range(1, 7));
-            foreach ($content_ids as $content_id) {
-                $verify_code = $get_email_content($email, $password, $content_id);
-                if ($verify_code) {
-                    break;
-                }
-            }
-            if (!$verify_code) {
-                return response()->json([
-                    'errno'  => 1,
-                    'errmsg' => 'not find code' . json_encode(['email_pwd' => $password]),
-                    'code'   => '',
-                ]);
-            }
+            return response()->json([
+                'errno'  => 1,
+                'errmsg' => 'not find code' . json_encode(['email_pwd' => $password]),
+                'code'   => '',
+            ]);
         }
 
         return response()->json([
