@@ -78,7 +78,7 @@ class MarkFinishedTasks extends Command
             // WorkDetail::delFailWork($app_row->id);
 
             // * 如果小于ios_apps的最小id，则标志最小account_id
-            $app_min_account_id = DB::table('ios_app')->where('appid', $app_row->appid)->value('min_account_id');
+            $app_min_account_id = DB::table('ios_apps')->where('appid', $app_row->appid)->value('min_account_id');
             $min_account_id     = WorkDetail::getMinAccountId($app_row->appid);
             if ($min_account_id < $app_min_account_id) {
                 // 在刷旧账号，则更新该app的最小id
