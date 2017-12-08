@@ -347,13 +347,13 @@ class TaskController extends Controller
         }
 
         // 判断是否app刷过此批量账号
-        $exist_work_detail = WorkDetail::isAppBrushEmails($appid, $account_ids);
-        if ($exist_work_detail) {
-            $set_last_id($email_key, $account_ids[0] - 50);
+        // $exist_work_detail = WorkDetail::isAppBrushEmails($appid, $account_ids);
+        // if ($exist_work_detail) {
+        //     $set_last_id($email_key, $account_ids[0] - 50);
 
-            Util::log('title', 'app存在刷过此批量账号了{appid:' . $appid . ',account_id:' . $email_rows->last()->id);
-            Util::die_jishua('app存在刷过此批量账号了{appid:' . $appid . ',account_id:' . $email_rows->last()->id, 1);
-        }
+        //     Util::log('title', 'app存在刷过此批量账号了{appid:' . $appid . ',account_id:' . $email_rows->last()->id);
+        //     Util::die_jishua('app存在刷过此批量账号了{appid:' . $appid . ',account_id:' . $email_rows->last()->id, 1);
+        // }
 
         // * 循环获取手机设备记录
         $device_key     = 'last_device_id:appid_' . $appid;
@@ -372,16 +372,16 @@ class TaskController extends Controller
         }
 
         // * 判断app是否刷过此设备信息
-        foreach ($device_rows as $key => $device_row) {
-            $device_ids[] = $device_row->id;
-        }
-        $exist_work_detail = WorkDetail::isAppBrushDevices($appid, $device_ids);
+        // foreach ($device_rows as $key => $device_row) {
+        //     $device_ids[] = $device_row->id;
+        // }
+        // $exist_work_detail = WorkDetail::isAppBrushDevices($appid, $device_ids);
 
-        if ($exist_work_detail) {
-            $set_last_id($device_key, $device_rows[count($device_rows) - 1]->id - 100);
-            Util::log('tt', '此app存在刷过此设备device信息了' . json_encode(['appid' => $appid, 'last_device_id' => $device_rows[count($device_rows) - 1]->id]));
-            Util::die_jishua('此app存在刷过此设备device信息了' . json_encode(['appid' => $appid, 'last_device_id' => $device_rows[count($device_rows) - 1]->id]), 1);
-        }
+        // if ($exist_work_detail) {
+        //     $set_last_id($device_key, $device_rows[count($device_rows) - 1]->id - 100);
+        //     Util::log('tt', '此app存在刷过此设备device信息了' . json_encode(['appid' => $appid, 'last_device_id' => $device_rows[count($device_rows) - 1]->id]));
+        //     Util::die_jishua('此app存在刷过此设备device信息了' . json_encode(['appid' => $appid, 'last_device_id' => $device_rows[count($device_rows) - 1]->id]), 1);
+        // }
 
         // 判断都通过后，再切换循环id
         $set_last_id($device_key, $device_rows[count($device_rows) - 1]->id);

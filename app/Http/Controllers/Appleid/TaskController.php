@@ -5,7 +5,6 @@ use App\Http\Controllers\Controller;
 use App\Support\Util;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redis;
 
 class TaskController extends Controller
@@ -98,20 +97,6 @@ class TaskController extends Controller
             return response()->json([
                 'errno'  => 2,
                 'errmsg' => '获取pop3邮箱的列表失败' . json_encode(compact('email', 'password')),
-                'code'   => '',
-            ]);
-            // 获取不到邮件，邮箱通知
-            $msg    = "php ./pop3_list.php {$email} {$password} pop3s://pop.mail.ru/ {$port} {$pwd}";
-            $toMail = '297538600@qq.com';
-            $cc     = [];
-            Mail::raw($msg, function ($message) use ($toMail, $cc) {
-                $message->subject('jishua-获取不到邮箱了');
-                $message->to($toMail);
-                $message->cc($cc);
-            });
-            return response()->json([
-                'errno'  => 1,
-                'errmsg' => 'pas或者email缺少',
                 'code'   => '',
             ]);
         }
