@@ -59,7 +59,6 @@ class TaskController extends Controller
     public function getverifycode(
         Request $request
     ) {
-        Util::log('--start_getverifycode--');
 
         $start_time = microtime(true);
         $email      = $request->email;
@@ -71,6 +70,7 @@ class TaskController extends Controller
                 'code'   => '',
             ]);
         }
+        Util::log('--start_getverifycode--', json_encode(compact('email', 'password')));
         list($username, $email_host) = explode('@', $email);
 
         // * 获取请求地址配置信息
