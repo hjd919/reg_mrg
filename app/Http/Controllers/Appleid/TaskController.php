@@ -88,7 +88,7 @@ class TaskController extends Controller
 
         // 获取列表
         // $list = Pop3::getAppleEmail($email, $password, $content_id = '');
-        exec("php ./pop3_list.php {$email} {$password} pop3s://pop.mail.ru/ {$port} {$pwd}", $output);
+        exec("php ./pop3_list.php {$email} {$password} pop3s://pop.mail.ru/ {$port} '{$pwd}'", $output);
         if (empty($output[0])) {
             // 标志该邮箱不能用
 
@@ -96,7 +96,7 @@ class TaskController extends Controller
 
             return response()->json([
                 'errno'  => 2,
-                'errmsg' => '获取pop3邮箱的列表失败' . json_encode(compact('email', 'password')),
+                'errmsg' => "php ./pop3_list.php {$email} {$password} pop3s://pop.mail.ru/ {$port} '{$pwd}'",
                 'code'   => '',
             ]);
         }
@@ -115,7 +115,7 @@ class TaskController extends Controller
                     return false;
                     break;
             }
-            exec("php ./pop3_content.php {$email} {$password} {$comand_url} {$port} {$pwd}", $output);
+            exec("php ./pop3_content.php {$email} {$password} {$comand_url} {$port} '{$pwd}'", $output);
             // Util::log('output:' . $content_id, $output);
             return isset($output[0]) ? $output[0] : $output;
         };
