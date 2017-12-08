@@ -111,6 +111,12 @@ class TaskController extends Controller
         }
         $content_ids = json_decode($output[0]);
 
+        $end_time1 = microtime(true);
+        Util::log('--end1--', json_encode([
+            'email'      => $email,
+            'spend_time' => $end_time1 - $start_time,
+        ]));
+
         $get_email_content = function ($email, $password, $content_id) use ($email_host, $port, $pwd) {
             switch ($email_host) {
                 case 'qq.com':
@@ -146,6 +152,12 @@ class TaskController extends Controller
                 'code'   => '',
             ]);
         }
+        $end_time2 = microtime(true);
+        Util::log('--end2--', json_encode([
+            'email'      => $email,
+            'spend_time' => $end_time2 - $end_time1,
+        ]));
+
         $end_time = microtime(true);
         Util::log('--end--', json_encode([
             'email'      => $email,
