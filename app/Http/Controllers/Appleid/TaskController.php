@@ -149,7 +149,6 @@ class TaskController extends Controller
         $end_time = microtime(true);
         Util::log('--end--', json_encode([
             'email'      => $email,
-            'pwd'        => $pwd,
             'spend_time' => $end_time - $start_time,
         ]));
 
