@@ -101,13 +101,13 @@ class TaskController extends Controller
         if (empty($output[0])) {
             // 标志该邮箱不能用
             $end_time1 = microtime(true);
-            // Util::log('--fail_list--', json_encode([
-            //     'email'      => $email,
-            //     'password'   => $password,
-            //     'spend_time' => $end_time1 - $start_time,
-            // ]));
+            Util::log('--fail_list--', json_encode([
+                'email'      => $email,
+                'password'   => $password,
+                'spend_time' => $end_time1 - $start_time,
+            ]));
 
-            DB::table('appleids')->where('strRegName', $email)->update(['state' => 5]);
+            // DB::table('appleids')->where('strRegName', $email)->update(['state' => 5]);
 
             return response()->json([
                 'errno'  => 2,
@@ -153,11 +153,11 @@ class TaskController extends Controller
         }
         if (!$verify_code) {
             $end_time2 = microtime(true);
-            // Util::log('--fail_content--', json_encode([
-            //     'email'      => $email,
-            //     'password'   => $password,
-            //     'spend_time' => $end_time2 - $end_time1,
-            // ]));
+            Util::log('--fail_content--', json_encode([
+                'email'      => $email,
+                'password'   => $password,
+                'spend_time' => $end_time2 - $end_time1,
+            ]));
 
             return response()->json([
                 'errno'  => 1,
