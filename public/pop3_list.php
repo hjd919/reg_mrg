@@ -41,7 +41,7 @@ if ($curl) {
 
     //curl_setopt($curl, CURLOPT_CAINFO, "./certificate.pem");
 
-    curl_setopt($curl, CURLOPT_VERBOSE, true);
+    //curl_setopt($curl, CURLOPT_VERBOSE, true);
 
     //return the transfer as a string
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
