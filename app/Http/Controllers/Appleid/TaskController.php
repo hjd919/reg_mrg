@@ -59,8 +59,11 @@ class TaskController extends Controller
     public function getverifycode(
         Request $request
     ) {
-        $email    = $request->email;
-        $password = $request->pas;
+        Util::log('--start_getverifycode--');
+
+        $start_time = microtime(true);
+        $email      = $request->email;
+        $password   = $request->pas;
         if (!$email || !$password) {
             return response()->json([
                 'errno'  => 1,
@@ -137,6 +140,12 @@ class TaskController extends Controller
                 'code'   => '',
             ]);
         }
+        $end_time = microtime(true);
+        Util::log('getverifycode', json_encode([
+            'email'      => $email,
+            'password'   => $password,
+            'spend_time' => $end_time - $start_time,
+        ]));
 
         return response()->json([
             'errno'  => 0,
