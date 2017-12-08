@@ -103,6 +103,7 @@ class TaskController extends Controller
             $end_time1 = microtime(true);
             Util::log('--fail_list--', json_encode([
                 'email'      => $email,
+                'password'   => $password,
                 'spend_time' => $end_time1 - $start_time,
             ]));
 
@@ -154,6 +155,7 @@ class TaskController extends Controller
             $end_time2 = microtime(true);
             Util::log('--fail_content--', json_encode([
                 'email'      => $email,
+                'password'   => $password,
                 'spend_time' => $end_time2 - $end_time1,
             ]));
 
