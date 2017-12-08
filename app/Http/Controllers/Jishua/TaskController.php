@@ -395,12 +395,8 @@ class TaskController extends Controller
             $work_id = DB::table('works')->insertGetId([
                 'app_id'    => $app_row->id,
                 'appid'     => $appid,
-                'app_name'  => $app_row->app_name,
-                'bundle_id' => $app_row->bundle_id,
                 'device_id' => $device_id,
-                'fail_num'  => -1,
                 'keyword'   => $app_row->keyword,
-                'succ_num'  => -1,
             ]);
 
             // 插入work_detail
@@ -411,22 +407,25 @@ class TaskController extends Controller
                     'appid'      => $appid,
                     'app_id'     => $app_row->id,
                     'account_id' => $email_row->id,
-                    'email'      => $email_row->email,
-                    'password'   => $email_row->appleid_password,
                     'device_id'  => $device_rows[$key]->id,
-                    'udid'       => empty($udid) ? $device_rows[$key]->udid : $udid,
-                    'imei'       => empty($imei) ? $device_rows[$key]->imei : $imei,
-                    'serial'     => empty($serial) ? $device_rows[$key]->serial_number : $serial,
-                    'bt'         => empty($bt) ? $device_rows[$key]->lanya : $bt,
-                    'wifi'       => empty($wifi) ? $device_rows[$key]->mac : $wifi,
                 ];
                 $work_detail[] = $data;
 
                 // 构造所需格式的结果
-                $data['keyword']  = $app_row->keyword;
-                $data['app_name'] = $app_row->bundle_id;
-                $data['app_id']   = (string) $appid;
-                $response[]       = $data;
+                $data1 = [
+                    'email'    => $email_row->email,
+                    'password' => $email_row->appleid_password,
+                    'udid'     => empty($udid) ? $device_rows[$key]->udid : $udid,
+                    'imei'     => empty($imei) ? $device_rows[$key]->imei : $imei,
+                    'serial'   => empty($serial) ? $device_rows[$key]->serial_number : $serial,
+                    'bt'       => empty($bt) ? $device_rows[$key]->lanya : $bt,
+                    'wifi'     => empty($wifi) ? $device_rows[$key]->mac : $wifi,
+                    'keyword'  => $app_row->keyword,
+                    'app_name' => $app_row->bundle_id,
+                    'app_id'   => (string) $appid,
+                ];
+
+                $response[] = array_merge($data, $data1);
             }
 
             // 添加work_detail记录
