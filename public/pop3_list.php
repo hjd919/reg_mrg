@@ -18,8 +18,8 @@ if ($curl) {
     /* Set username and password */
     curl_setopt($curl, CURLOPT_USERNAME, $email);
     curl_setopt($curl, CURLOPT_PASSWORD, $password);
-    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 5);
-    curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 20);
+    curl_setopt($curl, CURLOPT_TIMEOUT, 20);
 
     curl_setopt($curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
     curl_setopt($curl, CURLOPT_PROXY, "118.31.212.185:14202");
@@ -41,7 +41,7 @@ if ($curl) {
 
     //curl_setopt($curl, CURLOPT_CAINFO, "./certificate.pem");
 
-    //curl_setopt($curl, CURLOPT_VERBOSE, true);
+    curl_setopt($curl, CURLOPT_VERBOSE, true);
 
     //return the transfer as a string
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);

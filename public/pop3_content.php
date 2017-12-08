@@ -20,7 +20,7 @@ if ($curl) {
     curl_setopt($curl, CURLOPT_PASSWORD, $password);
     curl_setopt($curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
     curl_setopt($curl, CURLOPT_PROXY, "118.31.212.185:14202");
-    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 5);
+    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 20);
     curl_setopt($curl, CURLOPT_TIMEOUT, 20);
 
     $username = "cn_xs";
