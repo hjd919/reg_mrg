@@ -190,6 +190,7 @@ class TaskController extends Controller
     ) {
         // * 查询未获取的任务
         $row = DB::table('appleids')->where('state', 0)
+            ->orderBy('updated_at','asc')
             ->limit(1)
             ->first();
         if (!$row) {
