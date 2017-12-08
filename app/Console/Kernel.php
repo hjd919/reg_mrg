@@ -11,6 +11,7 @@ use App\Console\Commands\CronTask\MakeUpMobileNum;
 use App\Console\Commands\CronTask\MarkFinishedTasks;
 use App\Console\Commands\CronTask\MarkMobileValid;
 use App\Console\Commands\CronTask\ResetAppleidState;
+use App\Console\Commands\Data\JiaDevice;
 use App\Console\Commands\Data\ToDeviceId;
 use App\Console\Commands\Data\ToIosApp;
 use App\Console\Commands\Data\ToMaxMinId;
@@ -38,6 +39,7 @@ class Kernel extends ConsoleKernel
         ToDeviceId::class,
         ToIosApp::class,
         ToMaxMinId::class,
+        JiaDevice::class,
         // 定时补成功量
         MakeUpAppBrushNum::class,
         // 定时补手机量
