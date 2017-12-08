@@ -100,6 +100,11 @@ class TaskController extends Controller
         exec("php ./pop3_list.php {$email} {$password} pop3s://pop.mail.ru/ {$port} '{$pwd}'", $output);
         if (empty($output[0])) {
             // 标志该邮箱不能用
+            $end_time1 = microtime(true);
+            Util::log('--fail_list--', json_encode([
+                'email'      => $email,
+                'spend_time' => $end_time1 - $start_time,
+            ]));
 
             DB::table('appleids')->where('strRegName', $email)->update(['state' => 5]);
 
@@ -146,6 +151,12 @@ class TaskController extends Controller
             // $content = POP3::getAppleEmail($email, $password, $content_id);
         }
         if (!$verify_code) {
+            $end_time2 = microtime(true);
+            Util::log('--fail_content--', json_encode([
+                'email'      => $email,
+                'spend_time' => $end_time2 - $end_time1,
+            ]));
+
             return response()->json([
                 'errno'  => 1,
                 'errmsg' => 'not find code' . json_encode(['email_pwd' => $password]),
