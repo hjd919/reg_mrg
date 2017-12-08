@@ -34,7 +34,7 @@ class WorkDetail extends Model
             $brush_num = DB::table('emails')->where('id', '>', $ios_app->max_account_id)->where('id', '<', $last_id)->where('valid_status', 1)->count();
             $min_num   = DB::table('emails')->where('id', '<', $ios_app->min_account_id)->where('valid_status', 1)->count();
         } else {
-            $min_num   = DB::table('emails')->where('id', '<', $last_id)->where('valid_status', 1)->count();
+            $min_num   = DB::table('emails')->where('id', '<', (int) $last_id)->where('valid_status', 1)->count();
             $brush_num = 0;
         }
 
