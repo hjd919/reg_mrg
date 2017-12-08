@@ -77,23 +77,23 @@ class TaskController extends Controller
         $port = '995';
 
         // 代理 一分钟才切换ip
-        $pwd = Redis::get('proxy_pwd');
-        if (!$pwd) {
-            $username  = "cn_xs";
-            $did       = 'did';
-            $uid       = md5(time());
-            $pid       = -1;
-            $cid       = -1;
-            $timestamp = time();
-            $key       = "Al0MF4fizqjbM9Ql";
+        // $pwd = Redis::get('proxy_pwd');
+        // if (!$pwd) {
+        $username  = "cn_xs";
+        $did       = 'did';
+        $uid       = md5(time());
+        $pid       = 0;
+        $cid       = 0;
+        $timestamp = time();
+        $key       = "Al0MF4fizqjbM9Ql";
 
-            $str1 = "did={$did}&uid={$uid}&pid={$pid}&cid={$cid}&t={$timestamp}&key={$key}";
-            $sign = md5($str1);
-            $pwd  = "did={$did}&uid={$uid}&pid={$pid}&cid={$cid}&t={$timestamp}&sign={$sign}";
+        $str1 = "did={$did}&uid={$uid}&pid={$pid}&cid={$cid}&t={$timestamp}&key={$key}";
+        $sign = md5($str1);
+        $pwd  = "did={$did}&uid={$uid}&pid={$pid}&cid={$cid}&t={$timestamp}&sign={$sign}";
 
-            Redis::set('proxy_pwd', $pwd);
-            Redis::expire('proxy_pwd', 60);
-        }
+        // Redis::set('proxy_pwd', $pwd);
+        // Redis::expire('proxy_pwd', 60);
+        // }
 
         // 获取列表
         // $list = Pop3::getAppleEmail($email, $password, $content_id = '');
