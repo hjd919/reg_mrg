@@ -70,7 +70,7 @@ class TaskController extends Controller
                 'code'   => '',
             ]);
         }
-        Util::log('--start--', json_encode(compact('email')));
+        // Util::log('--start--', json_encode(compact('email')));
         list($username, $email_host) = explode('@', $email);
 
         // * 获取请求地址配置信息
@@ -101,11 +101,11 @@ class TaskController extends Controller
         if (empty($output[0])) {
             // 标志该邮箱不能用
             $end_time1 = microtime(true);
-            Util::log('--fail_list--', json_encode([
-                'email'      => $email,
-                'password'   => $password,
-                'spend_time' => $end_time1 - $start_time,
-            ]));
+            // Util::log('--fail_list--', json_encode([
+            //     'email'      => $email,
+            //     'password'   => $password,
+            //     'spend_time' => $end_time1 - $start_time,
+            // ]));
 
             DB::table('appleids')->where('strRegName', $email)->update(['state' => 5]);
 
@@ -117,11 +117,11 @@ class TaskController extends Controller
         }
         $content_ids = json_decode($output[0]);
 
-        $end_time1 = microtime(true);
-        Util::log('--end1--', json_encode([
-            'email'      => $email,
-            'spend_time' => $end_time1 - $start_time,
-        ]));
+        // $end_time1 = microtime(true);
+        // Util::log('--end1--', json_encode([
+        //     'email'      => $email,
+        //     'spend_time' => $end_time1 - $start_time,
+        // ]));
 
         $get_email_content = function ($email, $password, $content_id) use ($email_host, $port, $pwd) {
             switch ($email_host) {
@@ -153,11 +153,11 @@ class TaskController extends Controller
         }
         if (!$verify_code) {
             $end_time2 = microtime(true);
-            Util::log('--fail_content--', json_encode([
-                'email'      => $email,
-                'password'   => $password,
-                'spend_time' => $end_time2 - $end_time1,
-            ]));
+            // Util::log('--fail_content--', json_encode([
+            //     'email'      => $email,
+            //     'password'   => $password,
+            //     'spend_time' => $end_time2 - $end_time1,
+            // ]));
 
             return response()->json([
                 'errno'  => 1,
@@ -165,17 +165,17 @@ class TaskController extends Controller
                 'code'   => '',
             ]);
         }
-        $end_time2 = microtime(true);
-        Util::log('--end2--', json_encode([
-            'email'      => $email,
-            'spend_time' => $end_time2 - $end_time1,
-        ]));
+        // $end_time2 = microtime(true);
+        // Util::log('--end2--', json_encode([
+        //     'email'      => $email,
+        //     'spend_time' => $end_time2 - $end_time1,
+        // ]));
 
         $end_time = microtime(true);
-        Util::log('--end--', json_encode([
-            'email'      => $email,
-            'spend_time' => $end_time - $start_time,
-        ]));
+        // Util::log('--end--', json_encode([
+        //     'email'      => $email,
+        //     'spend_time' => $end_time - $start_time,
+        // ]));
 
         return response()->json([
             'errno'  => 0,
