@@ -364,7 +364,7 @@ class TaskController extends Controller
                 'is_real' => 0,
             ];
         }
-        $device_rows = $query_rows($last_device_id, 'devices');
+        $device_rows = $query_rows($last_device_id, 'devices',$where);
         if (!$device_rows) {
             Util::die_jishua('没有device记录数据了', 1);
         }
