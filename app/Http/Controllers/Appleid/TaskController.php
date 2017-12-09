@@ -40,8 +40,8 @@ class TaskController extends Controller
         // 新uid 还是用 旧uid
         // log
         $id = DB::table('proxy_uids')->insertGetId([
-            'uid' => $uid1,
-            'pwd' => $pwd,
+            'created_at' => date('Y-m-d H:i:s'),
+            // 'pwd' => $pwd,
         ]);
 
         $res = [
