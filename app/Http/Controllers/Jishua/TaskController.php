@@ -363,6 +363,8 @@ class TaskController extends Controller
             $where = [
                 'is_real' => 0,
             ];
+        }else{
+            $where = [];
         }
         $device_rows = $query_rows($last_device_id, 'devices',$where);
         if (!$device_rows) {
