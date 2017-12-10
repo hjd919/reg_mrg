@@ -53,6 +53,20 @@ class MarkFinishedTasks extends Command
         }
 
         foreach ($app_rows as $app_row) {
+            // 判断没到结束时间并剩余量为0时，是否已经全部完成成功量
+            if($app_row->brush_num <= 0 
+            && strtotime($app_row->end_time)>time()){
+                $valid_num = WorkDetail::countSuccessBrushNum($app_row->appid, $app_row->id, $app_row->start_time);
+
+                $unsuccess_num = $app_row->success_num - $valid_num;
+                if ($unsuccess_num > 0) {
+                    DB::table('apps')->where('id', $app_row->id)->update(
+                        ['brush_num' => $unsuccess_num]
+                    );
+                    continue;
+                }
+            }
+
             // * 统计各种情况，总数，按时间，按结果
 
             // 统计总刷数
