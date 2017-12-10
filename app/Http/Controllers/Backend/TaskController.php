@@ -182,9 +182,9 @@ EOF;
         $end_time        = $request->input('end_time');
         $mobile_num      = $request->input('mobile_num');
         $mobile_group_id = $request->input('mobile_group_id');
-        $hot             = $request->input('hot');
-        $before_rank     = $request->input('before_rank');
-        $remark          = $request->input('remark');
+        $hot             = 0;
+        $before_rank     = 0;
+        $remark          = '';
 
         // 判断mobile_num和mobile_group_id必须存在一个
         if (!$mobile_num && !$mobile_group_id) {
