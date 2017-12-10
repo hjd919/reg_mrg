@@ -73,7 +73,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('make_up:mobile_num')->cron('*/3 * * * * *')->withoutOverlapping();
 
         // 每分钟判断并标示任务已完成
-        $schedule->command('mark:finished_tasks')->cron('*/1 * * * * *')->withoutOverlapping();
+        $schedule->command('mark:finished_tasks')->cron('*/2 * * * * *')->withoutOverlapping();
 
         // 每3分钟判断并标示手机有效
         $schedule->command('mark:mobile_valid')->cron('*/3 * * * * *')->withoutOverlapping();
