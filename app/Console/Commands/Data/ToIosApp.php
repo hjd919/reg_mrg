@@ -42,9 +42,12 @@ class ToIosApp extends Command
         // 导出并删除失效账号
 
         // 导出
-        $code = exec("mysqldump -u'super_hjd' -p'Dev~!@#Hjd919' -P3306 --default-character-set=utf8 --no-create-db --no-create-info --tables jishua emails --where='valid_status=0' > storage/app/backup/jishua_emails.table.sql");
-        
+        $date = date('ymd');
+        $code = exec("mysqldump -u'super_hjd' -p'Dev~!@#Hjd919' -P3306 --default-character-set=utf8 --no-create-db --no-create-info --tables jishua emails --where='valid_status=1' > storage/app/backup/jishua_emails_{$date}.table.sql");
+
         // 删除
-        DB::table('emails')->where('valid_status',0)->delete();
+        $res = DB::table('emails')->where('valid_status', 0)->delete();
+        echo ('$res---');
+        var_dump($res);
     }
 }

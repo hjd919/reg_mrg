@@ -365,7 +365,7 @@ class TaskController extends Controller
         // 判断是否app刷过此批量账号
         $exist_work_detail = WorkDetail::isAppBrushEmails($appid, $email_rows[0]->id);
         if ($exist_work_detail) {
-            $set_last_id($email_key, $email_rows[0]->id - 30);
+            $set_last_id($email_key, $email_rows[0]->id - 9);
 
             Util::log('title', 'app存在刷过此批量账号了{appid:' . $appid . ',account_id:' . $email_rows->last()->id);
             Util::die_jishua('app存在刷过此批量账号了{appid:' . $appid . ',account_id:' . $email_rows->last()->id, 1);
