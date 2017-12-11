@@ -2,26 +2,27 @@
 
 namespace App\Console;
 
-use App\Console\Commands\Check\hasNewEmails;
-use App\Console\Commands\Check\isNoAppleids;
-use App\Console\Commands\CronTask\CopyAppleids;
-use App\Console\Commands\CronTask\CountUpHourlyTask;
-use App\Console\Commands\CronTask\MakeUpAppBrushNum;
-use App\Console\Commands\CronTask\MakeUpMobileNum;
-use App\Console\Commands\CronTask\MarkFinishedTasks;
-use App\Console\Commands\CronTask\MarkMobileValid;
-use App\Console\Commands\CronTask\ResetAppleidState;
+use App\Console\Commands\DB\MobileAdd;
+use App\Console\Commands\Data\ToIosApp;
 use App\Console\Commands\Data\JiaDevice;
 use App\Console\Commands\Data\ToDeviceId;
-use App\Console\Commands\Data\ToIosApp;
-use App\Console\Commands\Data\ToMaxMinId;
-use App\Console\Commands\DB\MobileAdd;
-use App\Console\Commands\Import\ImportAppleids;
-use App\Console\Commands\Import\ImportDevices;
-use App\Console\Commands\Import\ImportEmails;
 use App\Console\Commands\sendMailCommand;
+use App\Console\Commands\Data\ToMaxMinId;
 use Illuminate\Console\Scheduling\Schedule;
+use App\Console\Commands\Check\isNoAppleids;
+use App\Console\Commands\Check\hasNewEmails;
+use App\Console\Commands\DB\MergeTaskKeyword;
+use App\Console\Commands\Import\ImportEmails;
+use App\Console\Commands\Import\ImportDevices;
+use App\Console\Commands\Import\ImportAppleids;
+use App\Console\Commands\CronTask\CopyAppleids;
+use App\Console\Commands\CronTask\MakeUpMobileNum;
+use App\Console\Commands\CronTask\MarkMobileValid;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
+use App\Console\Commands\CronTask\MakeUpAppBrushNum;
+use App\Console\Commands\CronTask\MarkFinishedTasks;
+use App\Console\Commands\CronTask\CountUpHourlyTask;
+use App\Console\Commands\CronTask\ResetAppleidState;
 
 class Kernel extends ConsoleKernel
 {
@@ -40,6 +41,7 @@ class Kernel extends ConsoleKernel
         ToIosApp::class,
         ToMaxMinId::class,
         JiaDevice::class,
+        MergeTaskKeyword::class,
         // 定时补成功量
         MakeUpAppBrushNum::class,
         // 定时补手机量
@@ -73,7 +75,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('make_up:mobile_num')->cron('*/3 * * * * *')->withoutOverlapping();
 
         // 每分钟判断并标示任务已完成
-        $schedule->command('mark:finished_tasks')->cron('*/2 * * * * *')->withoutOverlapping();
+        // $schedule->command('mark:finished_tasks')->cron('*/2 * * * * *')->withoutOverlapping();
 
         // 每3分钟判断并标示手机有效
         $schedule->command('mark:mobile_valid')->cron('*/3 * * * * *')->withoutOverlapping();

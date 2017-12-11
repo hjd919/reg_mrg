@@ -206,19 +206,17 @@ EOF;
         }
 
         // * 添加下单关键词
-        $task_keyword_id = DB::table('task_keywords')->insertGetId([
-            'user_id'     => $user_id,
-            'task_id'     => $task_id,
-            'ios_app_id'  => $ios_app->id,
-            'keyword'     => $keyword,
-            'success_num' => $success_num,
-            'start_time'  => $start_time,
-            'end_time'    => $end_time,
-            'mobile_num'  => $mobile_num,
-            'hot'         => $hot,
-            'before_rank' => $before_rank,
-            'remark'      => $remark,
-        ]);
+        // $task_keyword_id = DB::table('task_keywords')->insertGetId([
+        //     'user_id'     => $user_id,
+        //     'task_id'     => $task_id,
+        //     'ios_app_id'  => $ios_app->id,
+        //     'keyword'     => $keyword,
+        //     'success_num' => $success_num,
+        //     'start_time'  => $start_time,
+        //     'end_time'    => $end_time,
+        //     'mobile_num'  => $mobile_num,
+        //     'remark'      => $remark,
+        // ]);
 
         // 判断是否已预设mobile_group_id
         if (!$mobile_group_id) {
@@ -266,6 +264,8 @@ EOF;
             'bundle_id'       => $ios_app->bundle_id,
             'is_brushing'     => $is_brushing,
             'mobile_group_id' => $mobile_group_id,
+            'hot'         => $hot,
+            'before_rank' => $before_rank,
         ]);
         if (!$app_id) {
             return response()->json(['error_code' => 1]);
@@ -278,9 +278,9 @@ EOF;
         }
 
         // 更新task_keywords中刚添加的app_id
-        DB::table('task_keywords')->where('id', $task_keyword_id)->update([
-            'app_id' => $app_id,
-        ]);
+        // DB::table('task_keywords')->where('id', $task_keyword_id)->update([
+        //     'app_id' => $app_id,
+        // ]);
 
         // 记录appid已经用过的量
         $old_used_num = Redis::get('used_appid:' . $ios_app->appid);

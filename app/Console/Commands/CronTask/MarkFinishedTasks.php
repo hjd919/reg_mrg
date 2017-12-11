@@ -79,14 +79,9 @@ class MarkFinishedTasks extends Command
             $fail_brushed_num = $brushed_num - $success_brushed_num;
 
             // * 标志已完成,完成时间
-            $res = DB::table('task_keywords')->where([['app_id', '=', $app_row->id]])->update([
-                'is_finish'           => 1,
-                'real_end_time'       => date('Y-m-d H:i:s'),
-                'brushed_num'         => $brushed_num, // 已刷数量
-                'success_brushed_num' => $success_brushed_num, // 已刷数量
-                'fail_brushed_num'    => $fail_brushed_num, // 已刷数量
-                'remain_brush_num'    => $app_row->brush_num < 0 ? 0 : $app_row->brush_num, // 剩余未刷数量
-            ]);
+            // $res = DB::table('app')->where([['app_id', '=', $app_row->id]])->update([
+            //     'is_finish'           => 1,
+            // ]);
 
             // * 删除无效的刷记录
             // WorkDetail::delFailWork($app_row->id);
@@ -104,6 +99,11 @@ class MarkFinishedTasks extends Command
             // * 标志不在刷了
             $res = DB::table('apps')->where('id', $app_row->id)->update([
                 'is_brushing' => 0,
+                'real_end_time'       => date('Y-m-d H:i:s'),
+                'brushed_num'         => $brushed_num, // 已刷数量
+                'success_brushed_num' => $success_brushed_num, // 已刷数量
+                'fail_brushed_num'    => $fail_brushed_num, // 已刷数量
+                'remain_brush_num'    => $app_row->brush_num < 0 ? 0 : $app_row->brush_num, // 剩余未刷数量
             ]);
 
             // * 释放手机
