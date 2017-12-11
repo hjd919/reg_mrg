@@ -251,7 +251,7 @@ EOF;
         $app_id      = DB::table('apps')->insertGetId([
             'user_id'         => $user_id,
             'task_id'         => $task_id,
-            'task_keyword_id' => $task_keyword_id,
+            // 'task_keyword_id' => $task_keyword_id,
             'ios_app_id'      => $ios_app->id,
             'keyword'         => $keyword,
             'brush_num'       => $success_num,
