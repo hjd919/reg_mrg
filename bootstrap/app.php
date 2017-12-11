@@ -65,6 +65,7 @@ $app->singleton(
     }
 );
 $app->configure('filesystems');
+$app->configure('excel');
 
 $app->singleton('mailer', function () use ($app) {
     return $app->loadComponent('mail', Illuminate\Mail\MailServiceProvider::class, 'mailer');
@@ -107,6 +108,7 @@ $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 
 $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Illuminate\Redis\RedisServiceProvider::class);
+$app->register(Maatwebsite\Excel\ExcelServiceProvider::class);
 // $app->register(Illuminate\Mail\MailServiceProvider::class);
 
 /*
