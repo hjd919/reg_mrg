@@ -336,6 +336,11 @@ class TaskController extends Controller
             if ($email_rows->isEmpty()) {
                 // 1.1 刷完旧账号了，从头开始刷，标志为新账号
                 Redis::set("is_new_email:appid_{$appid}", 1);
+
+                // 4.3 更新新账号的max_id
+                $max_account_id = WorkDetail::getMaxAccountId($appid);
+                DB::table('ios_apps')->where('appid', $appid)->update(['max_account_id' => $max_account_id]);
+
                 // 1.2 获取新账号
                 $email_rows = DB::table('emails')->where('id', '<', self::MAX_KEY)
                     ->where('valid_status', 1)
