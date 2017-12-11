@@ -109,9 +109,15 @@ class TaskController extends Controller
     }
 
     // * 结束任务
-    public function stop($is_die = true)
+    public function stop(Request $request, $is_die = true)
     {
-        if (Redis::set(self::STOP_GET_APP, 1)) {
+        $appid = $request->appid;
+        if ($appid) {
+            $stop_app_key = self::STOP_GET_APP . ':appid_' . $appid;
+        } else {
+            $stop_app_key = self::STOP_GET_APP;
+        }
+        if (Redis::set($stop_app_key, 1)) {
             if ($is_die) {
                 Util::die_jishua('结束任务 ok');
             }
@@ -167,7 +173,8 @@ class TaskController extends Controller
         Request $request
     ) {
         // * 停止任务获取
-        $is_stop = Redis::get(self::STOP_GET_APP);
+        $stop_app_key = self::STOP_GET_APP;
+        $is_stop      = Redis::get($stop_app_key);
         if ('1' === $is_stop) {
             Util::die_jishua('停止任务获取', 1);
         }
@@ -273,6 +280,11 @@ class TaskController extends Controller
 
         $appid = $app_row->appid;
 
+        $is_stop = Redis::get($stop_app_key . ':appid_' . $appid);
+        if ('1' === $is_stop) {
+            Util::die_jishua('停止任务获取', 1);
+        }
+
         // * 循环获取苹果账号记录
         // 1.在刷旧账号
         // 2.发现新账号 is_new_email:appid=1 id>max_id的存在
@@ -363,10 +375,10 @@ class TaskController extends Controller
             $where = [
                 'is_real' => 0,
             ];
-        }else{
+        } else {
             $where = [];
         }
-        $device_rows = $query_rows($last_device_id, 'devices',$where);
+        $device_rows = $query_rows($last_device_id, 'devices', $where);
         if (!$device_rows) {
             Util::die_jishua('没有device记录数据了', 1);
         }

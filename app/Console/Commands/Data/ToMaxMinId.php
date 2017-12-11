@@ -42,6 +42,10 @@ class ToMaxMinId extends Command
      */
     public function handle()
     {
+        $rows = DB::select("SELECT count(*) total FROM `work_detail` WHERE `appid` = 1141755797 and account_id<=1682928 ORDER BY `work_detail`.`account_id` ASC");
+        dd($rows);
+        
+
         // * to device_id
         $rows = DB::table('apps')->groupBy('appid')->get();
         if ($rows->isEmpty()) {
