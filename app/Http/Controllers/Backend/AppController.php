@@ -16,6 +16,7 @@ class AppController extends Controller
         $current_page = $request->input('currentPage', 1);
         $page_size    = $request->input('pageSize', 10);
         $appid        = $request->input('appid', '');
+        $app_id       = $request->input('app_id', '');
         $keyword      = $request->input('keyword', '');
 
         // 查询条件
@@ -26,6 +27,9 @@ class AppController extends Controller
         if ($keyword) {
             $keyword         = trim(urldecode($keyword));
             $app_id          = App::where(['keyword' => $keyword])->orderBy('id', 'desc')->value('id');
+            $where['app_id'] = $app_id;
+        }
+        if ($app_id) {
             $where['app_id'] = $app_id;
         }
 
@@ -45,6 +49,7 @@ class AppController extends Controller
         foreach ($list as &$row) {
             $row->app_name = $row->app->app_name;
             $row->keyword  = $row->app->keyword;
+
             unset($row->app);
         }
 
@@ -75,7 +80,7 @@ class AppController extends Controller
         // * 列表
         // offset
         $offset = ($current_page - 1) * $page_size;
-        $list   = DB::table('apps')
+        $list   = App::with('user')
             ->when($search, function ($query) use ($search) {
                 $key = 'id';
                 return $query->where($key, $search);
@@ -84,6 +89,12 @@ class AppController extends Controller
             ->offset($offset)
             ->orderBy('id', 'desc')
             ->get();
+
+        // 获取关联
+        foreach ($list as &$row) {
+            $row->user_name = $row->user->name;
+            unset($row->user);
+        }
 
         // 整理分页
         $pagination = [
