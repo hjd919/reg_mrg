@@ -13,7 +13,7 @@ class ToIosApp extends Command
      *
      * @var string
      */
-    protected $signature = 'to:ios_app';
+    protected $signature = 'export_delete:invalid_email';
 
     /**
      * The console command description.
@@ -39,21 +39,7 @@ class ToIosApp extends Command
      */
     public function handle()
     {
-        // * to device_id
-        $i    = 0;
-        $rows = DB::table('apps')->groupBy('appid')->get();
-        if ($rows->isEmpty()) {
-            return false;
-        }
-
-        foreach ($rows as $row) {
-            DB::table('ios_apps')->insert([
-                'appid'     => $row->appid,
-                'app_name'  => $row->app_name,
-                'bundle_id' => $row->bundle_id,
-            ]);
-            $i++;
-            echo '执行' . $i . '次' . "\n";
-        }
+        // 导出并删除失效账号
+        $code = exec("mysqldump -uhjd -p'hjd2015' -h127.0.0.1 -P3306 --default-character-set=utf8 --no-create-db --no-create-info --tables jishua emails --where='valid_status=0' > jishua_emails.table.sql");
     }
 }
