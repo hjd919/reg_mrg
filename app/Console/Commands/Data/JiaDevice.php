@@ -39,7 +39,7 @@ class JiaDevice extends Command
      */
     public function handle()
     {
-        for ($i = 0; $i < 6000; $i++) {
+        for ($i = 0; $i < 15000; $i++) {
             $time   = microtime(true);
             $ranstr = md5($time);
 
@@ -54,7 +54,7 @@ class JiaDevice extends Command
                 }
             }
             $data = [
-                'imei'          => '36' . (rand(1000000000000, 9999999999999)),
+                'imei'          => rand(100000000000000, 999999999999999),
                 'udid'          => substr($ranstr, 0, 8) . md5($time . rand(1, 100)),
                 'serial_number' => strtoupper(substr($ranstr, 8, 12)),
                 'os'            => '',
@@ -65,7 +65,7 @@ class JiaDevice extends Command
 
             $res = DB::table('devices')->insert($data);
             if ($res) {
-                echo "g-{$i}\n";
+                echo "{$i}\n";
             } else {
                 echo "f-{$i}\n";
             }
