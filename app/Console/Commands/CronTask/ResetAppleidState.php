@@ -41,18 +41,10 @@ class ResetAppleidState extends Command
     {
         // 获取超时未任务
         $app_rows = DB::table('appleids')->where([
-            ['state', '=', 3],
-            ['updated_at', '<', date('Y-m-d H:i:s', strtotime('-2 hours'))],
+            'state' => 0,
         ])->get();
         if ($app_rows->isEmpty()) {
-            // 获取不到，退出
-            return true;
+            DB::table('appleids')->where('state', 3)->update(['state' => 0]);
         }
-
-        // reset回状态
-        foreach ($app_rows as $row) {
-            DB::table('appleids')->where('id', $row->id)->limit(5)->update(['strAn3' => '好啊了', 'state' => 0]);
-        }
-
     }
 }
