@@ -101,11 +101,12 @@ class TaskController extends Controller
         if (empty($output[0])) {
             // 标志该邮箱不能用
             $end_time1 = microtime(true);
-            Util::log('--fail_list--', json_encode([
+            /*Util::log('--fail_list--', json_encode([
                 'email'      => $email,
                 'password'   => $password,
                 'spend_time' => $end_time1 - $start_time,
             ]));
+		*/
 
             // DB::table('appleids')->where('strRegName', $email)->update(['state' => 5]);
 
