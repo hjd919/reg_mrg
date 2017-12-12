@@ -1,12 +1,12 @@
 <?php
 namespace App\Http\Controllers\Jishua;
 
+use App\Http\Controllers\Controller;
 use App\Models\Email;
-use App\Support\Util;
 use App\Models\WorkDetail;
+use App\Support\Util;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redis;
 
@@ -377,7 +377,9 @@ class TaskController extends Controller
             // 如果同一个appid在1分钟内超过30次此类请求，则邮件提醒
             $repeat_key = 'repeat_account_do:appid_' . $appid;
             if (Redis::get($repeat_key) > 30) {
-                
+                Redis::incr($repeat_key);
+                Redis::expire($repeat_key, 60);
+
                 // 1800秒通知一次
                 $notify_key = 'notify_repeat_account_do';
                 if (!Redis::get($notify_key)) {
