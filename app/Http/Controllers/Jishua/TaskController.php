@@ -1,12 +1,13 @@
 <?php
 namespace App\Http\Controllers\Jishua;
 
-use App\Http\Controllers\Controller;
 use App\Models\Email;
-use App\Models\WorkDetail;
 use App\Support\Util;
+use App\Models\WorkDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redis;
 
 class TaskController extends Controller
@@ -373,8 +374,29 @@ class TaskController extends Controller
         if ($exist_work_detail) {
             $set_last_id($email_key, $email_rows[0]->id - 54);
 
-            Util::log('title', 'app存在刷过此批量账号了{appid:' . $appid . ',account_id:' . $email_rows->last()->id);
-            Util::die_jishua('app存在刷过此批量账号了{appid:' . $appid . ',account_id:' . $email_rows->last()->id, 1);
+            // 如果同一个appid在1分钟内超过30次此类请求，则邮件提醒
+            $repeat_key = 'repeat_account_do:appid_' . $appid;
+            if (Redis::get($repeat_key) > 30) {
+                
+                // 1800秒通知一次
+                $notify_key = 'notify_repeat_account_do';
+                if (!Redis::get($notify_key)) {
+                    Redis::set($notify_key, 1);
+                    Redis::expire($notify_key, 1800);
+
+                    // 邮箱通知
+                    $msg    = json_encode(compact('appid'));
+                    $toMail = '297538600@qq.com';
+                    Mail::raw($msg, function ($message) use ($toMail) {
+                        $subject = 'app刷过此批量账号';
+                        $message->subject($subject);
+                        $message->to($toMail);
+                    });
+                }
+            }
+
+            Util::log('title', 'app存在刷过此账号了{appid:' . $appid . ',account_id:' . $email_rows->last()->id);
+            Util::die_jishua('app存在刷过此账号了{appid:' . $appid . ',account_id:' . $email_rows->last()->id, 1);
         }
 
         // * 循环获取手机设备记录
@@ -434,7 +456,7 @@ class TaskController extends Controller
             // 插入work_detail
             $response = $work_detail = [];
             foreach ($email_rows as $key => $email_row) {
-                
+
                 // 统计账号使用次数
                 DB::table('emails')->where('id', $email_row->id)->increment('use_num');
 
