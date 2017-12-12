@@ -7,6 +7,7 @@ use App\Models\WorkDetail;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redis;
 
 class MarkFinishedTasks extends Command
 {
@@ -54,8 +55,8 @@ class MarkFinishedTasks extends Command
 
         foreach ($app_rows as $app_row) {
             // 判断没到结束时间并剩余量为0时，是否已经全部完成成功量
-            if($app_row->brush_num <= 0 
-            && strtotime($app_row->end_time)>time()){
+            if ($app_row->brush_num <= 0
+                && strtotime($app_row->end_time) > time()) {
                 $valid_num = WorkDetail::countSuccessBrushNum($app_row->appid, $app_row->id, $app_row->start_time);
 
                 $unsuccess_num = $app_row->success_num - $valid_num;
@@ -98,7 +99,7 @@ class MarkFinishedTasks extends Command
 
             // * 标志不在刷了
             $res = DB::table('apps')->where('id', $app_row->id)->update([
-                'is_brushing' => 0,
+                'is_brushing'         => 0,
                 'real_end_time'       => date('Y-m-d H:i:s'),
                 'brushed_num'         => $brushed_num, // 已刷数量
                 'success_brushed_num' => $success_brushed_num, // 已刷数量
@@ -117,19 +118,28 @@ class MarkFinishedTasks extends Command
 
             }
 
-            // 邮箱通知
-            $msg = json_encode([
-                "应用"  => $app_row->app_name,
-                "关键词" => $app_row->keyword,
-            ], JSON_UNESCAPED_UNICODE);
             // 按照用户表的email去通知
             $toMail = DB::table('users')->where('id', $app_row->user_id)->select('email')->value('email');
-            $cc     = ['297538600@qq.com'];
-            Mail::raw($msg, function ($message) use ($toMail, $cc) {
-                $message->subject('jishua有应用打完了');
-                $message->to($toMail);
-                $message->cc($cc);
-            });
+
+            // 控制发邮件频率，一分钟一个人只发一封
+            $key = 'notify_finish_task:email_' . $toMail;
+            if (!Redis::get($key)) {
+                Redis::set($key, 1);
+                Redis::expire($key, 60);
+
+                // 邮箱通知
+                $msg = json_encode([
+                    "应用"  => $app_row->app_name,
+                    "关键词" => $app_row->keyword,
+                ], JSON_UNESCAPED_UNICODE);
+
+                Mail::raw($msg, function ($message) use ($toMail, $cc) {
+                    $message->subject('jishua有应用打完了');
+                    $message->to($toMail);
+                    $message->cc($cc);
+                });
+            }
+
         }
     }
 }
