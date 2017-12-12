@@ -17,6 +17,7 @@ class AppController extends Controller
         $page_size    = $request->input('pageSize', 10);
         $appid        = $request->input('appid', '');
         $app_id       = $request->input('app_id', '');
+        $task_id      = $request->input('task_id', '');
         $keyword      = $request->input('keyword', '');
 
         // 查询条件
@@ -31,6 +32,9 @@ class AppController extends Controller
         }
         if ($app_id) {
             $where['app_id'] = $app_id;
+        }
+        if ($task_id) {
+            $where['task_id'] = $task_id;
         }
 
         // * total
