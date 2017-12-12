@@ -42,7 +42,7 @@ class ResetAppleidState extends Command
         // 获取超时未任务
         $app_rows = DB::table('appleids')->where([
             ['state', '=', 3],
-            ['updated_at', '<', date('Y-m-d H:i:s', strtotime('-50 minutes'))],
+            ['updated_at', '<', date('Y-m-d H:i:s', strtotime('-2 hours'))],
         ])->get();
         if ($app_rows->isEmpty()) {
             // 获取不到，退出
