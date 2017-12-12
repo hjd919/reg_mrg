@@ -399,7 +399,7 @@ class TaskController extends Controller
         $device_key     = 'last_device_id:appid_' . $appid;
         $last_device_id = $get_last_id($device_key);
 
-        if ($mobile_group_id >= 1008 && $mobile_group_id <= 1013) {
+        if ($mobile_group_id >= 1008 && $mobile_group_id <= 1015) {
             // 假设备
             $where = [
                 'is_real' => 0,

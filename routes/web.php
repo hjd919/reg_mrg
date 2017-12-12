@@ -60,6 +60,7 @@ Route::group([
     $router->post('/task/saveTaskKeyword', 'TaskController@saveTaskKeyword');
 
     $router->get('/app/query_one', 'AppController@queryOne');
+    $router->post('/app/export', 'AppController@export');
 
     $router->get('/task_keyword/query', 'TaskKeywordController@query');
     $router->get('/task_keyword/stop', 'TaskKeywordController@stop');
@@ -69,4 +70,5 @@ Route::group([
 
     $router->post('/email/import', 'EmailController@import');
     $router->post('/appleid/import', 'AppleidController@import');
+
 });

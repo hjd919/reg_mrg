@@ -104,7 +104,6 @@ class MarkFinishedTasks extends Command
                 'brushed_num'         => $brushed_num, // 已刷数量
                 'success_brushed_num' => $success_brushed_num, // 已刷数量
                 'fail_brushed_num'    => $fail_brushed_num, // 已刷数量
-                'remain_brush_num'    => $app_row->brush_num < 0 ? 0 : $app_row->brush_num, // 剩余未刷数量
             ]);
 
             // * 释放手机

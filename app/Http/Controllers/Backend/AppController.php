@@ -11,6 +11,53 @@ use Illuminate\Support\Facades\DB;
 
 class AppController extends Controller
 {
+    public function export(Request $request)
+    {
+        $yesterday = date('Y-m-d', strtotime('-1 days'));
+
+        // 导出昨天到现在的记录
+        $app_rows = App::with('user')->where('create_time', '>=', $yesterday)->get();
+        foreach ($app_rows as $app_row) {
+            $data[] = [
+                'appid'               => $app_row->appid,
+                'app_name'            => $app_row->app_name,
+                'keyword'             => $app_row->keyword,
+                'user_name'           => $app_row->user->user_name,
+                'brush_num'           => $app_row->user->brush_num,
+                'brushed_num'         => $app_row->brushed_num,
+                'success_num'         => $app_row->success_num,
+                'success_brushed_num' => $app_row->success_brushed_num,
+                'fail_brushed_num'    => $app_row->fail_brushed_num,
+                'mobile_num'          => $app_row->mobile_num,
+                'start_time'          => $app_row->start_time,
+                'end_time'            => $app_row->end_time,
+                'real_end_time'       => $app_row->real_end_time,
+                'mobile_group_id'     => $app_row->mobile_group_id,
+            ];
+        }
+
+        $field_name = [
+            'appid',
+            'app名',
+            '关键词',
+            '下单人',
+            '剩余量',
+            '总量',
+            '实际总打量',
+            '成功打量',
+            '失败打量',
+            '手机数量',
+            '打量开始',
+            '打量结束',
+            '实际结束',
+            '手机组id',
+            '关键词热度',
+            '在榜前',
+            '在榜后',
+            '在榜时间',
+        ];
+    }
+
     public function queryHourlyStat(Request $request)
     {
         $current_page = $request->input('currentPage', 1);
