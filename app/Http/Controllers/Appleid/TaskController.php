@@ -156,7 +156,7 @@ class TaskController extends Controller
             Util::log('--fail_content--', json_encode([
                 'email'      => $email,
                 'password'   => $password,
-                'spend_time' => $end_time2 - $end_time1,
+                'spend_time' => $end_time2 - $start_time,
             ]));
 
             return response()->json([
