@@ -97,9 +97,15 @@ class TaskController extends Controller
     }
 
     // * 开始任务
-    public function start($is_die = true)
+    public function start(Request $request, $is_die = true)
     {
-        if (Redis::set(self::STOP_GET_APP, 0)) {
+        $appid = $request->appid;
+        if ($appid) {
+            $stop_app_key = self::STOP_GET_APP . ':appid_' . $appid;
+        } else {
+            $stop_app_key = self::STOP_GET_APP;
+        }
+        if (Redis::set($stop_app_key, 0)) {
             if ($is_die) {
                 Util::die_jishua('开始任务 ok');
             }
@@ -366,7 +372,7 @@ class TaskController extends Controller
         // 判断是否app刷过此批量账号
         $exist_work_detail = WorkDetail::isAppBrushEmails($appid, $email_rows[0]->id);
         if ($exist_work_detail) {
-            $set_last_id($email_key, $email_rows[0]->id - 9);
+            $set_last_id($email_key, $email_rows[0]->id - 54);
 
             // 如果同一个appid在1分钟内超过30次此类请求，则邮件提醒
             $repeat_key = 'repeat_account_do:appid_' . $appid;
