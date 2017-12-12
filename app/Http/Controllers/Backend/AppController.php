@@ -72,9 +72,16 @@ class AppController extends Controller
         $current_page = $request->input('currentPage', 1);
         $page_size    = $request->input('pageSize', 10);
         $search       = $request->input('search', '');
+        $task_id      = $request->input('task_id', '');
+
+        $where = [];
+        if ($task_id) {
+            $where['task_id'] = $task_id;
+        }
 
         // * total
         $total = DB::table('apps')
+            ->where($where)
             ->when($search, function ($query) use ($search) {
                 $key = 'id';
                 return $query->where($key, $search);
@@ -85,6 +92,7 @@ class AppController extends Controller
         // offset
         $offset = ($current_page - 1) * $page_size;
         $list   = App::with('user')
+            ->where($where)
             ->when($search, function ($query) use ($search) {
                 $key = 'id';
                 return $query->where($key, $search);
