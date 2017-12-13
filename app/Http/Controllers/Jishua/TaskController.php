@@ -376,10 +376,10 @@ class TaskController extends Controller
 
             // 如果同一个appid在1分钟内超过30次此类请求，则邮件提醒
             $repeat_key = 'repeat_account_do:appid_' . $appid;
-            if (Redis::get($repeat_key) > 30) {
-                Redis::incr($repeat_key);
-                Redis::expire($repeat_key, 60);
+            if (Redis::get($repeat_key) > 20) {
+		Util::log('reqeat_num',$repeat_num);
 
+		exec('curl http://jsapi.yz210.com/jishua/task/brush_new_email/appid_'.$appid);
                 // 1800秒通知一次
                 $notify_key = 'notify_repeat_account_do';
                 if (!Redis::get($notify_key)) {
@@ -395,7 +395,10 @@ class TaskController extends Controller
                         $message->to($toMail);
                     });
                 }
-            }
+            }else{
+                Redis::incr($repeat_key,1);
+                Redis::expire($repeat_key, 60);
+	    }
 
             Util::log('title', 'app存在刷过此账号了{appid:' . $appid . ',account_id:' . $email_rows->last()->id);
             Util::die_jishua('app存在刷过此账号了{appid:' . $appid . ',account_id:' . $email_rows->last()->id, 1);

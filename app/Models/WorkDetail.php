@@ -29,6 +29,11 @@ class WorkDetail extends Model
         $max_num      = DB::table('emails')->where('id', '>', (int) $max_account_id)->where('valid_status', 1)->count();
         $is_new_email = Redis::get("is_new_email:appid_{$appid}");
 	$last_id = (int)$last_id;
+	if(!$ios_app){
+		return DB::table('emails')->where('valid_status',1)->count();
+	}
+	// 新app
+
         // 判断是否在刷新账号中
         if ($last_id > $ios_app->max_account_id) {
             $brush_num = DB::table('emails')->where('id', '>', $ios_app->max_account_id)->where('id', '<', $last_id)->where('valid_status', 1)->count();
