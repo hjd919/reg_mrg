@@ -132,10 +132,9 @@ class MarkFinishedTasks extends Command
                     "关键词" => $app_row->keyword,
                 ], JSON_UNESCAPED_UNICODE);
 
-                Mail::raw($msg, function ($message) use ($toMail, $cc) {
+                Mail::raw($msg, function ($message) use ($toMail) {
                     $message->subject('jishua有应用打完了');
                     $message->to($toMail);
-                    $message->cc($cc);
                 });
             }
 
