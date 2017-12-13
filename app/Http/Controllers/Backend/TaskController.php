@@ -96,10 +96,14 @@ EOF;
 
             }
 
+            // 新app时需要获取当前email最大的id
+            $max_account_id = DB::table('emails')->max('id');
+            
             $ios_app_id = DB::table('ios_apps')->insertGetId(compact(
                 'appid',
                 'app_name',
                 'work_detail_table',
+                'max_account_id',
                 'bundle_id'));
             if (!$ios_app_id) {
                 return response()->json(['error_code' => 2]);
