@@ -8,6 +8,7 @@ use App\Models\HourlAppStat;
 use App\Models\WorkDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AppController extends Controller
 {
@@ -15,47 +16,70 @@ class AppController extends Controller
     {
         $yesterday = date('Y-m-d', strtotime('-1 days'));
 
-        // 导出昨天到现在的记录
-        $app_rows = App::with('user')->where('create_time', '>=', $yesterday)->get();
-        foreach ($app_rows as $app_row) {
-            $data[] = [
-                'appid'               => $app_row->appid,
-                'app_name'            => $app_row->app_name,
-                'keyword'             => $app_row->keyword,
-                'user_name'           => $app_row->user->user_name,
-                'brush_num'           => $app_row->user->brush_num,
-                'brushed_num'         => $app_row->brushed_num,
-                'success_num'         => $app_row->success_num,
-                'success_brushed_num' => $app_row->success_brushed_num,
-                'fail_brushed_num'    => $app_row->fail_brushed_num,
-                'mobile_num'          => $app_row->mobile_num,
-                'start_time'          => $app_row->start_time,
-                'end_time'            => $app_row->end_time,
-                'real_end_time'       => $app_row->real_end_time,
-                'mobile_group_id'     => $app_row->mobile_group_id,
-            ];
-        }
+        $data = [];
 
-        $field_name = [
+        // 标题
+        $data[] = [
+            '任务ID',
             'appid',
             'app名',
             '关键词',
+            '关键词热度',
             '下单人',
             '剩余量',
             '总量',
             '实际总打量',
             '成功打量',
             '失败打量',
+            '成功率',
             '手机数量',
             '打量开始',
             '打量结束',
             '实际结束',
             '手机组id',
-            '关键词热度',
-            '在榜前',
-            '在榜后',
-            '在榜时间',
+            '机刷前排名',
+            '机刷后排名',
+            '在榜时长',
+            '在榜开始',
+            '在榜结束',
         ];
+
+        // 数据：导出昨天到现在的记录
+        $app_rows = App::with('user')->where('is_brushing', 0)->where('create_time', '>=', $yesterday)->get();
+        foreach ($app_rows as $app_row) {
+            $data[] = [
+                $app_row->id,
+                $app_row->appid,
+                $app_row->app_name,
+                $app_row->keyword,
+                $app_row->hot,
+                $app_row->user->name,
+                $app_row->user->brush_num,
+                $app_row->brushed_num,
+                $app_row->success_num,
+                $app_row->success_brushed_num,
+                $app_row->fail_brushed_num,
+                intval($app_row->success_brushed_num / $app_row->brushed_num * 100) . '%',
+                $app_row->mobile_num,
+                $app_row->start_time,
+                $app_row->end_time,
+                $app_row->real_end_time,
+                $app_row->mobile_group_id,
+                $app_row->before_rank,
+            ];
+        }
+
+        $filename = "brush_stat_{$yesterday}";
+        Excel::create($filename, function ($excel) use ($data) {
+
+            $excel->sheet('1', function ($sheet) use ($data) {
+
+                $sheet->rows($data);
+
+            });
+
+        })->export('xlsx');
+
     }
 
     public function queryHourlyStat(Request $request)
