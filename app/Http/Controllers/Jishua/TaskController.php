@@ -79,6 +79,8 @@ class TaskController extends Controller
     // 让app跑新账号
     public function brushNewEmail($appid)
     {
+        // Redis::set("is_new_email:appid_1211055336",1);
+        // die;
         //判断是否在跑旧邮箱
         $is_new_email = Redis::get("is_new_email:appid_{$appid}");
         if ($is_new_email) {
@@ -321,6 +323,8 @@ class TaskController extends Controller
                 // 4.3 更新新账号的max_id
                 $max_account_id = WorkDetail::getMaxAccountId($appid);
                 DB::table('ios_apps')->where('appid', $appid)->update(['max_account_id' => $max_account_id]);
+                // 设置last_id为min_account_id bug
+                $set_last_id($email_key, $min_account_id);
                 // 4.4 获取旧账号
                 $email_rows = DB::table('emails')->where('id', '<', $min_account_id)
                     ->where('valid_status', 1)
@@ -372,14 +376,15 @@ class TaskController extends Controller
         // 判断是否app刷过此批量账号
         $exist_work_detail = WorkDetail::isAppBrushEmails($appid, $email_rows[0]->id);
         if ($exist_work_detail) {
-            $set_last_id($email_key, $email_rows[0]->id - 54);
+            $set_last_id($email_key, $email_rows[0]->id - 12);
 
             // 如果同一个appid在1分钟内超过30次此类请求，则邮件提醒
             $repeat_key = 'repeat_account_do:appid_' . $appid;
             if (Redis::get($repeat_key) > 20) {
-		Util::log('reqeat_num',$repeat_num);
 
-		exec('curl http://jsapi.yz210.com/jishua/task/brush_new_email/appid_'.$appid);
+                // 重置跑新账号
+                exec('curl http://jsapi.yz210.com/jishua/task/brush_new_email/appid_' . $appid);
+
                 // 1800秒通知一次
                 $notify_key = 'notify_repeat_account_do';
                 if (!Redis::get($notify_key)) {
@@ -395,10 +400,10 @@ class TaskController extends Controller
                         $message->to($toMail);
                     });
                 }
-            }else{
-                Redis::incr($repeat_key,1);
+            } else {
+                Redis::incr($repeat_key, 1);
                 Redis::expire($repeat_key, 60);
-	    }
+            }
 
             Util::log('title', 'app存在刷过此账号了{appid:' . $appid . ',account_id:' . $email_rows->last()->id);
             Util::die_jishua('app存在刷过此账号了{appid:' . $appid . ',account_id:' . $email_rows->last()->id, 1);

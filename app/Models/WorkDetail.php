@@ -23,35 +23,34 @@ class WorkDetail extends Model
         // $used_num = self::getWorkDetailTable($appid)->where('appid', $appid)->count();
         $ios_app = DB::table('ios_apps')->where('appid', $appid)->first();
 
-        $last_id = Redis::get(Email::get_last_id_key($appid));
+        $last_id        = Redis::get(Email::get_last_id_key($appid));
         $max_account_id = self::getMaxAccountId($appid);
+        $max_num        = DB::table('emails')->where('id', '>', (int) $max_account_id)->where('valid_status', 1)->count();
 
-        $max_num      = DB::table('emails')->where('id', '>', (int) $max_account_id)->where('valid_status', 1)->count();
         $is_new_email = Redis::get("is_new_email:appid_{$appid}");
-	$last_id = (int)$last_id;
-	if(!$ios_app){
-		return DB::table('emails')->where('valid_status',1)->count();
-	}
-	// 新app
-	$max_account_id = $ios_app->max_account_id;
-	$min_account_id = $ios_app->min_account_id;
-	//echo json_encode(compact('is_new_email','last_id','max_account_id','min_account_id'))."\n";
+        $last_id      = (int) $last_id;
+        if (!$ios_app) {
+            return DB::table('emails')->where('valid_status', 1)->count();
+        }
+        $max_account_id = $ios_app->max_account_id;
+        $min_account_id = $ios_app->min_account_id;
+        //echo json_encode(compact('is_new_email','last_id','max_account_id','min_account_id'))."\n";
 
         // 判断是否在刷新账号中
         if ($last_id > $ios_app->max_account_id) {
             $brush_num = DB::table('emails')->where('id', '>', $ios_app->max_account_id)->where('id', '<', $last_id)->where('valid_status', 1)->count();
             $min_num   = DB::table('emails')->where('id', '<', $ios_app->min_account_id)->where('valid_status', 1)->count();
-        } else if($last_id > $ios_app->min_account_id && $last_id < $ios_app->max_account_id) {
+        } else if ($last_id > $ios_app->min_account_id && $last_id < $ios_app->max_account_id) {
+            $brush_num = 0;
             $min_num   = DB::table('emails')->where('id', '>', $ios_app->min_account_id)->where('id', '<', $last_id)->where('valid_status', 1)->count();
-            $brush_num = 0;
         } else {
-            $min_num   = DB::table('emails')->where('id', '<', (int) $last_id)->where('valid_status', 1)->count();
             $brush_num = 0;
+            $min_num   = DB::table('emails')->where('id', '<', (int) $last_id)->where('valid_status', 1)->count();
         }
 
         $used_num = Redis::get('used_appid:' . $appid);
         $used_num = (int) $used_num;
-	//echo json_encode(compact('brush_num','min_num','max_num','used_num'));
+        //echo json_encode(compact('brush_num','min_num','max_num','used_num'));
 
         return $brush_num + $min_num + $max_num - $used_num;
     }
