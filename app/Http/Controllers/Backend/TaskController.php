@@ -150,10 +150,10 @@ EOF;
         $exception_mobile_num = Mobile::getExceptionNum(); // 获取异常手机数
 
         $task_id = $request->task_id;
-        $appid   = DB::table('tasks')->where('id', $task_id)->value('appid');
+        $task    = DB::table('tasks')->where('id', $task_id)->first();
 
         // 获取可用app量
-        $usable_brush_num = WorkDetail::getUsableBrushNum($appid);
+        $usable_brush_num = WorkDetail::getUsableBrushNum($task->appid);
 
         // 获取可刷设备信息数 total-已使用设备数
         $total_device_num    = DB::table('devices')->count();
@@ -161,6 +161,7 @@ EOF;
         $usable_brush_device = $total_device_num - $used_device_num;
 
         return response()->json([
+            'app_name'             => $task->app_name,
             'free_mobile_num'      => $free_mobile_num,
             'usable_brush_num'     => $usable_brush_num,
             'exception_mobile_num' => $exception_mobile_num,
