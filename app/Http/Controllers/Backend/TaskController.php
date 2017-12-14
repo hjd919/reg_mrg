@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Redis;
 
 class TaskController extends BackendController
 {
+    protected $error_message = '';
+
     public function query(Request $request)
     {
         $current_page = $request->input('currentPage', 1);
@@ -98,7 +100,7 @@ EOF;
 
             // 新app时需要获取当前email最大的id
             $max_account_id = DB::table('emails')->max('id');
-            
+
             $ios_app_id = DB::table('ios_apps')->insertGetId(compact(
                 'appid',
                 'app_name',
@@ -175,18 +177,13 @@ EOF;
         $task_id         = $request->input('task_id');
         $keyword         = $request->input('keyword');
         $success_num     = $request->input('success_num');
+        $mobile_num      = $request->input('mobile_num');
+        $app_info        = $request->input('app_info');
         $start_time      = $request->input('start_time');
         $end_time        = $request->input('end_time');
-        $mobile_num      = $request->input('mobile_num');
         $mobile_group_id = $request->input('mobile_group_id');
-        $hot             = 0;
-        $before_rank     = 0;
-        $remark          = '';
 
         // 判断mobile_num和mobile_group_id必须存在一个
-        if (!$mobile_num && !$mobile_group_id) {
-            return response()->json(['error_code' => 2, 'message' => '空闲手机数或者手机组id必须填一个']);
-        }
         if ($mobile_group_id && $mobile_group_id < 1000) {
             return response()->json(['error_code' => 3, 'message' => '手机组id是测试用，且需要小于1000']);
         }
@@ -201,102 +198,127 @@ EOF;
         $task    = Task::find($task_id);
         $ios_app = $task->ios_app;
 
-        // * 判断是否多于空闲手机数
-        if (!$mobile_group_id) {
-            $free_mobile_num = DB::table('mobiles')->where('mobile_group_id', 0)->count(); // 获取空闲手机数
-            if ($mobile_num > $free_mobile_num) {
-                return response()->json(['error_code' => 1, 'message' => '已经多于空闲手机数']);
+        $total_success_num = 0; // 总使用账号量
+
+        $total_hour = floor((strtotime($end_time) - strtotime($start_time)) / 3600); // 所需小时
+        $total_hour *= 30; // 所能打到的成功量
+        $app_ids = [];
+
+        $app_info = explode("\n", $app_info); //行
+        foreach ($app_info as $app_info_row) {
+
+            // 格式化app_info内容
+            $app_info_row = preg_replace('#\s+#', ' ', $app_info_row);
+            $app_info_row = trim($app_info_row);
+
+            // 判断是否为空行
+            if (!$app_info_row) {
+                continue;
             }
-        }
 
-        // * 添加下单关键词
-        // $task_keyword_id = DB::table('task_keywords')->insertGetId([
-        //     'user_id'     => $user_id,
-        //     'task_id'     => $task_id,
-        //     'ios_app_id'  => $ios_app->id,
-        //     'keyword'     => $keyword,
-        //     'success_num' => $success_num,
-        //     'start_time'  => $start_time,
-        //     'end_time'    => $end_time,
-        //     'mobile_num'  => $mobile_num,
-        //     'remark'      => $remark,
-        // ]);
+            $app_info_row = explode(' ', $app_info_row);
 
-        // 判断是否已预设mobile_group_id
-        if (!$mobile_group_id) {
+            // 判断app_info格式是否正确
+            if (!isset($app_info_row[3])) {
+                $this->error_message = '输入内容不正确，空格分割且含有4个纬度的值！';
+                break;
+            }
+
+            list($hot, $before_rank, $keyword, $success_num) = $app_info_row;
+
+            // 判断app_info格式是否正确
+            if (empty($hot) || empty($before_rank) || empty($keyword) || empty($success_num)) {
+                $this->error_message = '输入内容不正确，空格分割且含有4个纬度的值！';
+                break;
+            }
+
+            $total_success_num += $success_num;
+
+            // # 保存一个关键词
+
             // * 设置手机分组
+            if (!$mobile_group_id) {
 
-            // 获取当前分组号
-            $mobile_group_id = DB::table('config')->where('keyword', 'next_mobile_group_id')->value('value');
+                // 计算手机数量 总量/30*所需小时
+                $mobile_num = ceil($success_num / $total_hour);
 
-            // 设置下一个mobile_group_id
-            if ($mobile_group_id >= 999) {
-                $value = 1;
+                // 判断是否多于空闲手机数
+                $free_mobile_num = DB::table('mobiles')->where('mobile_group_id', 0)->count(); // 获取空闲手机数
+                if ($mobile_num > $free_mobile_num) {
+                    $this->error_message = '已经多于空闲手机数';
+                    break;
+                }
+
+                // 获取当前分组号
+                $mobile_group_id = DB::table('config')->where('keyword', 'next_mobile_group_id')->value('value');
+
+                // 设置下一个mobile_group_id
+                if ($mobile_group_id >= 999) {
+                    $value = 1;
+                } else {
+                    $value = $mobile_group_id + 1;
+                }
+                DB::table('config')->where('keyword', 'next_mobile_group_id')->update(['value' => $value]);
+
+                // 如果不存在分组，则添加分组表
+                if (!DB::table('mobile_group')->find($mobile_group_id)) {
+                    DB::table('mobile_group')->insert([
+                        'id'     => $mobile_group_id,
+                        'name'   => '随机' . $mobile_group_id,
+                        'remark' => 'no remark',
+                    ]);
+                }
+
+                // 更新手机分组（1000以上是自己用的)
+                Mobile::updateMobileGroupId($mobile_num, $mobile_group_id);
             } else {
-                $value = $mobile_group_id + 1;
-            }
-            DB::table('config')->where('keyword', 'next_mobile_group_id')->update(['value' => $value]);
-
-            // 如果不存在分组，则添加分组表
-            if (!DB::table('mobile_group')->find($mobile_group_id)) {
-                DB::table('mobile_group')->insert([
-                    'id'     => $mobile_group_id,
-                    'name'   => '随机' . $mobile_group_id,
-                    'remark' => 'no remark',
-                ]);
+                $mobile_num = DB::table('mobiles')->where('mobile_group_id', $mobile_group_id)->count(); // 获取空闲手机数
             }
 
-            // 更新手机分组（1000以上是自己用的)
-            Mobile::updateMobileGroupId($mobile_num, $mobile_group_id);
+            // * 添加app
+            $is_brushing = 1;
+            $app_id      = DB::table('apps')->insertGetId([
+                'user_id'         => $user_id,
+                'task_id'         => $task_id,
+                'ios_app_id'      => $ios_app->id,
+                'keyword'         => $keyword,
+                'brush_num'       => $success_num,
+                'success_num'     => $success_num,
+                'start_time'      => $start_time,
+                'end_time'        => $end_time,
+                'mobile_num'      => $mobile_num,
+                'appid'           => $ios_app->appid,
+                'app_name'        => $ios_app->app_name,
+                'bundle_id'       => $ios_app->bundle_id,
+                'is_brushing'     => $is_brushing,
+                'mobile_group_id' => $mobile_group_id,
+                'hot'             => $hot,
+                'before_rank'     => $before_rank,
+            ]);
+
+            $app_ids[] = compact('app_id', 'keyword');
         }
 
-        // * 添加app
-        $is_brushing = 1;
-        $app_id      = DB::table('apps')->insertGetId([
-            'user_id'         => $user_id,
-            'task_id'         => $task_id,
-            // 'task_keyword_id' => $task_keyword_id,
-            'ios_app_id'      => $ios_app->id,
-            'keyword'         => $keyword,
-            'brush_num'       => $success_num,
-            'success_num'     => $success_num,
-            'start_time'      => $start_time,
-            'end_time'        => $end_time,
-            'mobile_num'      => $mobile_num,
-            'appid'           => $ios_app->appid,
-            'app_name'        => $ios_app->app_name,
-            'bundle_id'       => $ios_app->bundle_id,
-            'is_brushing'     => $is_brushing,
-            'mobile_group_id' => $mobile_group_id,
-            'hot'         => $hot,
-            'before_rank' => $before_rank,
-        ]);
-        if (!$app_id) {
-            return response()->json(['error_code' => 1]);
+        if ($this->error_message == '输入格式不正确，空格分割哦！') {
+            return response()->json(['error_code' => 1, 'message' => $this->error_message]);
         }
 
         // 更新为已完成
-        $res = DB::table('tasks')->where('id', $task_id)->update(['step' => 2, 'total_num' => $task->total_num + $success_num]);
+        $res = DB::table('tasks')->where('id', $task_id)->update(['step' => 2, 'total_num' => $task->total_num + $total_success_num]);
         if (!$res) {
             return response()->json(['error_code' => 2]);
         }
 
-        // 更新task_keywords中刚添加的app_id
-        // DB::table('task_keywords')->where('id', $task_keyword_id)->update([
-        //     'app_id' => $app_id,
-        // ]);
-
         // 记录appid已经用过的量
         $old_used_num = Redis::get('used_appid:' . $ios_app->appid);
         $old_used_num = (int) $old_used_num;
-        Redis::set('used_appid:' . $ios_app->appid, $old_used_num + $success_num);
+        Redis::set('used_appid:' . $ios_app->appid, $old_used_num + $total_success_num);
         Redis::expire('used_appid:' . $ios_app->appid, 3600);
 
         return response()->json([
             'message'  => '添加成功',
-            'app_id'   => $app_id,
+            'app_ids'  => $app_ids,
             'app_name' => $ios_app->app_name,
-            'keyword'  => $keyword,
         ]);
     }
 }
