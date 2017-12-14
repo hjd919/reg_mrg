@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Http\Controllers\Backend\BackendController;
-use App\Models\Mobile;
+use App\Models\App;
 use App\Models\Task;
+use App\Models\Mobile;
 use App\Models\WorkDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
+use App\Http\Controllers\Backend\BackendController;
 
 class TaskController extends BackendController
 {
@@ -227,6 +228,12 @@ EOF;
 
             list($hot, $before_rank, $keyword, $success_num) = $app_info_row;
 
+            // 判断关键词半小时内是否存在
+            if (App::where('create_time', '>', date('Y-m-d H:i:s', strtotime('-30 minutes')))->where('keyword', $keyword)->first()) {
+                $this->error_message = '已经存在该app的关键词了，别重复添加';
+                break;
+            }
+
             // 判断app_info格式是否正确
             if (empty($hot) || empty($before_rank) || empty($keyword) || empty($success_num)) {
                 $this->error_message = '输入内容不正确，空格分割且含有4个纬度的值！';
@@ -302,8 +309,9 @@ EOF;
             unset($mobile_group_id);
         }
 
-        if ($this->error_message == '输入格式不正确，空格分割哦！') {
-            return response()->json(['error_code' => 1, 'message' => $this->error_message]);
+        // 判断没有添加的，且有错误的
+        if(!$app_ids && $this->error_message){
+            return response()->json(['error_code' => 2, 'message' => $this->error_message]);
         }
 
         // 更新为已完成
@@ -318,8 +326,10 @@ EOF;
         Redis::set('used_appid:' . $ios_app->appid, $old_used_num + $total_success_num);
         Redis::expire('used_appid:' . $ios_app->appid, 3600);
 
+        $message = $this->error_message ?: '添加成功';
+
         return response()->json([
-            'message'  => '添加成功',
+            'message'  => $message,
             'app_ids'  => $app_ids,
             'app_name' => $ios_app->app_name,
         ]);
