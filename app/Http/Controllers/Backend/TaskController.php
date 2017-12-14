@@ -249,6 +249,7 @@ EOF;
 
                 // 计算手机数量 总量/30*所需小时
                 $mobile_num = round($success_num / $total_hour);
+                $mobile_num = $mobile_num <= 0 ? 1 : $mobile_num;
 
                 // 判断是否多于空闲手机数
                 $free_mobile_num = DB::table('mobiles')->where('mobile_group_id', 0)->count(); // 获取空闲手机数
