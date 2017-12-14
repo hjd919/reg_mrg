@@ -238,7 +238,7 @@ EOF;
             // # 保存一个关键词
 
             // * 设置手机分组
-            if (!$mobile_group_id) { // bug 因为mobile_group_id循环时已经存在了,1重置它 2判断这种情况
+            if (empty($mobile_group_id)) { // bug 因为mobile_group_id循环时已经存在了,1重置它 2判断这种情况
 
                 // 计算手机数量 总量/30*所需小时
                 $mobile_num = round($success_num / $total_hour);
