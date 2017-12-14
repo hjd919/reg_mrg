@@ -21,18 +21,35 @@ class AppController extends Controller
         }
 
         // 读取excel文件
-        Excel::load($excel_path, function ($reader) {
+        $excel_realpath = storage_path('/app/' . $excel_path);
 
-            // reader methods
-            $results = $reader->get();
+        // 加载excel文件
+        $reader  = Excel::load($excel_realpath);
+        $results = $reader->get();
 
-            // 遍历数据，更新app的rank
-            foreach ($results as $row) {
-                echo json_encode(['app_id'=>$row->任务ID,'after_rank'=>$row->现排名])."\n";
+        // 遍历数据，更新app的rank
+        $success_num = 0;
+        foreach ($results as $row) {
+            if (empty($row->{'任务id'}) || empty($row->{'现排名'})
+            ) {
+                continue;
             }
+            $app_id        = $row->{'任务id'};
+            $after_rank    = (int) $row->{'现排名'};
+            $on_rank_time  = (int) $row->{'在榜时长'};
+            $on_rank_end   = (int) $row->{'在榜结束'};
+            $on_rank_start = (int) $row->{'在榜开始'};
 
-        });
+            $res = App::where('id', $app_id)->update(compact('after_rank', 'on_rank_time', 'on_rank_start', 'on_rank_end'));
+            if ($res) {
+                $success_num++;
+            }
+        }
 
+        // 删除导入的文件
+        unlink($excel_realpath);
+
+        return response()->json(compact('success_num'));
     }
 
     public function export(Request $request)
@@ -71,6 +88,9 @@ class AppController extends Controller
         // 数据：导出昨天到现在的记录
         $app_rows = App::with('user')->where('is_brushing', 0)->where('create_time', '>=', $yesterday)->get();
         foreach ($app_rows as $app_row) {
+            if(!$app_row->brushed_num){
+                continue;
+            }
             $data[] = [
                 $app_row->id,
                 $app_row->appid,
@@ -90,6 +110,10 @@ class AppController extends Controller
                 $app_row->real_end_time,
                 $app_row->mobile_group_id,
                 $app_row->before_rank,
+                $app_row->after_rank,
+                $app_row->on_rank_time,
+                $app_row->on_rank_start,
+                $app_row->on_rank_end,
             ];
         }
 
