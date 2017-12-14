@@ -521,7 +521,7 @@ class TaskController extends Controller
         $account_id = $request->account_id;
         $succ_num   = $request->succ_num;
         $fail_num   = $request->fail_num;
-        $fail_reason   = $request->fail_reason;
+        $fail_reason   = $request->input('fail_reason',0);
         if (!$work_id || null === $succ_num || null === $fail_num) {
             Util::die_jishua('缺少参数' . $work_id . $succ_num . $fail_num);
         }
