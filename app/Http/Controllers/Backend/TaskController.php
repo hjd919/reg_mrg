@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Http\Controllers\Backend\BackendController;
 use App\Models\App;
-use App\Models\Task;
 use App\Models\Mobile;
+use App\Models\Task;
 use App\Models\WorkDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
-use App\Http\Controllers\Backend\BackendController;
 
 class TaskController extends BackendController
 {
@@ -229,7 +229,7 @@ EOF;
             list($hot, $before_rank, $keyword, $success_num) = $app_info_row;
 
             // 判断关键词半小时内是否存在
-            if (App::where('create_time', '>', date('Y-m-d H:i:s', strtotime('-30 minutes')))->where('keyword', $keyword)->first()) {
+            if (App::where('create_time', '>', date('Y-m-d H:i:s', strtotime('-30 minutes')))->where('is_brushing', 1)->where('keyword', $keyword)->first()) {
                 $this->error_message = '已经存在该app的关键词了，别重复添加';
                 break;
             }
@@ -310,7 +310,7 @@ EOF;
         }
 
         // 判断没有添加的，且有错误的
-        if(!$app_ids && $this->error_message){
+        if (!$app_ids && $this->error_message) {
             return response()->json(['error_code' => 2, 'message' => $this->error_message]);
         }
 

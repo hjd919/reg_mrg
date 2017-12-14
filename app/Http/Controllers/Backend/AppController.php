@@ -12,6 +12,29 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class AppController extends Controller
 {
+    public function importRank(Request $request)
+    {
+        // 上传文件
+        $excel_path = $request->upload_file->store('tmp');
+        if (!$excel_path) {
+            return response()->json(['error_message' => '上传文件失败']);
+        }
+
+        // 读取excel文件
+        Excel::load($excel_path, function ($reader) {
+
+            // reader methods
+            $results = $reader->get();
+
+            // 遍历数据，更新app的rank
+            foreach ($results as $row) {
+                echo json_encode(['app_id'=>$row->任务ID,'after_rank'=>$row->现排名])."\n";
+            }
+
+        });
+
+    }
+
     public function export(Request $request)
     {
         $yesterday = date('Y-m-d', strtotime('-1 days'));

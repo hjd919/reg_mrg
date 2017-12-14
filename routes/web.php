@@ -71,5 +71,6 @@ Route::group([
     $router->post('/appleid/import', 'AppleidController@import');
     
     $router->get('/app/export', 'AppController@export');
+    $router->post('/app/import_rank', 'AppController@importRank');
 
 });
