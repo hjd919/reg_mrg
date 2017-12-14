@@ -157,7 +157,7 @@ EOF;
 
         // 获取可刷设备信息数 total-已使用设备数
         $total_device_num    = DB::table('devices')->count();
-        $used_device_num     = WorkDetail::countAppNum($appid);
+        $used_device_num     = WorkDetail::countAppNum($task->appid);
         $usable_brush_device = $total_device_num - $used_device_num;
 
         return response()->json([
