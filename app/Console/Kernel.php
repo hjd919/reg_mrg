@@ -84,7 +84,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('count_up:hourly_task')->cron('0 */1 * * * *')->withoutOverlapping();
 
         // 账号状态重置
-        $schedule->command('reset:appleid_state')->cron('*/3 * * * * *');
+        $schedule->command('reset:appleid_state')->cron('*/2 * * * * *');
 
         // 复制成功账号
         $schedule->command('copy:appleids')->cron('*/30 * * * * *');
