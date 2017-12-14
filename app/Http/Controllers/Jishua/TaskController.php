@@ -521,6 +521,7 @@ class TaskController extends Controller
         $account_id = $request->account_id;
         $succ_num   = $request->succ_num;
         $fail_num   = $request->fail_num;
+        $fail_reason   = $request->fail_reason;
         if (!$work_id || null === $succ_num || null === $fail_num) {
             Util::die_jishua('缺少参数' . $work_id . $succ_num . $fail_num);
         }
@@ -530,7 +531,7 @@ class TaskController extends Controller
         }
 
         // * 根据任务id和账号id更新刷任务记录状态
-        WorkDetail::updateStatus($work_id, $account_id, $status);
+        WorkDetail::updateStatus($work_id, $account_id, $status, $fail_reason);
 
         Util::die_jishua('ok');
     }

@@ -105,7 +105,7 @@ class WorkDetail extends Model
     }
 
     // 更新状态
-    public static function updateStatus($work_id, $account_id, $status)
+    public static function updateStatus($work_id, $account_id, $status, $fail_reason = 0)
     {
         // 根据work_id查询appid
         $appid = DB::table('works')->select('appid')->where('id', $work_id)->value('appid');
@@ -115,6 +115,7 @@ class WorkDetail extends Model
             'account_id' => $account_id,
         ])->update([
             'status'      => $status,
+            'fail_reason' => (int) $fail_reason,
             'report_time' => date('Y-m-d H:i:s'),
         ]);
     }
