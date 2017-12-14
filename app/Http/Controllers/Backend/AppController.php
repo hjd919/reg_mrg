@@ -54,7 +54,24 @@ class AppController extends Controller
 
     public function export(Request $request)
     {
-        $yesterday = date('Y-m-d', strtotime('-1 days'));
+        // 输入
+        $appid    = $request->input('appid', '');
+        $end_date = $request->input('end_date', '');
+
+        // 默认开始时间为昨天
+        $yesterday  = date('Y-m-d', strtotime('-1 days'));
+        $start_date = $request->input('start_date')?$request->input('start_date'):$yesterday;
+        
+        // 设置where
+        $where = [
+            ['create_time', '>=', $start_date],
+        ];
+        if ($end_date) {
+            $where[] = ['create_time', '<=', $end_date . ' 23:59:59'];
+        }
+        if ($appid) {
+            $where[] = ['appid', '=', $appid];
+        }
 
         $data = [];
 
@@ -86,9 +103,9 @@ class AppController extends Controller
         ];
 
         // 数据：导出昨天到现在的记录
-        $app_rows = App::with('user')->where('is_brushing', 0)->where('create_time', '>=', $yesterday)->get();
+        $app_rows = App::with('user')->where('is_brushing', 0)->where($where)->get();
         foreach ($app_rows as $app_row) {
-            if(!$app_row->brushed_num){
+            if (!$app_row->brushed_num) {
                 continue;
             }
             $data[] = [
@@ -192,10 +209,23 @@ class AppController extends Controller
         $page_size    = $request->input('pageSize', 10);
         $search       = $request->input('search', '');
         $task_id      = $request->input('task_id', '');
+        $appid        = $request->input('appid', '');
+        $start_date   = $request->input('start_date', '');
+        $end_date     = $request->input('end_date', '');
 
         $where = [];
+
         if ($task_id) {
-            $where['task_id'] = $task_id;
+            $where[] = ['task_id', '=', $task_id];
+        }
+        if ($appid) {
+            $where[] = ['appid', '=', $appid];
+        }
+        if ($end_date) {
+            $where[] = ['create_time', '<=', $end_date . ' 23:59:59'];
+        }
+        if ($start_date) {
+            $where[] = ['create_time', '>=', $start_date];
         }
 
         // * total
