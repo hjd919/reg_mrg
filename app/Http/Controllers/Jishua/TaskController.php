@@ -302,13 +302,13 @@ class TaskController extends Controller
         $email_key = 'last_email_id:appid_' . $appid;
         // $email_rows = $query_rows($last_email_id,'emails',$where);
         // method1
+        $used_account_ids_key = "used_account_ids:appid_{$appid}";
+        
         if ($appid == '1211055336') {
             $useful_account_id_num = Redis::sSize('useful_account_ids:appid_' . $appid);
-            $used_account_ids_key  = "used_account_ids:appid_{$appid}";
             $email_ids = [];
             for ($i = 0; $i < 3; $i++) {
                 $email_ids[$i] = Redis::sPop('useful_account_ids:appid_' . $appid);
-                Redis::sAdd($used_account_ids_key, $email_ids[$i]);
             }
             $email_rows = DB::table('emails')->whereIn('id', $email_ids)->get();
             $email_num  = count($email_rows->toArray());
@@ -493,6 +493,10 @@ class TaskController extends Controller
         // 判断都通过后，再切换循环id
         $set_last_id($device_key, $device_rows[count($device_rows) - 1]->id);
         $set_last_id($email_key, $email_rows->last()->id);
+        
+        foreach($email_rows as $email_row){
+            Redis::sAdd($used_account_ids_key, $email_row->id);
+        }
 
         // * 增加刷任务记录   -> 任务数量减一
         DB::beginTransaction();
