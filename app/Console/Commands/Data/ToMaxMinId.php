@@ -68,25 +68,7 @@ class ToMaxMinId extends Command
         echo 'valid_account_ids:size:' . Redis::sSize($total_key) . "\n";
         // die;
         //set work_detail account_id sort
-        $appid    = '1211055336';
-        $sort_key = "used_account_ids:appid_{$appid}";
-        $offset   = 10000;
-        while (1) {
-            $data = WorkDetail::getWorkDetailTable($appid)->select('account_id')->where('appid', $appid)->offset($offset)->limit(10000)->get();
-            if ($data->isEmpty()) {
-                break;
-            }
-            echo $offset . "\n";
-            $offset += 10000;
-            foreach ($data as $r) {
-                Redis::sAdd($sort_key, $r->account_id);
-                // echo $r->account_id . "\n";
-            }
-        }
-        // diff two sort
-        var_dump(Redis::sDiffStore("useful_account_ids:appid_{$appid}", $total_key, $sort_key)) . "\n";
-        echo Redis::sSize("valid_account_id:appid_{$appid}");
-        die;
+       
 
         //     // * to device_id
         //     $rows = DB::table('apps')->groupBy('appid')->get();

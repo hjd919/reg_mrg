@@ -39,6 +39,35 @@ class ToIosApp extends Command
      */
     public function handle()
     {
+        // 已用过账号
+        $appid    = '1211055336';
+        $sort_key = "used_account_ids:appid_{$appid}";
+        $offset   = 10000;
+        $i        = 0;
+        while (1) {
+            $data = WorkDetail::getWorkDetailTable($appid)->select('account_id')->where('appid', $appid)->offset($offset)->limit(10000)->get();
+            if ($data->isEmpty()) {
+                break;
+            }
+            echo 'offset-' . $offset . "\n";
+            $offset += 10000;
+            foreach ($data as $key => $r) {
+                Redis::sAdd($sort_key, $r->account_id);
+                if (!$key % 1000) {
+                    $i += 1000;
+                    echo $i;
+                }
+            }
+        }
+        die;
+// diff two sort
+        // 某个时间点未用过账号
+        $total_key = 'valid_account_ids';
+        $sort_key  = "used_account_ids:appid_{$appid}";
+        var_dump(Redis::sDiffStore("useful_account_ids:appid_{$appid}", $total_key, $sort_key)) . "\n";
+        echo Redis::sSize("valid_account_id:appid_{$appid}");
+        die;
+
         // 导出并删除失效账号
 
         // 导出
