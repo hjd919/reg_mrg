@@ -43,22 +43,21 @@ class ToIosApp extends Command
         $appid    = '1211055336';
         $sort_key = "used_account_ids:appid_{$appid}";
         $offset   = 10000;
-        $i        = 0;
         while (1) {
-            $data = WorkDetail::getWorkDetailTable($appid)->select('account_id')->where('appid', $appid)->offset($offset)->limit(10000)->get();
+            $data = WorkDetail::getWorkDetailTable($appid)->select('account_id')->where('appid', $appid)->orderBy('id','desc')->offset($offset)->limit(10000)->get();
             if ($data->isEmpty()) {
                 break;
             }
             echo 'offset-' . $offset . "\n";
             $offset += 10000;
             foreach ($data as $key => $r) {
-                Redis::sAdd($sort_key, $r->account_id);
-                if (!$key % 1000) {
-                    $i += 1000;
-                    echo $i;
+                $res = Redis::sAdd($sort_key, $r->account_id);
+                if(!$res){
+                    break 2;
                 }
             }
         }
+        echo Redis::sSize($sort_key);
         die;
 // diff two sort
         // 某个时间点未用过账号
