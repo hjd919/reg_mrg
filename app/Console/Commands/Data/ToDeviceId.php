@@ -68,11 +68,11 @@ class ToDeviceId extends Command
             echo json_encode(compact('appid','val', 'val2', 'val3')) . "\n";
         }
 
-        // $work_detail_table = $redis->hGetAll('work_detail_table');
-        // $work_detail_table = $redis2->hMSet('work_detail_table', $work_detail_table);
-
-        // $work_detail_table = $redis2->hGetAll('work_detail_table');
-        // print_r($work_detail_table);
+        $work_detail_table = $redis->hGetAll('work_detail_table');
+        print_r($work_detail_table);
+        $redis2->hMSet('work_detail_table', $work_detail_table);
+        $work_detail_table = $redis2->hGetAll('work_detail_table');
+        print_r($work_detail_table);
         die;
         // // * to device_id
         // $i = 0;
