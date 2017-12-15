@@ -25,6 +25,8 @@ class WorkDetail extends Model
 
         $last_id        = Redis::get(Email::get_last_id_key($appid));
         $max_account_id = self::getMaxAccountId($appid);
+        $min_account_id = self::getMinAccountId($appid);
+       // echo json_encode(compact('max_account_id','min_account_id'))."\n";
         $max_num        = DB::table('emails')->where('id', '>', (int) $max_account_id)->where('valid_status', 1)->count();
 
         $is_new_email = Redis::get("is_new_email:appid_{$appid}");

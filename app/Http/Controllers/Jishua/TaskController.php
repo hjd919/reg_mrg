@@ -79,8 +79,8 @@ class TaskController extends Controller
     // 让app跑新账号
     public function brushNewEmail($appid)
     {
-        // Redis::set("is_new_email:appid_1211055336",1);
-        // die;
+        Redis::set("is_new_email:appid_{$appid}",0);
+        die;
         //判断是否在跑旧邮箱
         $is_new_email = Redis::get("is_new_email:appid_{$appid}");
         if ($is_new_email) {
@@ -302,8 +302,13 @@ class TaskController extends Controller
         $email_key     = 'last_email_id:appid_' . $appid;
         $last_email_id = $get_last_id($email_key);
         // $email_rows = $query_rows($last_email_id,'emails',$where);
+	// method1
+	
         $is_new_email = Redis::get("is_new_email:appid_{$appid}"); // 判断是否在刷新账号
         if ($is_new_email) {
+	    if($appid == '1211055336'){
+		Util::log('is_new_email',$is_new_email);
+		}
             // 3.刷新账号
             $max_account_id = DB::table('ios_apps')->select('max_account_id')->where('appid', $appid)->value('max_account_id');
             $email_rows     = DB::table('emails')
@@ -315,16 +320,19 @@ class TaskController extends Controller
                 ->get();
 
             if ($email_rows->isEmpty()) {
+	    if($appid == '1211055336'){
+		Util::log('刷完新账号了，继续刷旧账号',1);
+		}
                 // 4.刷完新账号了，继续刷旧账号
-                // 4.1 标志在刷旧账号
-                Redis::set("is_new_email:appid_{$appid}", 0);
                 // 4.2 获取原来旧账号min_account_id
                 $min_account_id = DB::table('ios_apps')->where('appid', $appid)->value('min_account_id');
                 // 4.3 更新新账号的max_id
                 $max_account_id = WorkDetail::getMaxAccountId($appid);
                 DB::table('ios_apps')->where('appid', $appid)->update(['max_account_id' => $max_account_id]);
                 // 设置last_id为min_account_id bug
+	    if($appid != '1211055336'){
                 $set_last_id($email_key, $min_account_id);
+		}
                 // 4.4 获取旧账号
                 $email_rows = DB::table('emails')->where('id', '<', $min_account_id)
                     ->where('valid_status', 1)
@@ -334,9 +342,14 @@ class TaskController extends Controller
                 if ($email_rows->isEmpty()) {
                     $email_rows = false;
                 }
+                // 4.1 标志在刷旧账号
+                Redis::set("is_new_email:appid_{$appid}", 0);
             }
 
         } else {
+	    if($appid == '1211055336'){
+		//Util::log('在刷旧账号',1);
+		}
             // 1.在刷旧账号
             $email_rows = DB::table('emails')
                 ->where('id', '<', $last_email_id)
@@ -345,8 +358,12 @@ class TaskController extends Controller
                 ->limit(3)
                 ->get();
             if ($email_rows->isEmpty()) {
-                // 1.1 刷完旧账号了，从头开始刷，标志为新账号
-                Redis::set("is_new_email:appid_{$appid}", 1);
+	    if($appid == '1211055336'){
+		Util::log('刷完旧账号了，从头开始刷，标志为新账号',1);
+		}
+
+                // 设置last_id为min_account_id bug
+                $set_last_id($email_key, self::MAX_KEY);
 
                 // 4.3 更新新账号的max_id
                 $max_account_id = WorkDetail::getMaxAccountId($appid);
@@ -361,6 +378,9 @@ class TaskController extends Controller
                 if ($email_rows->isEmpty()) {
                     $email_rows = false;
                 }
+
+                // 1.1 刷完旧账号了，从头开始刷，标志为新账号
+                Redis::set("is_new_email:appid_{$appid}", 1);
             }
 
         }
@@ -376,7 +396,7 @@ class TaskController extends Controller
         // 判断是否app刷过此批量账号
         $exist_work_detail = WorkDetail::isAppBrushEmails($appid, $email_rows[0]->id);
         if ($exist_work_detail) {
-            $set_last_id($email_key, $email_rows[0]->id - 12);
+            $set_last_id($email_key, $email_rows[0]->id - 1000);
 
             // 如果同一个appid在1分钟内超过30次此类请求，则邮件提醒
             $repeat_key = 'repeat_account_do:appid_' . $appid;
@@ -549,6 +569,8 @@ class TaskController extends Controller
         DB::table('emails')
             ->where('id', $account_id)
             ->update(['valid_status' => 0]);
+	
+	Redis::sRemove('valid_account_ids',$account_id);
 
         Util::die_jishua('ok');
     }

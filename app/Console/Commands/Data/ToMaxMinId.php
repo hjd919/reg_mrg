@@ -37,13 +37,50 @@ class ToMaxMinId extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle()
-    {
-        $rows = DB::select("SELECT count(*) total FROM `work_detail` WHERE `appid` = 1141755797 and account_id<=1682928 ORDER BY `work_detail`.`account_id` ASC");
-        dd($rows);
+     * * @return mixed */ 
+	public function handle() { 
+	$total_key = 'valid_account_ids';
+	$offset = 0;
+	$max_email_id = Redis::get('email_max_id');
+	$total_key = 'valid_account_ids';
+	do{ 
+	   $data = DB::table('emails')->select('id')->where('valid_status',1)
+		//->where('id','<',$max_email_id)
+		->offset($offset)->limit(10000)->get();
+	   $offset += 10000;
+	   if($data->isEmpty()){
+		break;
+	    } 
+	   foreach($data as $r){
+		Redis::sAdd('valid_account_ids',$r->id);
+		}
+	   echo $offset."\n";
+	} while(1);
+	$max_id = DB::table('emails')->max('id');
+	Redis::set('email_max_id',$max_id);
+	echo 'max_id:'.$max_id;
+echo Redis::sSize($total_key);
+die;
+//set work_detail account_id sort
+	$appid = '1211055336';
+	$sort_key = "work_detail:account_id:appid_{$appid}";
+	$offset = 10000;
+	while(1){
+	$data = WorkDetail::getWorkDetailTable($appid)->select('account_id')->where('appid',$appid)->offset($offset)->limit(10000)->get();
+	   if($data->isEmpty()){
+		break;
+	    } 
+	echo $offset."\n";
+	$offset += 10000;
+	   foreach($data as $r){
+		Redis::sAdd($sort_key,$r->account_id);
+	echo $r->account_id."\n";
+		}
+	}
+	// diff two sort
+	var_dump(Redis::sDiffStore("valid_account_id:appid_{$appid}",$total_key,$sort_key))."\n";
+	echo Redis::sSize("valid_account_id:appid_{$appid}");
+	die;
         
 
         // * to device_id
