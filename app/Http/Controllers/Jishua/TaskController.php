@@ -299,20 +299,29 @@ class TaskController extends Controller
         // 2.发现新账号 is_new_email:appid=1 id>max_id的存在
         // 3.跳转刷新账号->刷完新账号了
         // 4.刷完继续刷旧账号 is_new_email:appid=0
-        $email_key     = 'last_email_id:appid_' . $appid;
+        $email_key = 'last_email_id:appid_' . $appid;
         // $email_rows = $query_rows($last_email_id,'emails',$where);
         // method1
         if ($appid == '1211055336') {
             $useful_account_id_num = Redis::sSize('useful_account_ids:appid_' . $appid);
-            for($i=0;$i<3;$i++){
-                $email_ids[] = Redis::sPop('useful_account_ids:appid_' . $appid);
+            $used_account_ids_key  = "used_account_ids:appid_{$appid}";
+            $email_ids = [];
+            for ($i = 0; $i < 3; $i++) {
+                $email_ids[$i] = Redis::sPop('useful_account_ids:appid_' . $appid);
+                Redis::sAdd($used_account_ids_key, $email_ids[$i]);
             }
             $email_rows = DB::table('emails')->whereIn('id', $email_ids)->get();
-            $email_num = count($email_rows->toArray());
-            if($email_num != 3){
-                Util::log('email_num不足3:'.$email_num,$useful_account_id_num);
+            $email_num  = count($email_rows->toArray());
+            if ($email_num != 3) {
+
+                // 获取可用账号
+                $total_key = 'valid_account_ids';
+                Redis::sDiffStore("useful_account_ids:appid_{$appid}", $total_key, $used_account_ids_key);
+
+                Util::log('没有可用账号了:' . $appid, $useful_account_id_num);
                 Util::die_jishua('该app没有苹果账号可用了', 1);
             }
+
         } else {
             $is_new_email = Redis::get("is_new_email:appid_{$appid}"); // 判断是否在刷新账号
             if ($is_new_email) {
@@ -363,7 +372,7 @@ class TaskController extends Controller
                 }
 
                 $last_email_id = $get_last_id($email_key);
-                
+
                 // 1.在刷旧账号
                 $email_rows = DB::table('emails')
                     ->where('id', '<', $last_email_id)

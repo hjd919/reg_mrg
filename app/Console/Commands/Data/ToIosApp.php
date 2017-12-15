@@ -46,7 +46,7 @@ class ToIosApp extends Command
         $sort_key = "used_account_ids:appid_{$appid}";
         $offset   = 10000;
         while (1) {
-            $data = WorkDetail::getWorkDetailTable($appid)->select('account_id')->where('appid', $appid)->orderBy('id','desc')->offset($offset)->limit(10000)->get();
+            $data = WorkDetail::getWorkDetailTable($appid)->select('account_id')->where('appid', $appid)->offset($offset)->limit(10000)->get();
             if ($data->isEmpty()) {
                 break;
             }
@@ -55,6 +55,7 @@ class ToIosApp extends Command
             foreach ($data as $key => $r) {
                 $res = Redis::sAdd($sort_key, $r->account_id);
                 if(!$res){
+                    var_dump($res);
                     break 2;
                 }
             }
