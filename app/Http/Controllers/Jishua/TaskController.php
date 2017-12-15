@@ -101,7 +101,7 @@ class TaskController extends Controller
     // * 开始任务
     public function start(Request $request, $is_die = true)
     {
-        $appid = $request->appid;
+        $appid = $request->input('appid');
         if ($appid) {
             $stop_app_key = self::STOP_GET_APP . ':appid_' . $appid;
         } else {
@@ -120,7 +120,7 @@ class TaskController extends Controller
     // * 结束任务
     public function stop(Request $request, $is_die = true)
     {
-        $appid = $request->appid;
+        $appid = $request->input('appid');
         if ($appid) {
             $stop_app_key = self::STOP_GET_APP . ':appid_' . $appid;
         } else {
