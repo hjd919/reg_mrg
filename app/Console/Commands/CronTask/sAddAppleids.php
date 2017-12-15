@@ -5,6 +5,7 @@ namespace App\Console\Commands\CronTask;
 use App\App;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 
 class sAddAppleids extends Command
 {
@@ -20,7 +21,7 @@ class sAddAppleids extends Command
      *
      * @var string
      */
-    protected $description = '';
+    protected $description = '定时添加新账号到缓存中';
 
     /**
      * Create a new command instance.
@@ -39,6 +40,24 @@ class sAddAppleids extends Command
      */
     public function handle()
     {
-        
+        $email_max_id = Redis::get('email_max_id');
+        $total_key = 'valid_account_ids';
+        $emails = DB::table('emails')
+            ->select('id')
+            ->where('id', '>', $email_max_id)
+            ->where('valid_status', 1)->get();
+        // $i = 0;
+        if($emails->isEmpty()){
+            die;
+        }
+        foreach ($emails as $r) {
+            $res = Redis::sAdd($total_key, $r->id);
+            // print_r($res) . "\n";
+            // if ($res) {
+            //     $i++;
+            // }
+        }
+
+        Redis::set('email_max_id', $r->id);
     }
 }

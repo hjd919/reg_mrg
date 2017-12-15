@@ -15,10 +15,12 @@ use App\Console\Commands\DB\MergeTaskKeyword;
 use App\Console\Commands\Import\ImportEmails;
 use App\Console\Commands\Import\ImportDevices;
 use App\Console\Commands\Import\ImportAppleids;
+use App\Console\Commands\CronTask\sAddAppleids;
 use App\Console\Commands\CronTask\CopyAppleids;
-use App\Console\Commands\CronTask\MakeUpMobileNum;
 use App\Console\Commands\CronTask\MarkMobileValid;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
+use App\Console\Commands\CronTask\MakeUpMobileNum;
+use App\Console\Commands\Data\MakeupUsedAccountId;
 use App\Console\Commands\CronTask\MakeUpAppBrushNum;
 use App\Console\Commands\CronTask\MarkFinishedTasks;
 use App\Console\Commands\CronTask\CountUpHourlyTask;
@@ -41,6 +43,8 @@ class Kernel extends ConsoleKernel
         ToIosApp::class,
         ToMaxMinId::class,
         JiaDevice::class,
+        MakeupUsedAccountId::class,
+        sAddAppleids::class,
         MergeTaskKeyword::class,
         // 定时补成功量
         MakeUpAppBrushNum::class,
@@ -89,6 +93,9 @@ class Kernel extends ConsoleKernel
         // 复制成功账号
         $schedule->command('copy:appleids')->cron('*/30 * * * * *');
 
+        // 添加有效账号
+        $schedule->command('sAdd:appleids')->cron('0 */30 * * * *');
+        
         // 判断是否需要添加邮箱
         //$schedule->command('check:is_no_appleids')->cron('0 */1 * * * *');
 
