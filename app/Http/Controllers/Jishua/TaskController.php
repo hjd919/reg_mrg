@@ -448,8 +448,8 @@ class TaskController extends Controller
                 Redis::expire($repeat_key, 60);
             }
 
-            Util::log('title', 'app存在刷过此账号了{appid:' . $appid . ',account_id:' . $email_rows->last()->id);
-            Util::die_jishua('app存在刷过此账号了{appid:' . $appid . ',account_id:' . $email_rows->last()->id, 1);
+            Util::log('title', 'app存在刷过此账号了{appid:' . $appid . ',account_id:' . $email_rows[0]->id);
+            Util::die_jishua('app存在刷过此账号了{appid:' . $appid . ',account_id:' . $email_rows[0]->id, 1);
         }
 
         // * 循环获取手机设备记录
