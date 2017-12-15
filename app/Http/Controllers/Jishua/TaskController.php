@@ -300,7 +300,6 @@ class TaskController extends Controller
         // 3.跳转刷新账号->刷完新账号了
         // 4.刷完继续刷旧账号 is_new_email:appid=0
         $email_key     = 'last_email_id:appid_' . $appid;
-        $last_email_id = $get_last_id($email_key);
         // $email_rows = $query_rows($last_email_id,'emails',$where);
         // method1
         if ($appid == '1211055336') {
@@ -320,6 +319,7 @@ class TaskController extends Controller
                 if ($appid == '1211055336') {
                     Util::log('is_new_email', $is_new_email);
                 }
+                $last_email_id = $get_last_id($email_key);
                 // 3.刷新账号
                 $max_account_id = DB::table('ios_apps')->select('max_account_id')->where('appid', $appid)->value('max_account_id');
                 $email_rows     = DB::table('emails')
@@ -361,6 +361,9 @@ class TaskController extends Controller
                 if ($appid == '1211055336') {
                     //Util::log('在刷旧账号',1);
                 }
+
+                $last_email_id = $get_last_id($email_key);
+                
                 // 1.在刷旧账号
                 $email_rows = DB::table('emails')
                     ->where('id', '<', $last_email_id)
@@ -407,7 +410,7 @@ class TaskController extends Controller
         // 判断是否app刷过此批量账号
         $exist_work_detail = WorkDetail::isAppBrushEmails($appid, $email_rows[0]->id);
         if ($exist_work_detail) {
-            $set_last_id($email_key, $email_rows[0]->id - 1000);
+            $set_last_id($email_key, $email_rows[0]->id - 4);
 
             // 如果同一个appid在1分钟内超过30次此类请求，则邮件提醒
             $repeat_key = 'repeat_account_do:appid_' . $appid;
