@@ -304,9 +304,9 @@ class TaskController extends Controller
         // $email_rows = $query_rows($last_email_id,'emails',$where);
         // method1
         if ($appid == '1211055336') {
-            $useful_account_id_num = $redis->sSize('useful_account_ids:appid_' . $appid);
+            $useful_account_id_num = Redis::sSize('useful_account_ids:appid_' . $appid);
             for($i=0;$i<3;$i++){
-                $email_ids[] = $redis->sPop('useful_account_ids:appid_' . $appid);
+                $email_ids[] = Redis::sPop('useful_account_ids:appid_' . $appid);
             }
             $email_rows = DB::table('emails')->whereIn('id', $email_ids)->get();
             $email_num = count($email_rows->toArray());
