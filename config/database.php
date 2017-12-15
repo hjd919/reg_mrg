@@ -131,6 +131,13 @@ return [
             'prefix'   => env('APP_ENAME', 'prefix:'),
         ],
 
+        'test' => [
+            'host'     => '10.171.8.236',
+            'password' => 'Xiaozi527',
+            'port'     => 6379,
+            'database' => env('REDIS_DATABASE', 0),
+            'prefix'   => env('APP_ENAME', 'prefix:'),
+        ],
     ],
 
 ];
