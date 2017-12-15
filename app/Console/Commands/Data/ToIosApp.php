@@ -3,8 +3,10 @@
 namespace App\Console\Commands\Data;
 
 use App\App;
+use App\Models\WorkDetail;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 
 class ToIosApp extends Command
 {
