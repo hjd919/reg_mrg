@@ -163,11 +163,11 @@ class TaskController extends Controller
         }
         if (!$verify_code) {
             $end_time2 = microtime(true);
-            Util::log('--fail_content--', json_encode([
-                'email'      => $email,
-                'password'   => $password,
-                'spend_time' => $end_time2 - $start_time,
-            ]));
+            // Util::log('--fail_content--', json_encode([
+            //     'email'      => $email,
+            //     'password'   => $password,
+            //     'spend_time' => $end_time2 - $start_time,
+            // ]));
 
 	    if(ceil($end_time2- $start_time)>30){
 		DB::table('appleids')->where('strRegName',$email)->update(['state'=>99]);
