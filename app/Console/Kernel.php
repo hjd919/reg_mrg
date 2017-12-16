@@ -94,7 +94,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('copy:appleids')->cron('*/30 * * * * *');
 
         // 添加有效账号
-        $schedule->command('sAdd:appleids')->cron('0 */30 * * * *');
+        $schedule->command('sAdd:appleids')->cron('*/30 * * * * *');
         
         // 判断是否需要添加邮箱
         //$schedule->command('check:is_no_appleids')->cron('0 */1 * * * *');
