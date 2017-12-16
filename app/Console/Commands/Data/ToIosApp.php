@@ -41,6 +41,12 @@ class ToIosApp extends Command
      */
     public function handle()
     {
+        // $appid    = '1211055336';
+        // $key = "useful_account_ids:appid_{$appid}";
+        $key = 'valid_account_ids';
+
+        echo Redis::sSize($key);
+        die;
         // 已用过账号
         $appid    = '1211055336';
         $sort_key = "used_account_ids:appid_{$appid}";

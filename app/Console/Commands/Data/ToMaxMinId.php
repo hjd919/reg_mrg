@@ -42,7 +42,7 @@ class ToMaxMinId extends Command
         $total_key = 'valid_account_ids';
 
         $offset       = 0;
-        $max_email_id = Redis::get('email_max_id');
+        // $max_email_id = Redis::get('email_max_id');
         do {
             $data = DB::table('emails')->select('id')->where('valid_status', 1)
             //->where('id','<',$max_email_id)
@@ -51,14 +51,12 @@ class ToMaxMinId extends Command
                 ->limit(10000)
                 ->get();
             $offset += 10000;
+            echo $offset."\n";
             if ($data->isEmpty()) {
                 break;
             }
             foreach ($data as $key => $r) {
                 Redis::sAdd('valid_account_ids', $r->id);
-                if (!$key % 1000) {
-                    echo $r->id . "\n";
-                }
             }
             echo $offset . "\n";
         } while (1);
@@ -66,6 +64,7 @@ class ToMaxMinId extends Command
         Redis::set('email_max_id', $max_id);
         echo 'max_id:' . $max_id;
         echo 'valid_account_ids:size:' . Redis::sSize($total_key) . "\n";
+        die;
         // die;
         //set work_detail account_id sort
         $total_key = 'valid_account_ids';
