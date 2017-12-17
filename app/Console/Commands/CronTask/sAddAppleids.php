@@ -43,7 +43,8 @@ class sAddAppleids extends Command
         $email_max_id = Redis::get('email_max_id');
         $total_key = 'valid_account_ids';
         
-        die((string)Redis::sCard($total_key));
+        // die((string)$email_max_id);
+        // die((string)Redis::sCard($total_key));
 
         $emails = DB::table('emails')
             ->select('id')
@@ -55,10 +56,6 @@ class sAddAppleids extends Command
         }
         foreach ($emails as $r) {
             $res = Redis::sAdd($total_key, $r->id);
-            // print_r($res) . "\n";
-            // if ($res) {
-            //     $i++;
-            // }
         }
 
         Redis::set('email_max_id', $r->id);
