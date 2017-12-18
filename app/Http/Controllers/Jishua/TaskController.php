@@ -51,7 +51,8 @@ class TaskController extends Controller
         } elseif ('device' == $type) {
             $key = 'last_device_id:appid_' . $appid;
         }
-
+        $res = Redis::set($key, $id);
+        die;
         if ($type == 'email') {
             // 记录当前account_id状态
             // 1. 获取table
@@ -304,7 +305,7 @@ class TaskController extends Controller
         // method1
         $used_account_ids_key = "used_account_ids:appid_{$appid}";
 
-        if ($appid == '1211055336') {
+        if (in_array($appid, ['1211055336', '1141755797'])) {
             $useful_account_id_num = Redis::sSize('useful_account_ids:appid_' . $appid);
             $email_ids             = [];
             for ($i = 0; $i < 3; $i++) {
