@@ -15,7 +15,7 @@ class ToIosApp extends Command
      *
      * @var string
      */
-    protected $signature = 'sAdd:used_account_ids';
+    protected $signature = 'sAdd:used_account_ids {--appid=}';
 
     /**
      * The console command description.
@@ -53,7 +53,9 @@ class ToIosApp extends Command
         // // var_dump(Redis::sIsMember($key, '1565960')) . "\n";
         // die;
         // 已用过账号
-        $appid    = '1141755797';
+        // $appid    = '1141755797';
+        $appid = $this->option('appid');
+
         $sort_key = "used_account_ids:appid_{$appid}";
         $offset   = 10000;
         $j        = $i        = 0;
