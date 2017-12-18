@@ -305,7 +305,7 @@ class TaskController extends Controller
         // method1
         $used_account_ids_key = "used_account_ids:appid_{$appid}";
 
-        if (in_array($appid, ['1211055336', '1141755797'])) {
+        if (Redis::sIsMember('account_policy_2', $appid)) {
             $useful_account_id_num = Redis::sSize('useful_account_ids:appid_' . $appid);
             $email_ids             = [];
             for ($i = 0; $i < 3; $i++) {

@@ -91,7 +91,7 @@ CREATE TABLE `work_detail{$work_detail_table}` (
   KEY `appid_email` (`appid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 EOF;
-$table_sql2 = <<<EOF
+                $table_sql2 = <<<EOF
 CREATE TRIGGER `t_work_detail{$work_detail_table}_decr_num` BEFORE INSERT ON `work_detail{$work_detail_table}`
  FOR EACH ROW update apps set brush_num=brush_num-1 where id=new.app_id;
 EOF;
@@ -152,13 +152,18 @@ EOF;
 
         $task_id = $request->task_id;
         $task    = DB::table('tasks')->where('id', $task_id)->first();
-
-        // 获取可用app量
-        $usable_brush_num = WorkDetail::getUsableBrushNum($task->appid);
+        $appid = $task->appid;
+        
+        // 获取账号策略
+        if (Redis::sIsMember('account_policy_2', $appid)) {
+            $usable_brush_num = Redis::sDiffStore("useful_account_ids:appid_{$appid}", 'valid_account_ids', "used_account_ids:appid_{$appid}");
+        }else{
+            $usable_brush_num = WorkDetail::getUsableBrushNum($appid);
+        }
 
         // 获取可刷设备信息数 total-已使用设备数
         $total_device_num    = DB::table('devices')->count();
-        $used_device_num     = WorkDetail::countAppNum($task->appid);
+        $used_device_num     = WorkDetail::countAppNum($appid);
         $usable_brush_device = $total_device_num - $used_device_num;
 
         return response()->json([

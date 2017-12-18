@@ -15,7 +15,7 @@ class ToIosApp extends Command
      *
      * @var string
      */
-    protected $signature = 'sAdd:used_account_ids {--appid=}';
+    protected $signature = 'sAdd:used_account_ids {--appid=1141755797}';
 
     /**
      * The console command description.
@@ -41,16 +41,25 @@ class ToIosApp extends Command
      */
     public function handle()
     {
-        // $appid = '1211055336';
-        // $key ="useful_account_ids:appid_{$appid}";
-        // $key   = "used_account_ids:appid_{$appid}";
-        // $used_account_ids_key   = "used_account_ids:appid_{$appid}";
-        // $total_key = 'valid_account_ids';
-        // // var_dump(Redis::sDiffStore("useful_account_ids:appid_{$appid}", $total_key, $used_account_ids_key));
-
-        // // $key = 'valid_account_ids';
+        // $res = Redis::sAdd('account_policy_2','1211055336');
+        // $res1 = Redis::sAdd('account_policy_2','1141755797');
+        // if (Redis::sIsMember('account_policy_2', '1141755797')) {
+        //     echo 'ok';
+        // }else{
+        //     echo 'fail';
+        // }
+        // die;
+        // $appid = '1141755797';
+        // // $key ="useful_account_ids:appid_{$appid}";
+        // // $key   = "used_account_ids:appid_{$appid}";
+        // $key = "used_account_ids:appid_{$appid}";
+        // // $total_key = 'valid_account_ids';
+        // // // var_dump(Redis::sDiffStore("useful_account_ids:appid_{$appid}", $total_key, $used_account_ids_key));
+        // $num = WorkDetail::getWorkDetailTable($appid)->where('appid', $appid)->count();
+        // echo $num . "\n";
+        // // // $key = 'valid_account_ids';
         // echo Redis::sSize($key) . "\n";
-        // // var_dump(Redis::sIsMember($key, '1565960')) . "\n";
+        // // var_dump(Redis::sIsMember($key, '1592129')) . "\n";
         // die;
         // 已用过账号
         // $appid    = '1141755797';
@@ -85,18 +94,5 @@ class ToIosApp extends Command
         var_dump(Redis::delete($useful_key)) . "\n";
         var_dump(Redis::sDiffStore($useful_key, $total_key, $sort_key)) . "\n";
         echo Redis::sSize($useful_key) . "\n";
-        die;
-
-        // 导出并删除失效账号
-
-        // 导出
-        $date = date('ymd');
-        $code = exec("mysqldump -u'super_hjd' -p'Dev~!@#Hjd919' -P3306 --default-character-set=utf8 --no-create-db --no-create-info --tables jishua emails --where='valid_status=0' > storage/app/backup/jishua_emails_{$date}.table.sql");
-
-        // 删除
-        $res = DB::table('emails')->where('valid_status', 0)->delete();
-        echo ('$res---');
-        var_dump($res);
-
     }
 }
