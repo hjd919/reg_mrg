@@ -303,10 +303,10 @@ class TaskController extends Controller
         // $email_rows = $query_rows($last_email_id,'emails',$where);
         // method1
         $used_account_ids_key = "used_account_ids:appid_{$appid}";
-        
+
         if ($appid == '1211055336') {
             $useful_account_id_num = Redis::sSize('useful_account_ids:appid_' . $appid);
-            $email_ids = [];
+            $email_ids             = [];
             for ($i = 0; $i < 3; $i++) {
                 $email_ids[$i] = Redis::sPop('useful_account_ids:appid_' . $appid);
             }
@@ -325,9 +325,7 @@ class TaskController extends Controller
         } else {
             $is_new_email = Redis::get("is_new_email:appid_{$appid}"); // 判断是否在刷新账号
             if ($is_new_email) {
-                if ($appid == '1211055336') {
-                    Util::log('is_new_email', $is_new_email);
-                }
+                // Util::log('is_new_email', $is_new_email);
                 $last_email_id = $get_last_id($email_key);
                 // 3.刷新账号
                 $max_account_id = DB::table('ios_apps')->select('max_account_id')->where('appid', $appid)->value('max_account_id');
@@ -340,19 +338,20 @@ class TaskController extends Controller
                     ->get();
 
                 if ($email_rows->isEmpty()) {
-                    if ($appid == '1211055336') {
-                        Util::log('刷完新账号了，继续刷旧账号', 1);
-                    }
+                    // Util::log('刷完新账号了，继续刷旧账号', 1);
+
                     // 4.刷完新账号了，继续刷旧账号
                     // 4.2 获取原来旧账号min_account_id
                     $min_account_id = DB::table('ios_apps')->where('appid', $appid)->value('min_account_id');
+                    // 设置last_id为min_account_id bug
+                    $set_last_id($email_key, $min_account_id);
+                    // 4.1 标志在刷旧账号
+                    Redis::set("is_new_email:appid_{$appid}", 0);
+
                     // 4.3 更新新账号的max_id
                     $max_account_id = WorkDetail::getMaxAccountId($appid);
                     DB::table('ios_apps')->where('appid', $appid)->update(['max_account_id' => $max_account_id]);
-                    // 设置last_id为min_account_id bug
-                    if ($appid != '1211055336') {
-                        $set_last_id($email_key, $min_account_id);
-                    }
+
                     // 4.4 获取旧账号
                     $email_rows = DB::table('emails')->where('id', '<', $min_account_id)
                         ->where('valid_status', 1)
@@ -362,16 +361,14 @@ class TaskController extends Controller
                     if ($email_rows->isEmpty()) {
                         $email_rows = false;
                     }
-                    // 4.1 标志在刷旧账号
-                    Redis::set("is_new_email:appid_{$appid}", 0);
+
                 }
 
             } else {
-                if ($appid == '1211055336') {
-                    //Util::log('在刷旧账号',1);
-                }
-
+                //Util::log('在刷旧账号',1);
                 $last_email_id = $get_last_id($email_key);
+                // 1.1 刷完旧账号了，从头开始刷，标志为新账号
+                Redis::set("is_new_email:appid_{$appid}", 1);
 
                 // 1.在刷旧账号
                 $email_rows = DB::table('emails')
@@ -381,9 +378,7 @@ class TaskController extends Controller
                     ->limit(3)
                     ->get();
                 if ($email_rows->isEmpty()) {
-                    if ($appid == '1211055336') {
-                        Util::log('刷完旧账号了，从头开始刷，标志为新账号', 1);
-                    }
+                    // Util::log('刷完旧账号了，从头开始刷，标志为新账号', 1);
 
                     // 设置last_id为min_account_id bug
                     $set_last_id($email_key, self::MAX_KEY);
@@ -402,8 +397,6 @@ class TaskController extends Controller
                         $email_rows = false;
                     }
 
-                    // 1.1 刷完旧账号了，从头开始刷，标志为新账号
-                    Redis::set("is_new_email:appid_{$appid}", 1);
                 }
 
             }
@@ -493,8 +486,8 @@ class TaskController extends Controller
         // 判断都通过后，再切换循环id
         $set_last_id($device_key, $device_rows[count($device_rows) - 1]->id);
         $set_last_id($email_key, $email_rows->last()->id);
-        
-        foreach($email_rows as $email_row){
+
+        foreach ($email_rows as $email_row) {
             Redis::sAdd($used_account_ids_key, $email_row->id);
         }
 
