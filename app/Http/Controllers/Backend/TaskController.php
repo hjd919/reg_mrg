@@ -78,6 +78,7 @@ class TaskController extends BackendController
 CREATE TABLE `work_detail{$work_detail_table}` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `status` tinyint(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT '1进行中 2失败 3成功 4老数据',
+  `fail_reason` TINYINT(1) NOT NULL DEFAULT '0',
   `work_id` int(11) NOT NULL,
   `appid` bigint(20) NOT NULL,
   `app_id` int(11) NOT NULL,
