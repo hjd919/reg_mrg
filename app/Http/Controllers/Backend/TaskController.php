@@ -74,7 +74,7 @@ class TaskController extends BackendController
             $total_rows = DB::table("work_detail{$work_detail_table}")->count();
             if ($total_rows >= 500000) {
                 $work_detail_table++;
-                $table_sql = <<<EOF
+                $table_sql1 = <<<EOF
 CREATE TABLE `work_detail{$work_detail_table}` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `status` tinyint(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT '1进行中 2失败 3成功 4老数据',
@@ -89,12 +89,12 @@ CREATE TABLE `work_detail{$work_detail_table}` (
   UNIQUE KEY `work_id_2` (`work_id`,`account_id`),
   KEY `appid_email` (`appid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TRIGGER `t_work_detail{$work_detail_table}_decr_num` BEFORE INSERT ON `work_detail{$work_detail_table}`
- FOR EACH ROW update apps set brush_num=brush_num-1 where id=new.app_id
-
 EOF;
-                DB::statement($table_sql);
+$table_sql2 = <<<EOF
+CREATE TRIGGER `t_work_detail{$work_detail_table}_decr_num` BEFORE INSERT ON `work_detail{$work_detail_table}`
+ FOR EACH ROW update apps set brush_num=brush_num-1 where id=new.app_id;
+EOF;
+                DB::statement($table_sql1);
 
             }
 
