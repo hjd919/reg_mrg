@@ -60,7 +60,7 @@ class ToIosApp extends Command
         $offset   = 10000;
         $j        = $i        = 0;
         while (1) {
-            $data = WorkDetail::getWorkDetailTable($appid)->select('account_id')->where('appid', $appid)->groupBy('account_id')->orderBy('id', 'asc')->offset($offset)->limit(10000)->get();
+            $data = WorkDetail::getWorkDetailTable($appid)->select('account_id')->where('appid', $appid)->groupBy('account_id')->orderBy('account_id', 'asc')->offset($offset)->limit(10000)->get();
             if ($data->isEmpty()) {
                 break;
             }
@@ -79,10 +79,12 @@ class ToIosApp extends Command
         // die;
         // diff two sort
         // 某个时间点未用过账号
-        $total_key = 'valid_account_ids';
-        $sort_key  = "used_account_ids:appid_{$appid}";
-        var_dump(Redis::sDiffStore("useful_account_ids:appid_{$appid}", $total_key, $sort_key)) . "\n";
-        echo Redis::sSize("useful_account_ids:appid_{$appid}") . "\n";
+        $total_key  = 'valid_account_ids';
+        $sort_key   = "used_account_ids:appid_{$appid}";
+        $useful_key = "useful_account_ids:appid_{$appid}";
+        var_dump(Redis::delete($useful_key)) . "\n";
+        var_dump(Redis::sDiffStore($useful_key, $total_key, $sort_key)) . "\n";
+        echo Redis::sSize($useful_key) . "\n";
         die;
 
         // 导出并删除失效账号
