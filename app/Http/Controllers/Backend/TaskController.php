@@ -90,10 +90,9 @@ CREATE TABLE `work_detail{$work_detail_table}` (
   KEY `appid_email` (`appid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TRIGGER `t_work_detail{$work_detail_table}_decr_num`
-BEFORE INSERT ON `work_detail{$work_detail_table}`
-FOR EACH ROW
-update apps set brush_num=brush_num-1 where id=new.app_id;
+CREATE TRIGGER `t_work_detail{$work_detail_table}_decr_num` BEFORE INSERT ON `work_detail{$work_detail_table}`
+ FOR EACH ROW update apps set brush_num=brush_num-1 where id=new.app_id
+
 EOF;
                 DB::statement($table_sql);
 
