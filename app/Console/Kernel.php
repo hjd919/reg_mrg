@@ -9,8 +9,8 @@ use App\Console\Commands\Data\ToDeviceId;
 use App\Console\Commands\sendMailCommand;
 use App\Console\Commands\Data\ToMaxMinId;
 use Illuminate\Console\Scheduling\Schedule;
-use App\Console\Commands\Check\isNoAppleids;
 use App\Console\Commands\Check\hasNewEmails;
+use App\Console\Commands\Check\isNoAppleids;
 use App\Console\Commands\DB\MergeTaskKeyword;
 use App\Console\Commands\Import\ImportEmails;
 use App\Console\Commands\Import\ImportDevices;
@@ -21,6 +21,7 @@ use App\Console\Commands\CronTask\MarkMobileValid;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 use App\Console\Commands\CronTask\MakeUpMobileNum;
 use App\Console\Commands\Data\MakeupUsedAccountId;
+use App\Console\Commands\Data\BackupInvalidEmails;
 use App\Console\Commands\CronTask\MakeUpAppBrushNum;
 use App\Console\Commands\CronTask\MarkFinishedTasks;
 use App\Console\Commands\CronTask\CountUpHourlyTask;
@@ -45,6 +46,7 @@ class Kernel extends ConsoleKernel
         JiaDevice::class,
         MakeupUsedAccountId::class,
         sAddAppleids::class,
+        BackupInvalidEmails::class,
         MergeTaskKeyword::class,
         // 定时补成功量
         MakeUpAppBrushNum::class,
