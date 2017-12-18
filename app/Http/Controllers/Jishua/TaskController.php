@@ -417,10 +417,10 @@ class TaskController extends Controller
 
             // 如果同一个appid在1分钟内超过30次此类请求，则邮件提醒
             $repeat_key = 'repeat_account_do:appid_' . $appid;
-            if (Redis::get($repeat_key) > 50) {
 
+            if (Redis::get($repeat_key) > 50 && !in_array($appid, ['1211055336', '1141755797'])) {
                 // 重置跑新账号
-                exec('curl http://jsapi.yz210.com/jishua/task/brush_new_email/appid_' . $appid);
+                // exec('curl http://jsapi.yz210.com/jishua/task/brush_new_email/appid_' . $appid);
 
                 // 1800秒通知一次
                 $notify_key = 'notify_repeat_account_do';
