@@ -79,7 +79,7 @@ class TaskController extends Controller
     // 让app跑新账号
     public function brushNewEmail($appid)
     {
-        Redis::set("is_new_email:appid_{$appid}", 0);
+        Redis::set("is_new_email:appid_{$appid}", 1);
         die;
         //判断是否在跑旧邮箱
         $is_new_email = Redis::get("is_new_email:appid_{$appid}");

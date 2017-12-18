@@ -15,7 +15,7 @@ class ToIosApp extends Command
      *
      * @var string
      */
-    protected $signature = 'export_delete:invalid_email';
+    protected $signature = 'sAdd:used_account_ids';
 
     /**
      * The console command description.
@@ -41,19 +41,19 @@ class ToIosApp extends Command
      */
     public function handle()
     {
-        $appid = '1211055336';
-        $key ="useful_account_ids:appid_{$appid}";
-        $key   = "used_account_ids:appid_{$appid}";
-        $used_account_ids_key   = "used_account_ids:appid_{$appid}";
-        $total_key = 'valid_account_ids';
-        // var_dump(Redis::sDiffStore("useful_account_ids:appid_{$appid}", $total_key, $used_account_ids_key));
+        // $appid = '1211055336';
+        // $key ="useful_account_ids:appid_{$appid}";
+        // $key   = "used_account_ids:appid_{$appid}";
+        // $used_account_ids_key   = "used_account_ids:appid_{$appid}";
+        // $total_key = 'valid_account_ids';
+        // // var_dump(Redis::sDiffStore("useful_account_ids:appid_{$appid}", $total_key, $used_account_ids_key));
 
-        // $key = 'valid_account_ids';
-        echo Redis::sSize($key) . "\n";
-        // var_dump(Redis::sIsMember($key, '1565960')) . "\n";
-        die;
+        // // $key = 'valid_account_ids';
+        // echo Redis::sSize($key) . "\n";
+        // // var_dump(Redis::sIsMember($key, '1565960')) . "\n";
+        // die;
         // 已用过账号
-        $appid    = '1211055336';
+        $appid    = '1141755797';
         $sort_key = "used_account_ids:appid_{$appid}";
         $offset   = 10000;
         $j        = $i        = 0;
