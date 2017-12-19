@@ -58,6 +58,7 @@ Route::group([
     $router->post('/task/save', 'TaskController@save');
     $router->get('/task/getFreeMobileNum', 'TaskController@getFreeMobileNum');
     $router->post('/task/saveTaskKeyword', 'TaskController@saveTaskKeyword');
+    $router->get('/task/stop', 'TaskController@stop');
 
     $router->get('/app/query_one', 'AppController@queryOne');
 

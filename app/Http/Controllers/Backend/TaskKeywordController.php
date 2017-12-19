@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Http\Controllers\Backend\BackendController;
 use App\Models\TaskKeyword;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Backend\BackendController;
 
 class TaskKeywordController extends BackendController
 {
@@ -51,7 +51,7 @@ class TaskKeywordController extends BackendController
             'pageSize' => (int) $page_size,
             'total'    => (int) $total,
         ];
-
+        Util::log('1');
         return response()->json(compact('pagination', 'list'));
     }
 
