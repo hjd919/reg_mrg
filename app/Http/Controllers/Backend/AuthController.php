@@ -22,6 +22,7 @@ class AuthController extends Controller
     public function login2()
     {
         echo "111\n";
+        die;
         dispatch(new ExampleJob());
     }
 

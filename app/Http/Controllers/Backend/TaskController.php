@@ -340,4 +340,25 @@ EOF;
             'app_name' => $ios_app->app_name,
         ]);
     }
+
+    // 停止任务
+    public function stop(Request $request)
+    {
+        $task_id = $request->input('task_id', 0);
+        if (!$task_id) {
+            return response()->json([
+                'message'    => '缺少task_id',
+                'error_code' => 1,
+            ]);
+        }
+
+        $task = DB::table('tasks')->find($task_id);
+
+        $res = App::where('task_id',$task_id)->update('end_time',date('Y-m-d H:i:s'));
+        if($res){
+            return response()->json([
+                'message'    => "成功停止所有此单[{$task->app_name}]的任务",
+            ]);
+        }
+    }
 }
