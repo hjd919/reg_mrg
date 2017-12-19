@@ -1,0 +1,12 @@
+{
+    "apps": [
+        {
+            "name": "jishua-worker",
+            "args": "queue:work redis --sleep=3 --tries=3",
+            "script": "./artisan",
+            "exec_interpreter": "php",
+            "exec_mode": "fork",
+            "max_memory_restart": "100M"
+        }
+    ]
+}
