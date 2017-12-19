@@ -188,6 +188,7 @@ class TaskController extends Controller
         if ('1' === $is_stop) {
             Util::die_jishua('停止任务获取', 1);
         }
+	$mtime = microtime(true);
 
         // func getdevice_id
         $get_device_id = function () {
@@ -326,7 +327,7 @@ class TaskController extends Controller
         } else {
             $is_new_email = Redis::get("is_new_email:appid_{$appid}"); // 判断是否在刷新账号
             if ($is_new_email) {
-                // Util::log('is_new_email', $is_new_email);
+                //Util::log('刷新账号_'.$mtime, $is_new_email);
                 $last_email_id = $get_last_id($email_key);
                 // 3.刷新账号
                 $max_account_id = DB::table('ios_apps')->select('max_account_id')->where('appid', $appid)->value('max_account_id');
@@ -339,15 +340,15 @@ class TaskController extends Controller
                     ->get();
 
                 if ($email_rows->isEmpty()) {
-                    // Util::log('刷完新账号了，继续刷旧账号', 1);
+                    //Util::log('刷完新账号了，继续刷旧账号_'.$mtime, $mtime);
 
                     // 4.刷完新账号了，继续刷旧账号
                     // 4.2 获取原来旧账号min_account_id
                     $min_account_id = DB::table('ios_apps')->where('appid', $appid)->value('min_account_id');
-                    // 设置last_id为min_account_id bug
-                    $set_last_id($email_key, $min_account_id);
                     // 4.1 标志在刷旧账号
                     Redis::set("is_new_email:appid_{$appid}", 0);
+                    // 设置last_id为min_account_id bug
+                    $set_last_id($email_key, $min_account_id);
 
                     // 4.3 更新新账号的max_id
                     $max_account_id = WorkDetail::getMaxAccountId($appid);
@@ -366,10 +367,9 @@ class TaskController extends Controller
                 }
 
             } else {
-                //Util::log('在刷旧账号',1);
+                //Util::log('在刷旧账号'.$mtime,1);
+
                 $last_email_id = $get_last_id($email_key);
-                // 1.1 刷完旧账号了，从头开始刷，标志为新账号
-                Redis::set("is_new_email:appid_{$appid}", 1);
 
                 // 1.在刷旧账号
                 $email_rows = DB::table('emails')
@@ -379,10 +379,11 @@ class TaskController extends Controller
                     ->limit(3)
                     ->get();
                 if ($email_rows->isEmpty()) {
-                    // Util::log('刷完旧账号了，从头开始刷，标志为新账号', 1);
+                    Util::log('刷完旧账号了，从头开始刷，标志为新账号_'.$mtime, 1);
 
                     // 设置last_id为min_account_id bug
                     $set_last_id($email_key, self::MAX_KEY);
+                    Redis::set("is_new_email:appid_{$appid}", 1);
 
                     // 4.3 更新新账号的max_id
                     $max_account_id = WorkDetail::getMaxAccountId($appid);
