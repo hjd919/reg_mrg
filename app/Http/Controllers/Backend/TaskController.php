@@ -354,10 +354,10 @@ EOF;
 
         $task = DB::table('tasks')->find($task_id);
 
-        $res = App::where('task_id',$task_id)->update('end_time',date('Y-m-d H:i:s'));
-        if($res){
+        $res = App::where('task_id', $task_id)->update(['end_time' => date('Y-m-d H:i:s')]);
+        if ($res) {
             return response()->json([
-                'message'    => "成功停止所有此单[{$task->app_name}]的任务",
+                'message' => "成功停止{$res}条任务数，单名为-{$task->app_name}",
             ]);
         }
     }
