@@ -23,7 +23,7 @@ class TaskController extends Controller
         $uid1 = Redis::get('proxy_ip_uid');
         Redis::incr('proxy_ip_uid');
         $uid1 = intval($uid1);
-        $uid  = md5($uid1);
+        $uid  = md5($uid1 . time().rand(1,1000));
         // $uid       = 'uid';
         $did       = 'did';
         $pid       = -1;
@@ -98,26 +98,27 @@ class TaskController extends Controller
         // 获取列表
         // $list = Pop3::getAppleEmail($email, $password, $content_id = '');
         exec("php ./pop3_list.php {$email} {$password} pop3s://pop.mail.ru/ {$port} '{$pwd}'", $output);
-	$error_email_key = 'error_appleid:email_'.$email;
+        $error_email_key = 'error_appleid:email_' . $email;
         if (empty($output[0])) {
             // 标志该邮箱不能用
             $end_time1 = microtime(true);
             /*Util::log('--fail_list--', json_encode([
-                'email'      => $email,
-                'password'   => $password,
-                'spend_time' => $end_time1 - $start_time,
+            'email'      => $email,
+            'password'   => $password,
+            'spend_time' => $end_time1 - $start_time,
             ]));
-		*/
-	    $error_num = Redis::get($error_email_key);
-	    if($error_num < 10){
-		Redis::incr($error_email_key);
+             */
+            $error_num = Redis::get($error_email_key);
+            if ($error_num < 10) {
+                Redis::incr($error_email_key);
 
-		if(!$error_num)
-		Redis::expire($error_email_key,300);
+                if (!$error_num) {
+                    Redis::expire($error_email_key, 300);
+                }
 
-	    }else{
-            DB::table('appleids')->where('strRegName', $email)->update(['state' => 98]);
-		}
+            } else {
+                DB::table('appleids')->where('strRegName', $email)->update(['state' => 98]);
+            }
 
             return response()->json([
                 'errno'  => 2,
@@ -169,9 +170,9 @@ class TaskController extends Controller
             //     'spend_time' => $end_time2 - $start_time,
             // ]));
 
-	    if(ceil($end_time2- $start_time)>30){
-		DB::table('appleids')->where('strRegName',$email)->update(['state'=>99]);
-		}
+            if (ceil($end_time2 - $start_time) > 30) {
+                DB::table('appleids')->where('strRegName', $email)->update(['state' => 99]);
+            }
 
             return response()->json([
                 'errno'  => 1,
@@ -204,7 +205,7 @@ class TaskController extends Controller
     ) {
         // * 查询未获取的任务
         $row = DB::table('appleids')->where('state', 0)
-            ->orderBy('updated_at','asc')
+            ->orderBy('updated_at', 'asc')
             ->limit(1)
             ->first();
         if (!$row) {
