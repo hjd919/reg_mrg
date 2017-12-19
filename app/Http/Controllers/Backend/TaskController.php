@@ -152,12 +152,12 @@ EOF;
 
         $task_id = $request->task_id;
         $task    = DB::table('tasks')->where('id', $task_id)->first();
-        $appid = $task->appid;
-        
+        $appid   = $task->appid;
+
         // 获取账号策略
         if (Redis::sIsMember('account_policy_2', $appid)) {
             $usable_brush_num = Redis::sDiffStore("useful_account_ids:appid_{$appid}", 'valid_account_ids', "used_account_ids:appid_{$appid}");
-        }else{
+        } else {
             $usable_brush_num = WorkDetail::getUsableBrushNum($appid);
         }
 
@@ -231,7 +231,7 @@ EOF;
                 break;
             }
 
-            list($hot, $before_rank, $keyword, $success_num) = $app_info_row;
+            list($keyword, $before_rank, $hot, $success_num) = $app_info_row;
 
             // 判断关键词半小时内是否存在
             if (App::where('create_time', '>', date('Y-m-d H:i:s', strtotime('-30 minutes')))->where('is_brushing', 1)->where('keyword', $keyword)->first()) {
