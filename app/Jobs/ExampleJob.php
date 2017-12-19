@@ -2,8 +2,13 @@
 
 namespace App\Jobs;
 
+use App\Models\User;
+use App\Support\Util;
+use App\Models\IosApp;
+
 class ExampleJob extends Job
 {
+    protected $user;
     /**
      * Create a new job instance.
      *
@@ -11,7 +16,6 @@ class ExampleJob extends Job
      */
     public function __construct()
     {
-        //
     }
 
     /**
@@ -21,6 +25,6 @@ class ExampleJob extends Job
      */
     public function handle()
     {
-        //
+        Util::log('lala','5555');
     }
 }

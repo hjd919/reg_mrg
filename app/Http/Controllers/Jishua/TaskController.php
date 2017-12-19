@@ -1,12 +1,13 @@
 <?php
 namespace App\Http\Controllers\Jishua;
 
-use App\Http\Controllers\Controller;
 use App\Models\Email;
-use App\Models\WorkDetail;
 use App\Support\Util;
+use App\Models\WorkDetail;
 use Illuminate\Http\Request;
+use App\Jobs\UpdateWorkDetailJob;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redis;
 
@@ -572,8 +573,8 @@ class TaskController extends Controller
             $status = 3;
         }
 
-        // * 根据任务id和账号id更新刷任务记录状态
-        WorkDetail::updateStatus($work_id, $account_id, $status, $fail_reason);
+        $res = dispatch(new UpdateWorkDetailJob($work_id, $account_id, $status, $fail_reason));
+        Util::log('队列处理任务结果', $res);
 
         Util::die_jishua('ok');
     }

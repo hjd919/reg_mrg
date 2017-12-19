@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\ExampleJob;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,7 +21,8 @@ class AuthController extends Controller
 
     public function login2()
     {
-
+        echo "111\n";
+        dispatch(new ExampleJob());
     }
 
     /**
