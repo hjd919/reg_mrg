@@ -573,8 +573,7 @@ class TaskController extends Controller
             $status = 3;
         }
 
-        $res = dispatch(new UpdateWorkDetailJob($work_id, $account_id, $status, $fail_reason));
-        Util::log('队列处理任务结果', $res);
+        dispatch(new UpdateWorkDetailJob($work_id, $account_id, $status, $fail_reason));
 
         Util::die_jishua('ok');
     }
