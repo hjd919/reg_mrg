@@ -9,14 +9,15 @@ use App\Console\Commands\Data\ToDeviceId;
 use App\Console\Commands\sendMailCommand;
 use App\Console\Commands\Data\ToMaxMinId;
 use Illuminate\Console\Scheduling\Schedule;
-use App\Console\Commands\Check\hasNewEmails;
 use App\Console\Commands\Check\isNoAppleids;
+use App\Console\Commands\Check\hasNewEmails;
 use App\Console\Commands\DB\MergeTaskKeyword;
 use App\Console\Commands\Import\ImportEmails;
 use App\Console\Commands\Import\ImportDevices;
-use App\Console\Commands\Import\ImportAppleids;
+use App\Console\Commands\CronTask\StatDailyApp;
 use App\Console\Commands\CronTask\sAddAppleids;
 use App\Console\Commands\CronTask\CopyAppleids;
+use App\Console\Commands\Import\ImportAppleids;
 use App\Console\Commands\CronTask\MarkMobileValid;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 use App\Console\Commands\CronTask\MakeUpMobileNum;
@@ -48,6 +49,7 @@ class Kernel extends ConsoleKernel
         sAddAppleids::class,
         BackupInvalidEmails::class,
         MergeTaskKeyword::class,
+        StatDailyApp::class,
         // 定时补成功量
         MakeUpAppBrushNum::class,
         // 定时补手机量
@@ -98,6 +100,9 @@ class Kernel extends ConsoleKernel
         // 添加有效账号
         $schedule->command('sAdd:appleids')->cron('*/30 * * * * *');
         
+        // 统计每天的app情况
+        $schedule->command('stat:daily_app')->cron('0 0 * * * *');
+
         // 判断是否需要添加邮箱
         //$schedule->command('check:is_no_appleids')->cron('0 */1 * * * *');
 
