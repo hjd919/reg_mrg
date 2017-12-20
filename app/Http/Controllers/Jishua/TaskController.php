@@ -307,7 +307,8 @@ class TaskController extends Controller
         // method1
         $used_account_ids_key = "used_account_ids:appid_{$appid}";
 
-        if (Redis::sIsMember('account_policy_2', $appid)) {
+        $is_policy_2 = Redis::sIsMember('account_policy_2', $appid);
+        if ($is_policy_2) {
             $useful_account_id_num = Redis::sSize('useful_account_ids:appid_' . $appid);
             $email_ids             = [];
             for ($i = 0; $i < 3; $i++) {
@@ -442,6 +443,11 @@ class TaskController extends Controller
             } else {
                 Redis::incr($repeat_key, 1);
                 Redis::expire($repeat_key, 60);
+            }  
+
+           if($is_policy_2){
+                // 纪录为已经用过了
+                Redis::sAdd($used_account_ids_key, $email_rows[0]->id);
             }
 
             Util::log('title', 'app存在刷过此账号了{appid:' . $appid . ',account_id:' . $email_rows[0]->id);
