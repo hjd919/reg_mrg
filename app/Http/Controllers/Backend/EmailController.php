@@ -2,12 +2,19 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Http\Controllers\Backend\BackendController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Artisan;
+use App\Http\Controllers\Backend\BackendController;
 
 class EmailController extends BackendController
 {
+    public function getTodayNum()
+    {
+        $today_num = DB::table('emails')->where('create_time', '>=', date('Y-m-d'))->where('source', 1)->count();
+        return response()->json(['today_email_num' => $today_num]);
+    }
+
     public function import(Request $request)
     {
         set_time_limit(0);

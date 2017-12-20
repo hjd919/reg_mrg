@@ -124,7 +124,7 @@ class MarkFinishedTasks extends Command
             $key = 'notify_finish_task:email_' . $toMail;
             if (!Redis::get($key)) {
                 Redis::set($key, 1);
-                Redis::expire($key, 60);
+                Redis::expire($key, 600);
 
                 // 邮箱通知
                 $msg = json_encode([

@@ -2,12 +2,19 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Http\Controllers\Backend\BackendController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Artisan;
+use App\Http\Controllers\Backend\BackendController;
 
 class AppleidController extends BackendController
 {
+    public function getTodayNum()
+    {
+        $today_num = DB::table('appleids')->where('created_at', '>=', date('Y-m-d'))->count();
+        return response()->json(['today_appleid_num' => $today_num]);
+    }
+
     public function import(Request $request)
     {
         set_time_limit(0);
