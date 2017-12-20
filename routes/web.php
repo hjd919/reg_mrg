@@ -25,6 +25,8 @@ $router->group(['middleware' => [], 'namespace' => 'Jishua', 'prefix' => 'jishua
     $router->get('/task/reset_mobile_valid', 'TaskController@resetMobileValid');
 
     $router->get('/task/brush_new_email/appid_{appid}', 'TaskController@brushNewEmail');
+
+    $router->get('/brush_idfa/get', 'BrushIdfaController@get');
 });
 
 $router->group(['middleware' => [], 'namespace' => 'Appleid', 'prefix' => 'appleid'], function () use ($router) {
