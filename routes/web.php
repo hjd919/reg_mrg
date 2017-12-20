@@ -72,8 +72,11 @@ Route::group([
 
     $router->post('/email/import', 'EmailController@import');
     $router->post('/appleid/import', 'AppleidController@import');
+    $router->get('/appleid/get_today_num', 'AppleidController@getTodayNum');
     
     $router->get('/app/export', 'AppController@export');
     $router->post('/app/import_rank', 'AppController@importRank');
+
+$router->get('/email/get_today_num', 'EmailController@getTodayNum');
 
 });
