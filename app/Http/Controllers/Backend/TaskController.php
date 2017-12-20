@@ -234,7 +234,7 @@ EOF;
             list($keyword, $before_rank, $hot, $success_num) = $app_info_row;
 
             // 判断关键词半小时内是否存在
-            if (App::where('create_time', '>', date('Y-m-d H:i:s', strtotime('-30 minutes')))->where('is_brushing', 1)->where('keyword', $keyword)->first()) {
+            if (App::where('create_time', '>', date('Y-m-d H:i:s', strtotime('-30 minutes')))->where('is_brushing', 1)->where('appid',$ios_app->appid)->where('keyword', $keyword)->first()) {
                 $this->error_message = '已经存在该app的关键词了，别重复添加';
                 break;
             }
