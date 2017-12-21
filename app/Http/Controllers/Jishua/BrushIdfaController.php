@@ -12,6 +12,7 @@ class BrushIdfaController extends Controller
         Request $request
     ) {
         $response            = DB::table('brush_idfas')->find(1);
+        $response->ret = 0;
         return response()->json($response);
     }
 
