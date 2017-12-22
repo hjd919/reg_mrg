@@ -39,6 +39,8 @@ class ToMaxMinId extends Command
      * * @return mixed */
     public function handle()
     {
+        file_put_contents('tomax.txt',date('Ymd_H:i:s'),FILE_APPEND);
+        die;
         $total_key = 'valid_account_ids';
 
         $offset       = 0;
