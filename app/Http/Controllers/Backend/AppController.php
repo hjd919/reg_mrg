@@ -111,7 +111,7 @@ class AppController extends Controller
                 continue;
             }
 
-            $brush_hour = floor((strtotime($app_row->end_time) - strtotime($app_row->start_time)) / 3600);
+            $brush_hour = round((strtotime($app_row->end_time) - strtotime($app_row->start_time)) / 3600, 1);
 
             $data[] = [
                 $app_row->id,
@@ -126,7 +126,7 @@ class AppController extends Controller
                 $app_row->success_brushed_num,
                 $app_row->fail_brushed_num,
                 intval($app_row->success_brushed_num / $app_row->brushed_num * 100) . '%',
-                round($app_row->success_num / $brush_hour),
+                round($app_row->success_num / $brush_hour, 2),
                 $brush_hour,
                 $app_row->mobile_num,
                 $app_row->start_time,
