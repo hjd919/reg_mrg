@@ -234,13 +234,13 @@ EOF;
             list($keyword, $before_rank, $hot, $success_num) = $app_info_row;
 
             // 判断关键词半小时内是否存在
-            if (App::where('create_time', '>', date('Y-m-d H:i:s', strtotime('-30 minutes')))->where('is_brushing', 1)->where('appid',$ios_app->appid)->where('keyword', $keyword)->first()) {
-                $this->error_message = '已经存在该app的关键词【'.$keyword.'】了，别重复添加';
+            if (App::where('create_time', '>', date('Y-m-d H:i:s', strtotime('-30 minutes')))->where('is_brushing', 1)->where('appid', $ios_app->appid)->where('keyword', $keyword)->first()) {
+                $this->error_message = '已经存在该app的关键词【' . $keyword . '】了，别重复添加';
                 break;
             }
 
             // 判断app_info格式是否正确
-            if (empty($hot) || empty($before_rank) || empty($keyword) || empty($success_num)) {
+if (empty($hot) || empty($before_rank) || empty($keyword) || empty($success_num)) {
                 $this->error_message = '输入内容不正确，空格分割且含有4个纬度的值！';
                 break;
             }
@@ -314,6 +314,9 @@ EOF;
 
             unset($mobile_group_id);
         }
+
+        // 抓取关键词的hot和before_rank
+        // pclose(popen("php ./artisan fetch:keyword_rank --appid={$ios_app->appid} --app_ids=" . json_encode($app_ids), "r"));
 
         // 判断没有添加的，且有错误的
         if (!$app_ids && $this->error_message) {

@@ -40,6 +40,8 @@ class ToMaxMinId extends Command
     public function handle()
     {
         file_put_contents('tomax.txt',date('Ymd_H:i:s'),FILE_APPEND);
+        sleep(40);
+        file_put_contents('tomax.txt', date('Ymd_H:i:s'), FILE_APPEND);
         die;
         $total_key = 'valid_account_ids';
 
