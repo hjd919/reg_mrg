@@ -30,7 +30,7 @@ class ImportAppleids extends Command
     protected $city         = ['北京市', '上海市', '广州市', '深圳市', '成都市', '杭州市', '武汉市', '重庆市', '南京市', '天津市', '苏州市', '西安市', '长沙市', '沈阳市', '青岛市', '郑州市', '大连市', '东莞市', '宁波市', '厦门市', '福州市', '无锡市', '合肥市', '昆明市', '哈尔滨市', '济南市', '佛山市', '长春市', '温州市', '石家庄市', '南宁市', '常州市', '泉州市', '南昌市', '贵阳市', '太原市', '烟台市', '嘉兴市', '南通市', '金华市', '珠海市', '惠州市', '徐州市', '海口市', '乌鲁木齐市', '绍兴市', '中山市', '台州市', '兰州市'];
     protected $road         = ['中山', '胜利', '解放', '斯大林', '列宁', '人民', '振兴', '团结', '胜利', '建设', '和平', '幸福', '光明', '平安'];
     protected $phone_prefix = ['135', '150', '185', '187'];
-    protected $string = "搞几个汉字数组里面随机取几个在加几个字符理论上是不重复的";
+    protected $string       = "搞几个汉字数组里面随机取几个在加几个字符理论上是不重复的";
 
     /**
      * Create a new command instance.
@@ -149,8 +149,8 @@ class ImportAppleids extends Command
             'strA2'         => $city,
             'strA3'         => $areas . $city . $road . '路' . rand(1, 1000) . '号',
             'strDeviceGUID' => substr(md5($nRandomYear), 3, 8) . md5(microtime(true)),
-            'strFirstName'  => mb_substr($this->string, rand(0, 15), 2),
-            'strLastName'   => mb_substr($this->string, rand(0, 15), rand(1, 3)),
+            'strFirstName'  => mb_substr($this->string, rand(0, 15), rand(1, 2)),
+            'strLastName'   => mb_substr($this->string, rand(0, 15), rand(2, 4)),
             'strRegName'    => $email,
             'strPhone'      => $this->phone_prefix[rand(0, 3)] . rand(10000000, 99999999),
         ));
