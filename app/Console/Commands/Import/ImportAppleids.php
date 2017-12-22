@@ -26,6 +26,12 @@ class ImportAppleids extends Command
      */
     protected $description = '';
 
+    protected $areas        = ['北京市', '天津市', '上海市', '重庆市', '河北省', '山西省', '辽宁省', '吉林省', '黑龙江省', '江苏省', '浙江省', '安徽省', '福建省', '江西省', '山东省', '河南省', '湖北省', '湖南省', '广东省', '海南省', '四川省', '贵州省', '云南省', '陕西省', '甘肃省', '青海省', '台湾省', '内蒙古自治区', '广西壮族自治区', '西藏自治区', '宁夏回族自治区', '新疆维吾尔自治区', '香港特别行政区', '澳门特别行政区'];
+    protected $city         = ['北京市', '上海市', '广州市', '深圳市', '成都市', '杭州市', '武汉市', '重庆市', '南京市', '天津市', '苏州市', '西安市', '长沙市', '沈阳市', '青岛市', '郑州市', '大连市', '东莞市', '宁波市', '厦门市', '福州市', '无锡市', '合肥市', '昆明市', '哈尔滨市', '济南市', '佛山市', '长春市', '温州市', '石家庄市', '南宁市', '常州市', '泉州市', '南昌市', '贵阳市', '太原市', '烟台市', '嘉兴市', '南通市', '金华市', '珠海市', '惠州市', '徐州市', '海口市', '乌鲁木齐市', '绍兴市', '中山市', '台州市', '兰州市'];
+    protected $road         = ['中山', '胜利', '解放', '斯大林', '列宁', '人民', '振兴', '团结', '胜利', '建设', '和平', '幸福', '光明', '平安'];
+    protected $phone_prefix = ['135', '150', '185', '187'];
+    protected $string = "搞几个汉字数组里面随机取几个在加几个字符理论上是不重复的";
+
     /**
      * Create a new command instance.
      *
@@ -115,12 +121,16 @@ class ImportAppleids extends Command
         }
 
         // 随机
-        $nRandomYear  = rand(1970, 2000);
+        $nRandomYear  = rand(1970, 2010);
         $nRandomMonth = rand(1, 12);
         $nRandomDay   = rand(1, 29);
 
         $nRandomYear = rand(1970, 2000);
         $nRandomYear = rand(1970, 2000);
+
+        $areas = $this->areas[rand(0, 33)];
+        $city  = $this->city[rand(0, 48)];
+        $road  = $this->road[rand(0, 13)];
 
         DB::table('appleids')->insert(array(
             'pwd'           => $appleid_password,
@@ -128,21 +138,21 @@ class ImportAppleids extends Command
             'strQ1'         => 0,
             'strQ2'         => 0,
             'strQ3'         => 0,
-            'strAn1'        => '天气',
-            'strAn2'        => '真的',
-            'strAn3'        => '好啊',
-            'strRegPwd'     => 'Td445544',
+            'strAn1'        => $areas,
+            'strAn2'        => $city,
+            'strAn3'        => $road,
+            'strRegPwd'     => 'Td' . rand(100000, 999999),
             'nRandomYear'   => $nRandomYear,
             'nRandomMonth'  => $nRandomMonth,
             'nRandomDay'    => $nRandomDay,
-            'strA1'         => '广东',
-            'strA2'         => '韶关市',
-            'strA3'         => '广东省韶关市连山壮族瑶族自治县江区东堤北路' . rand(1, 1000) . '号',
-            'strDeviceGUID' => rand(10, 99) . 'dbcaf8' . md5(microtime(true)),
-            'strFirstName'  => '亚环' . rand(1, 99),
-            'strLastName'   => '喻' . rand(1, 99),
+            'strA1'         => $areas,
+            'strA2'         => $city,
+            'strA3'         => $areas . $city . $road . '路' . rand(1, 1000) . '号',
+            'strDeviceGUID' => substr(md5($nRandomYear), 3, 8) . md5(microtime(true)),
+            'strFirstName'  => mb_substr($this->string, rand(0, 15), 2),
+            'strLastName'   => mb_substr($this->string, rand(0, 15), rand(1, 3)),
             'strRegName'    => $email,
-            'strPhone'      => '1507079' . rand(1000, 9999),
+            'strPhone'      => $this->phone_prefix[rand(0, 3)] . rand(10000000, 99999999),
         ));
         $this->j++;
         return true;

@@ -23,7 +23,7 @@ class TaskController extends Controller
         $uid1 = Redis::get('proxy_ip_uid');
         Redis::incr('proxy_ip_uid');
         $uid1 = intval($uid1);
-        $uid  = md5($uid1 . time().rand(1,1000));
+        $uid  = md5($uid1 . microtime(true).rand(1,1000));
         // $uid       = 'uid';
         $did       = 'did';
         $pid       = -1;
