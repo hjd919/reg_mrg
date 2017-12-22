@@ -60,8 +60,8 @@ class AppController extends Controller
 
         // 默认开始时间为昨天
         $yesterday  = date('Y-m-d', strtotime('-1 days'));
-        $start_date = $request->input('start_date')?$request->input('start_date'):$yesterday;
-        
+        $start_date = $request->input('start_date') ? $request->input('start_date') : $yesterday;
+
         // 设置where
         $where = [
             ['create_time', '>=', $start_date],
@@ -89,6 +89,8 @@ class AppController extends Controller
             '成功打量',
             '失败打量',
             '成功率',
+            '平均小时量',
+            '打量时长',
             '手机数量',
             '打量开始',
             '打量结束',
@@ -108,6 +110,9 @@ class AppController extends Controller
             if (!$app_row->brushed_num) {
                 continue;
             }
+
+            $brush_hour = floor((strtotime($app_row->end_time) - strtotime($app_row->start_time)) / 3600);
+
             $data[] = [
                 $app_row->id,
                 $app_row->appid,
@@ -121,6 +126,8 @@ class AppController extends Controller
                 $app_row->success_brushed_num,
                 $app_row->fail_brushed_num,
                 intval($app_row->success_brushed_num / $app_row->brushed_num * 100) . '%',
+                round($app_row->success_num / $brush_hour),
+                $brush_hour,
                 $app_row->mobile_num,
                 $app_row->start_time,
                 $app_row->end_time,
