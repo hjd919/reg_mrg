@@ -74,6 +74,8 @@ class FetchKeywordRank extends Command
         // 处理结果
         if (empty($result[0]) || !($keyword_rank = json_decode($result[0], true))) {
             echo '获取关键词排名失败';
+            $toMail = '297538600@qq.com';
+            
             // 控制发邮件频率，一分钟一个人只发一封
             $key = 'notify_fail_fetch_rank:email_' . $toMail;
             if (!Redis::get($key)) {
@@ -83,7 +85,6 @@ class FetchKeywordRank extends Command
                 // 邮箱通知
                 $msg = '获取关键词排名失败' . json_encode(compact('app_ids', 'appid'));
 
-                $toMail = '297538600@qq.com';
                 Mail::raw($msg, function ($message) use ($toMail) {
                     $message->subject('获取关键词排名失败');
                     $message->to($toMail);
