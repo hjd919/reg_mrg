@@ -59,6 +59,7 @@ class FetchKeywordRank extends Command
                 ->where('create_time', '>', date('Y-m-d', strtotime('-1 days')))
                 ->where('create_time', '<', date('Y-m-d'))
                 ->where('start_time', '<=', $start_time)
+                ->where('after_rank', '=', 0)
                 ->where('appid', $appid)
                 ->get();
             if ($app_ids->isEmpty()) {
