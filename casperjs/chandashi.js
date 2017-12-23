@@ -8,7 +8,7 @@ Array.prototype.contains = function (obj) {
         }
     }
     return false;
-}  
+}
 
 // 获取我们自己的关键词 [{id,keyword,keyword_id}]
 var getOurKeywords = function (keywordData, keyword_data) {
@@ -154,10 +154,15 @@ casper.then(function () {
             }
         }, function (response) {
             // 解析返回的数据 获取关键词趋势数据
-            keyword_rank_page = JSON.parse(this.getPageContent())
+            keyword_rank_page = this.getPageContent()
+            if (!keyword_rank_page) {
+                this.echo('error:history_rank_error' + keyword_rank_page).exit()
+            }
+            keyword_rank_page = JSON.parse(keyword_rank_page)
+
             keyword_rank_page = keyword_rank_page.data.points[0]
             keyword_rank_data = keyword_rank_page.data
-            
+
             keyword = keyword_rank_page.name
 
             // 分析出在榜时长、上榜开始、结束、现排名
