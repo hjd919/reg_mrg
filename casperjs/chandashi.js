@@ -158,12 +158,20 @@ casper.then(function () {
 
             keyword_rank_page = JSON.parse(keyword_rank_page)
 
-            if (!keyword_rank_page.data) {
+            if (!keyword_rank_page || !keyword_rank_page.data) {
                 this.echo('error:history_rank_error' + this.getPageContent()).exit()
             }
-            
+
             keyword_rank_page = keyword_rank_page.data
-            keyword_rank_page = keyword_rank_page.points[0]
+            keyword_rank_page = keyword_rank_page.points
+
+            this.echo('error:history_rank_error' + this.getPageContent()).exit()
+
+            if (!keyword_rank_page || !keyword_rank_page.data) {
+                this.echo('error:history_rank_error' + this.getPageContent()).exit()
+            }
+
+            keyword_rank_page = keyword_rank_page[0]
             keyword_rank_data = keyword_rank_page.data
 
             keyword = keyword_rank_page.name
