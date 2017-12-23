@@ -6,8 +6,8 @@ use App\Models\App;
 use App\Support\Util;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redis;
 
 class FetchKeywordRank extends Command
 {
@@ -92,6 +92,7 @@ class FetchKeywordRank extends Command
                     $message->to($toMail);
                 });
             }
+            return true;
         }
 
         // 保存结果
