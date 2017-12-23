@@ -217,11 +217,15 @@ class AppController extends Controller
         $search       = $request->input('search', '');
         $task_id      = $request->input('task_id', '');
         $appid        = $request->input('appid', '');
+        $id           = $request->input('id', '');
         $start_date   = $request->input('start_date', '');
         $end_date     = $request->input('end_date', '');
 
         $where = [];
 
+        if ($id) {
+            $where[] = ['id', '=', $id];
+        }
         if ($task_id) {
             $where[] = ['task_id', '=', $task_id];
         }
