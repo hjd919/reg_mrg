@@ -39,13 +39,26 @@ class ToMaxMinId extends Command
      * * @return mixed */
     public function handle()
     {
-        file_put_contents('tomax.txt',date('Ymd_H:i:s'),FILE_APPEND);
+        $app = DB::table('apps')->whereColumn('brush_num', 'success_num')->where('is_brushing', 0)->where('brushed_num', '>', 0)->where('create_time', '>', '2017-12-10')->get();
+        echo count($app->toArray()) . "\n";
+        foreach ($app as $key =>$app_row) {
+            $res = DB::table('apps')->where('id', $app_row->id)->update(['brush_num' => $app_row->success_num - $app_row->success_brushed_num]);
+            if($res){
+                echo $key."\n";
+            }else{
+                echo $key."fail\n";
+            }
+            echo $app_row->id . "-" . $app_row->appid . "\n";
+        }
+        die;
+
+        file_put_contents('tomax.txt', date('Ymd_H:i:s'), FILE_APPEND);
         sleep(40);
         file_put_contents('tomax.txt', date('Ymd_H:i:s'), FILE_APPEND);
         die;
         $total_key = 'valid_account_ids';
 
-        $offset       = 0;
+        $offset = 0;
         // $max_email_id = Redis::get('email_max_id');
         do {
             $data = DB::table('emails')->select('id')->where('valid_status', 1)
@@ -55,7 +68,7 @@ class ToMaxMinId extends Command
                 ->limit(10000)
                 ->get();
             $offset += 10000;
-            echo $offset."\n";
+            echo $offset . "\n";
             if ($data->isEmpty()) {
                 break;
             }
@@ -72,9 +85,9 @@ class ToMaxMinId extends Command
         // die;
         //set work_detail account_id sort
         $total_key = 'valid_account_ids';
-        $appid    = '1211055336';
-        $sort_key = "used_account_ids:appid_{$appid}";
-        $offset   = 10000;
+        $appid     = '1211055336';
+        $sort_key  = "used_account_ids:appid_{$appid}";
+        $offset    = 10000;
         while (1) {
             $data = WorkDetail::getWorkDetailTable($appid)->select('account_id')->where('appid', $appid)->offset($offset)->limit(10000)->get();
             if ($data->isEmpty()) {
