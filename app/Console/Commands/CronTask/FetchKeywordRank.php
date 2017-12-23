@@ -70,29 +70,29 @@ class FetchKeywordRank extends Command
 
         // 获取关键词排名 {[id,after_rank,on_rank_time,on_rank_start,on_rank_end]}
         $cmd = "casperjs --web-security=no --cookies-file=./casperjs/cookie.txt ./casperjs/chandashi.js --appid={$appid} --app_ids='{$app_ids}'";
-        Util::log('cmd', $cmd);
+        // Util::log('cmd', $cmd);
         exec($cmd, $result);
-        Util::log('result', $result);
+        // Util::log('result', $result);
 
         // 处理结果
         if (empty($result[0]) || !($keyword_rank = json_decode($result[0], true))) {
-            echo '获取关键词排名失败';
-            $toMail = '297538600@qq.com';
+            // echo '获取关键词排名失败';
+            // $toMail = '297538600@qq.com';
             
             // 控制发邮件频率，一分钟一个人只发一封
-            $key = 'notify_fail_fetch_rank:email_' . $toMail;
-            if (!Redis::get($key)) {
-                Redis::set($key, 1);
-                Redis::expire($key, 600);
+            // $key = 'notify_fail_fetch_rank:email_' . $toMail;
+            // if (!Redis::get($key)) {
+            //     Redis::set($key, 1);
+            //     Redis::expire($key, 600);
 
-                // 邮箱通知
-                $msg = '获取关键词排名失败' . json_encode(compact('app_ids', 'appid'));
+            //     // 邮箱通知
+            //     $msg = '获取关键词排名失败' . json_encode(compact('app_ids', 'appid'));
 
-                Mail::raw($msg, function ($message) use ($toMail) {
-                    $message->subject('获取关键词排名失败');
-                    $message->to($toMail);
-                });
-            }
+            //     Mail::raw($msg, function ($message) use ($toMail) {
+            //         $message->subject('获取关键词排名失败');
+            //         $message->to($toMail);
+            //     });
+            // }
             return true;
         }
 
