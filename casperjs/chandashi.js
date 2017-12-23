@@ -155,12 +155,15 @@ casper.then(function () {
         }, function (response) {
             // 解析返回的数据 获取关键词趋势数据
             keyword_rank_page = this.getPageContent()
-            if (!keyword_rank_page) {
-                this.echo('error:history_rank_error' + keyword_rank_page).exit()
-            }
+
             keyword_rank_page = JSON.parse(keyword_rank_page)
 
-            keyword_rank_page = keyword_rank_page.data.points[0]
+            if (!keyword_rank_page.data) {
+                this.echo('error:history_rank_error' + this.getPageContent()).exit()
+            }
+            
+            keyword_rank_page = keyword_rank_page.data
+            keyword_rank_page = keyword_rank_page.points[0]
             keyword_rank_data = keyword_rank_page.data
 
             keyword = keyword_rank_page.name
