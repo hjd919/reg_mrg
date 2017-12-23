@@ -158,26 +158,17 @@ casper.then(function () {
 
             keyword_rank_page = JSON.parse(keyword_rank_page)
 
-            if (!keyword_rank_page || !keyword_rank_page.data) {
-                this.echo('error:history_rank_error:data' + this.getPageContent()).exit()
+            if (keyword_rank_page.errno != 0) {
+                // this.echo('error:history_rank_error:data' + this.getPageContent())
+                return true
             }
 
             keyword_rank_page = keyword_rank_page.data
-
-            if (!keyword_rank_page.points) {
-                this.echo('error:history_rank_error:points' + this.getPageContent()).exit()
-            }
-            
             keyword_rank_page = keyword_rank_page.points
-
-            if (!keyword_rank_page.length) {
-                this.echo('error:history_rank_error:length' + this.getPageContent()).exit()
-            }
-
             keyword_rank_page = keyword_rank_page[0]
-            keyword_rank_data = keyword_rank_page.data
 
-            keyword = keyword_rank_page.name
+            keyword_rank_data = keyword_rank_page.data // 关键词趋势
+            keyword = keyword_rank_page.name // 关键词
 
             // 分析出在榜时长、上榜开始、结束、现排名
             // 找出最小的排名
