@@ -234,6 +234,8 @@ EOF;
 
             list($keyword, $before_rank, $hot, $success_num) = $app_info_row;
 
+            $mobile_group_id = empty($app_info_row[4]) ? false : $app_info_row[4];
+
             // 判断关键词半小时内是否存在
             if (App::where('create_time', '>', date('Y-m-d H:i:s', strtotime('-30 minutes')))->where('is_brushing', 1)->where('appid', $ios_app->appid)->where('keyword', $keyword)->first()) {
                 $this->error_message = '已经存在该app的关键词【' . $keyword . '】了，别重复添加';
@@ -241,7 +243,7 @@ EOF;
             }
 
             // 判断app_info格式是否正确
-if (empty($hot) || empty($before_rank) || empty($keyword) || empty($success_num)) {
+            if (empty($hot) || empty($before_rank) || empty($keyword) || empty($success_num)) {
                 $this->error_message = '输入内容不正确，空格分割且含有4个纬度的值！';
                 break;
             }
