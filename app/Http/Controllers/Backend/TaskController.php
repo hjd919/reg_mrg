@@ -91,12 +91,11 @@ CREATE TABLE `work_detail{$work_detail_table}` (
   KEY `appid_email` (`appid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 EOF;
-                $table_sql2 = <<<EOF
-CREATE TRIGGER `t_work_detail{$work_detail_table}_decr_num` AFTER INSERT ON `work_detail{$work_detail_table}` FOR EACH ROW update apps set brush_num=brush_num-1 where id=new.app_id
-EOF;
+//                 $table_sql2 = <<<EOF
+// CREATE TRIGGER `t_work_detail{$work_detail_table}_decr_num` AFTER INSERT ON `work_detail{$work_detail_table}` FOR EACH ROW update apps set brush_num=brush_num-1 where id=new.app_id
+// EOF;
                 DB::statement($table_sql1);
-                DB::statement($table_sql2);
-
+                // DB::statement($table_sql2);
             }
 
             // 新app时需要获取当前email最大的id
