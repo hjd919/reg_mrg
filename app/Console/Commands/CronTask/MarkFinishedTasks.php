@@ -107,7 +107,7 @@ class MarkFinishedTasks extends Command
             ]);
 
             // * 释放手机
-            if ($app_row->mobile_group_id < 1000) {
+            if ($app_row->mobile_group_id < 1000 || ($app_row->mobile_group_id >= 1008 && $app_row->mobile_group_id <= 1015)) {
                 // 正式
                 $res = DB::table('mobiles')->where([
                     ['mobile_group_id', '=', $app_row->mobile_group_id],
