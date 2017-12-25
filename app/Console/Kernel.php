@@ -109,7 +109,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('stat:daily_app')->cron('0 0 * * * *');
 
         // 抓取排名更新
-        $schedule->command('crond_fetch:keyword_rank')->cron('0 6-23/1 * * * *');
+        $schedule->command('crond_fetch:keyword_rank')->cron('0 */1 * * * *');
 
         // 判断是否需要添加邮箱
         //$schedule->command('check:is_no_appleids')->cron('0 */1 * * * *');
