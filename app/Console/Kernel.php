@@ -9,25 +9,26 @@ use App\Console\Commands\Data\ToDeviceId;
 use App\Console\Commands\sendMailCommand;
 use App\Console\Commands\Data\ToMaxMinId;
 use Illuminate\Console\Scheduling\Schedule;
-use App\Console\Commands\Check\isNoAppleids;
+use App\Console\Commands\Data\VerifyCapcha;
 use App\Console\Commands\Check\hasNewEmails;
-use App\Console\Commands\DB\MergeTaskKeyword;
+use App\Console\Commands\Check\isNoAppleids;
 use App\Console\Commands\Import\ImportEmails;
+use App\Console\Commands\DB\MergeTaskKeyword;
 use App\Console\Commands\Import\ImportDevices;
-use App\Console\Commands\CronTask\StatDailyApp;
 use App\Console\Commands\CronTask\sAddAppleids;
 use App\Console\Commands\CronTask\CopyAppleids;
 use App\Console\Commands\Import\ImportAppleids;
-use App\Console\Commands\CronTask\MarkMobileValid;
+use App\Console\Commands\CronTask\StatDailyApp;
 use App\Console\Commands\CronTask\MakeUpMobileNum;
 use App\Console\Commands\Data\MakeupUsedAccountId;
 use App\Console\Commands\Data\BackupInvalidEmails;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
+use App\Console\Commands\CronTask\MarkMobileValid;
 use App\Console\Commands\CronTask\FetchKeywordRank;
-use App\Console\Commands\CronTask\MakeUpAppBrushNum;
 use App\Console\Commands\CronTask\MarkFinishedTasks;
 use App\Console\Commands\CronTask\CountUpHourlyTask;
 use App\Console\Commands\CronTask\ResetAppleidState;
+use App\Console\Commands\CronTask\MakeUpAppBrushNum;
 use App\Console\Commands\CronTask\CrondFetchKeywordRank;
 
 class Kernel extends ConsoleKernel
@@ -53,6 +54,7 @@ class Kernel extends ConsoleKernel
         MergeTaskKeyword::class,
         StatDailyApp::class,
         FetchKeywordRank::class,
+        VerifyCapcha::class,
         // 定时检查是否需要抓取关键词排名
         CrondFetchKeywordRank::class,
         // 定时补成功量
@@ -109,7 +111,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('stat:daily_app')->cron('0 0 * * * *');
 
         // 抓取排名更新
-        $schedule->command('crond_fetch:keyword_rank')->cron('0 6-23/1 * * * *');
+        $schedule->command('crond_fetch:keyword_rank')->cron('0 */1 * * * *');
 
         // 判断是否需要添加邮箱
         //$schedule->command('check:is_no_appleids')->cron('0 */1 * * * *');
