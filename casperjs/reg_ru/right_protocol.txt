@@ -1,0 +1,54 @@
+
+# 注册
+POST /api/v1/user/signup HTTP/1.1
+Host: account.mail.ru
+Connection: keep-alive
+Content-Length: 1462
+Pragma: no-cache
+Cache-Control: no-cache
+Origin: https://account.mail.ru
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+Accept: application/json, text/javascript, */*; q=0.01
+X-Requested-With: XMLHttpRequest
+X-Request-Id: bf248dcf-a277-3e2a-7405-400a97b4b377
+Referer: https://account.mail.ru/signup/simple
+Accept-Encoding: gzip, deflate, br
+Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,zh-TW;q=0.7,sv;q=0.6,pl;q=0.5
+Cookie: act=ce0240606df44947bd03a4a741288712; mrcu=0A9E5A3E25076141570E0F9AE068; s=rt=1|dpr=2; VID=3r6Dny3rErne0000070E14ne:::; p=imkAAAvFHwAA; tmr_detect=0%7C1514022161214
+
+name:{"first":"treww","last":"rew1"}
+from:
+sex:male
+birthday:{"day":6,"month":7,"year":2001}
+context:signup
+browser:{"screen":{"availWidth":"1235","availHeight":"777","width":"1280","height":"800","colorDepth":"24","pixelDepth":"24","availLeft":"45","availTop":"23"},"navigator":{"vendorSub":"","productSub":"20030107","vendor":"Google Inc.","maxTouchPoints":"0","hardwareConcurrency":"4","cookieEnabled":"true","appCodeName":"Mozilla","appName":"Netscape","appVersion":"5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36","platform":"MacIntel","product":"Gecko","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36","language":"zh-CN","onLine":"true","doNotTrack":"inaccessible","deviceMemory":"8"},"flash":{"version":"inaccessible"}}
+device:{"os":"","os_version":"","dtid":"","viewType":"0"}
+login:adsf234ii
+domain:mail.ru
+password:hujiande123
+htmlencoded:false
+
+# 确定
+POST /api/v1/user/signup/confirm HTTP/1.1
+Host: account.mail.ru
+Connection: keep-alive
+Content-Length: 243
+Pragma: no-cache
+Cache-Control: no-cache
+Origin: https://account.mail.ru
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+Accept: application/json, text/javascript, */*; q=0.01
+X-Requested-With: XMLHttpRequest
+X-Request-Id: e58061cc-6c83-7d9f-f884-4e27c899fcc5
+Referer: https://account.mail.ru/signup/verify
+Accept-Encoding: gzip, deflate, br
+Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,zh-TW;q=0.7,sv;q=0.6,pl;q=0.5
+Cookie: act=ce0240606df44947bd03a4a741288712; mrcu=0A9E5A3E25076141570E0F9AE068; s=rt=1|dpr=2; VID=3r6Dny3rErne0000070E14ne:::; p=imkAAAvFHwAA; tmr_detect=0%7C1514022161214
+
+email:adsf234ii@mail.ru
+from:
+reg_anketa:{"id":"Xvrz6qsR3T5xjp5f","capcha":"a98kah"}
+redirect_uri:https://e.mail.ru/messages/inbox?newreg=1&signup_b=1&sms_reg=1&features=1
+htmlencoded:false
