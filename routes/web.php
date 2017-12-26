@@ -27,6 +27,9 @@ $router->group(['middleware' => [], 'namespace' => 'Jishua', 'prefix' => 'jishua
     $router->get('/task/brush_new_email/appid_{appid}', 'TaskController@brushNewEmail');
 
     $router->get('/brush_idfa/get', 'BrushIdfaController@get');
+
+    $router->get('/brush_idfa/ciliu_report', 'BrushIdfaController@ciliuReport');
+    $router->get('/brush_idfa/ciliu_get', 'BrushIdfaController@ciliuGet');
 });
 
 $router->group(['middleware' => [], 'namespace' => 'Appleid', 'prefix' => 'appleid'], function () use ($router) {
@@ -36,6 +39,8 @@ $router->group(['middleware' => [], 'namespace' => 'Appleid', 'prefix' => 'apple
     $router->get('/task/getproxy', 'TaskController@getproxy');
     $router->get('/task/query_success', 'TaskController@querySuccess');
 });
+
+$router->get('/backend/notify_success', 'Jishua\BrushIdfaController@notifySuccess');
 
 // 后台
 Route::group([
