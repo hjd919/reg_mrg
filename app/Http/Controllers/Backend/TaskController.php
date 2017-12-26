@@ -147,6 +147,10 @@ EOF;
     {
         $free_mobile_num = Mobile::getUsableNum(); // 获取空闲手机数
 
+        $real_used_mobile_num = Mobile::getUsedNum(); // 获取实际已用手机数
+
+        $task_used_mobile_num = App::getUsedNum(); // 获取下单已用手机数
+
         $exception_mobile_num = Mobile::getExceptionNum(); // 获取异常手机数
 
         $task_id = $request->task_id;
@@ -167,6 +171,8 @@ EOF;
 
         return response()->json([
             'app_name'             => $task->app_name,
+            'real_used_mobile_num' => $real_used_mobile_num,
+            'task_used_mobile_num' => $task_used_mobile_num,
             'free_mobile_num'      => $free_mobile_num,
             'usable_brush_num'     => $usable_brush_num,
             'exception_mobile_num' => $exception_mobile_num,

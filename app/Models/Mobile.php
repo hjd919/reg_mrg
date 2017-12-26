@@ -27,4 +27,10 @@ class Mobile extends Model
             ->limit($mobile_num)
             ->update(['mobile_group_id' => $mobile_group_id]);
     }
+
+    // 获取mobile中已用的手机
+    public static function getUsedNum()
+    {
+        return self::where('mobile_group_id', '<', 1000)->where('mobile_group_id', '>', 1)->count();
+    }
 }
