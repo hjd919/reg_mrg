@@ -41,8 +41,8 @@ class ToDeviceId extends Command
     public function handle()
     {
         // 更新假设备机器
-        for ($i = 1010; $i <= 1013; $i++) {
-            $res = DB::table('mobiles')->where('mobile_group_id', 0)->where('is_normal', 1)->limit(2)->update(['mobile_group_id' => $i]);
+        for ($i = 1011; $i <= 1012; $i++) {
+            $res = DB::table('mobiles')->where('mobile_group_id', 0)->where('is_normal', 1)->limit(4)->update(['mobile_group_id' => $i]);
             if ($res) {
                 echo $i . "\n";
             }
