@@ -69,7 +69,7 @@ class FetchKeywordRank extends Command
         }
 
         // 获取关键词排名 {[id,after_rank,on_rank_time,on_rank_start,on_rank_end]}
-        $cmd = "casperjs --web-security=no --cookies-file=./casperjs/cookie.txt ./casperjs/chandashi.js --appid={$appid} --app_ids='{$app_ids}'";
+        $cmd = "/home/hjd/scrap/casperjs-1.1.4-1/bin/casperjs --web-security=no --cookies-file=./casperjs/cookie.txt ./casperjs/chandashi.js --appid={$appid} --app_ids='{$app_ids}'";
         // Util::log('cmd', $cmd);
         exec($cmd, $result);
         // Util::log('result', $result);
