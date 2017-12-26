@@ -92,8 +92,8 @@ CREATE TABLE `work_detail{$work_detail_table}` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 EOF;
 //                 $table_sql2 = <<<EOF
-// CREATE TRIGGER `t_work_detail{$work_detail_table}_decr_num` AFTER INSERT ON `work_detail{$work_detail_table}` FOR EACH ROW update apps set brush_num=brush_num-1 where id=new.app_id
-// EOF;
+                // CREATE TRIGGER `t_work_detail{$work_detail_table}_decr_num` AFTER INSERT ON `work_detail{$work_detail_table}` FOR EACH ROW update apps set brush_num=brush_num-1 where id=new.app_id
+                // EOF;
                 DB::statement($table_sql1);
                 // DB::statement($table_sql2);
             }
@@ -358,7 +358,11 @@ EOF;
 
         $task = DB::table('tasks')->find($task_id);
 
-        $res = App::where('task_id', $task_id)->update(['end_time' => date('Y-m-d H:i:s')]);
+        // 当前登录管理员
+        $user    = $this->guard()->user();
+        $user_id = $user->id;
+
+        $res = App::where('task_id', $task_id)->update(['end_time' => date('Y-m-d H:i:s'), 'over_task_user_id' => $user_id]);
         if ($res) {
             return response()->json([
                 'message' => "成功停止{$res}条任务数，单名为-{$task->app_name}",

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Http\Controllers\Backend\BackendController;
 use App\Models\TaskKeyword;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Backend\BackendController;
 
 class TaskKeywordController extends BackendController
 {
@@ -55,12 +55,15 @@ class TaskKeywordController extends BackendController
         return response()->json(compact('pagination', 'list'));
     }
 
-    public static function stop(Request $request)
+    public function stop(Request $request)
     {
         $app_id = $request->app_id;
 
+        $user    = $this->guard()->user();
+        $user_id = $user->id;
+
         // 停止任务=修改app表的结束时间
-        $res = DB::table('apps')->where('id', $app_id)->update(['end_time' => date('Y-m-d H:i:s')]);
+        $res = DB::table('apps')->where('id', $app_id)->update(['end_time' => date('Y-m-d H:i:s'), 'over_task_user_id' => $user_id]);
 
         return response()->json(['message' => $res, 'code' => 0]);
     }
