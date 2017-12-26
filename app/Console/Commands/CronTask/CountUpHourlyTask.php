@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands\CronTask;
 
-use App\App;
+use App\Models\App;
 use App\Models\WorkDetail;
 use App\Support\Util;
 use Illuminate\Console\Command;
@@ -157,6 +157,9 @@ class CountUpHourlyTask extends Command
                 'success_brushed_num' => $success_brushed_num,
                 'fail_brushed_num'    => $brushed_num - $success_brushed_num,
             ]);
+
+            // 累加
+            App::where('id', $total_count_row->app_id)->increment('hour_success_num', $success_brushed_num);
         }
     }
 }
