@@ -2,8 +2,7 @@
 
 namespace App\Console\Commands\CronTask;
 
-use App\App;
-use App\Models\TaskKeyword;
+use App\Models\App;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -68,27 +67,45 @@ class MakeUpMobileNum extends Command
 
                 echo "处理第" . ($key++) . "条mobiles\n";
             }
+
+            // 判断当前正在跑任务异常手机是否多于2台
+            $fail_mobile_total = App::where('is_brushing', 1)->sum('fail_mobile_num');
+            if ($fail_mobile_total > 2) {
+                $key     = 'is_send_error_mobile';
+                $is_send = Redis::get($key);
+                if ($is_send) {
+                    return true;
+                }
+                Redis::set($key, 1);
+                Redis::expire($key, 600);
+
+                $apps = App::select('id', 'appid', 'app_name', 'keyword', 'fail_mobile_num')
+                    ->where('is_brushing', 1)
+                    ->where('fail_mobile_num', '>', 0)
+                    ->get();
+
+                $toMail = 'caoliang@xiaozi.com.cn';
+                $cc     = [
+                    '297538600@qq.com',
+                    'huangshimeng@xiaozi.com.cn',
+                    'tianlin@xiaozi.com.cn',
+                    'tianshaokun@xiaozi.com.cn',
+                    // 'su@xiaozi.com.cn',
+                    'xizaihui@xiaozi.com.cn',
+                ];
+                $msg = "异常任务如下：\n" . json_encode($apps);
+                Mail::raw($msg, function ($message) use ($toMail, $cc) {
+                    $message->subject("在跑任务有异常手机{$fail_mobile_total}台");
+                    $message->to($toMail);
+                    $message->cc($cc);
+                });
+            }
+
         } catch (\Exception $e) {
-            $msg = $e->getMessage();
+            // $msg = $e->getMessage();
 
             // 邮件警告异常,一小时发一条
-            $tag = explode('|', $msg);
-            $tag = isset($tag[1]) ? $tag[1] : $tag[0];
-            // Log::error('msg' . var_export($msg, true));
-            $send_email = Redis::get('mobile-fail-send_email:' . $tag);
-            if ($send_email) {
-                die('邮件警告异常');
-            }
-            Redis::set('mobile-fail-send_email:' . $tag, 1);
-            Redis::expire('mobile-fail-send_email:' . $tag, 7200);
 
-            $toMail = 'tianlin@xiaozi.com.cn';
-            $cc     = ['297538600@qq.com', 'huangshimeng@xiaozi.com.cn'];
-            Mail::raw($msg, function ($message) use ($toMail, $cc) {
-                $message->subject('jishua异常-补充手机数量失败');
-                $message->to($toMail);
-                $message->cc($cc);
-            });
         }
     }
 
@@ -106,6 +123,24 @@ class MakeUpMobileNum extends Command
             //     '$now_time'           => $this->now_time,
             //     '$mobile_access_time' => $mobile_access_time,
             // ]) . "\n";
+
+            // 处理任务中的手机
+            $mobile_group_id = $mobile->mobile_group_id;
+            // 查询任务id
+            $app = App::where('mobile_group_id', $mobile_group_id)->first();
+            if ($app) {
+
+                // 记录错误日志 error_mobile_log
+                DB::table('error_mobile_log')->insert([
+                    'appid'           => $app->appid,
+                    'app_id'          => $app->id,
+                    'mobile_group_id' => $mobile_group_id,
+                    'mobile_id'       => $mobile->id,
+                ]);
+
+                // 手机异常数增加 App
+                App::where('id', $app->id)->increment('fail_mobile_num');
+            }
 
             // 标志为不正常手机
             DB::table('mobiles')->where('id', $mobile->id)->increment('error_num', 1, ['is_normal' => 0]);
@@ -129,9 +164,6 @@ class MakeUpMobileNum extends Command
             // }
 
             // * 统计异常手机数量
-            if ($app->task_keyword_id) {
-                TaskKeyword::where('id', $app->task_keyword_id)->increment('fail_mobile_num');
-            }
 
             // // 更新新的
             // $res = DB::table('mobiles')->where('id', $mgi0->id)->update(['mobile_group_id' => $mobile->mobile_group_id]);
