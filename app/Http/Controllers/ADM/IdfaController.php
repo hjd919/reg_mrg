@@ -9,7 +9,9 @@ use \Exception;
 
 class IdfaController extends Controller
 {
-    const CACHE_KEY = 'idfas';
+    const CACHE_KEY         = 'idfas';
+    const CACHE_KEY_FETCHED = 'idfas_fetched';
+
     // 查询是否存在idfa
     public function isExist(
         Request $request
@@ -26,6 +28,11 @@ class IdfaController extends Controller
 
         try {
             $res = $this->is_exist_idfa($idfa);
+
+            // 记录已获取
+            $db = DB::connection('mysql3');
+            $db->table('idfas_active')->insert(['idfa' => $idfa]);
+
         } catch (\Exception $e) {
             $res = true;
         }
@@ -43,14 +50,14 @@ class IdfaController extends Controller
         // 导入
         $rows = file('/Users/jdhu/Downloads/ai.txt');
         $db   = DB::connection('mysql3');
-        $r = 0;
+        $r    = 0;
         foreach ($rows as $key => $row) {
             $idfa = trim($row);
             if (!$idfa || strlen($idfa) < 30) {
                 continue;
             }
             $res = $db->table('idfas')->where(['idfa' => $idfa])->first();
-            if($res){
+            if ($res) {
                 $r++;
                 continue;
             }
@@ -84,14 +91,14 @@ class IdfaController extends Controller
             if (!$res) {
                 throw new Exception('db error');
             }
-            $res = $db->table('idfas_active')->insert(['idfa' => $idfa]);
-            if(!$res){
+            $res = $db->table('idfas_active')->where(['idfa' => $idfa])->update(['is_active' => 1]);
+            if (!$res) {
                 DB::rollBack();
             }
 
             // 添加到idfa缓存
             $res = Redis::sAdd(self::CACHE_KEY, $idfa);
-            if(!$res){
+            if (!$res) {
                 DB::rollBack();
             }
 
