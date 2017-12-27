@@ -18,7 +18,15 @@ class BrushIdfaController extends Controller
             return $this->fail_response(['message' => '缺少参数cb_params']);
         }
 
-        $response      = DB::table('brush_idfas')->find(1);
+        $now_date = date('Y-m-d H:i:s');
+        $response = DB::table('brush_idfas')
+            ->where([
+                ['is_brushing', '=', 1],
+                ['brush_num', '>', 0],
+                ['start_time', '<=', $now_date],
+                ['end_time', '>=', $now_date],
+            ])
+            ->find(1);
         $response->ret = 0;
 
         // 创建任务 brush_idfa_tasks
