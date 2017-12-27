@@ -80,21 +80,21 @@ class BrushIdfaController extends Controller
     public function ciliuGet(Request $request)
     {
         // todo 混淆获取id
-        $brush_idfa_task = DB::table('brush_idfa_tasks')->where('task_status', 1)->limit(1)->first()->toArray();
+        $brush_idfa_task = DB::table('brush_idfa_tasks')->where('task_status', 1)->limit(1)->first();
         if (!$brush_idfa_task) {
             return $this->fail_response(['message' => 'no more brush_idfa_task']);
         }
-        
+
         DB::table('brush_idfa_tasks')->where('id', $brush_idfa_task->id)->increment('task_status');
 
         DB::table('brush_idfas_stat')->where('brush_idfa_id', $brush_idfa_task->brush_idfa_id)->increment('ciliu_returned');
 
         $brush_idfa = DB::table('brush_idfas')->select('bundleId,process')->where('id', $brush_idfa_task->brush_idfa_id)->first();
 
-        $brush_idfa_task['bundleId'] = $brush_idfa->bundleId;
-        $brush_idfa_task['process']  = $brush_idfa->process;
+        $brush_idfa_task->bundleId = $brush_idfa->bundleId;
+        $brush_idfa_task->process  = $brush_idfa->process;
 
-        return $this->success_response($brush_idfa_task);
+        return $this->success_response((array) $brush_idfa_task);
     }
 
     public function ciliuReport(Request $request)
