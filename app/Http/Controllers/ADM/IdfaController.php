@@ -52,6 +52,11 @@ class IdfaController extends Controller
 
     public function import()
     {
+        // $res = Redis::delete(self::CACHE_KEY_FETCHED);
+        // echo $res;
+        // $res = Redis::sRem(self::CACHE_KEY, 'DFE7CC57-9CA1-4A7B-8E74-130A23040FFS');
+        // echo $res;
+
         // 导入
         $rows = file('/Users/jdhu/Downloads/ai.txt');
         $db   = DB::connection('mysql3');
@@ -125,21 +130,21 @@ class IdfaController extends Controller
         return response()->json(['error_code' => 0, 'message' => 'success']);
     }
 
-    public function save_cache()
-    {
-        $db = DB::connection('mysql3');
+    // public function save_cache()
+    // {
+    //     $db = DB::connection('mysql3');
 
-        $rows = $db->table('idfas')->get();
-        $key  = self::CACHE_KEY;
-        $f    = $s    = 0;
-        foreach ($rows as $row) {
-            $res = Redis::sAdd($key, $row->idfa);
-            if ($res) {
-                $s++;
-            } else {
-                $f++;
-            }
-        }
-        echo json_encode(compact('s', 'j'));
-    }
+    //     $rows = $db->table('idfas')->get();
+    //     $key  = self::CACHE_KEY;
+    //     $f    = $s    = 0;
+    //     foreach ($rows as $row) {
+    //         $res = Redis::sAdd($key, $row->idfa);
+    //         if ($res) {
+    //             $s++;
+    //         } else {
+    //             $f++;
+    //         }
+    //     }
+    //     echo json_encode(compact('s', 'j'));
+    // }
 }
