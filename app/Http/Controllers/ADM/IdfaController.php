@@ -29,9 +29,9 @@ class IdfaController extends Controller
         try {
             $res = $this->is_exist_idfa($idfa);
 
-            if(!Redis::sIsMember(self::CACHE_KEY_FETCHED, $idfa)){
-                
-                // 防址多次请求排重接口
+            if(!$res && !Redis::sIsMember(self::CACHE_KEY_FETCHED, $idfa)){
+
+                // 判断不存在 且防址多次请求排重接口
                 Redis::sAdd(self::CACHE_KEY_FETCHED, $idfa);
                 
                 // 记录已获取
