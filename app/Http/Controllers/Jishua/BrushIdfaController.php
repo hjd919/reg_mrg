@@ -102,8 +102,8 @@ class BrushIdfaController extends Controller
         $id     = $request->input('id', '');
         $status = $request->input('status', '');
 
-        if ($status === '') {
-            return response()->json(['ret' => 1]);
+        if ($status === '' || !$id) {
+            return $this->fail_response(['message'=>'que shao id canshu']);
         }
 
         $brush_idfa_task = DB::table('brush_idfa_tasks')->select('brush_idfa_id')->where('id', $id)->first();
