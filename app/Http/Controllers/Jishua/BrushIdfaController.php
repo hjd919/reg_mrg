@@ -89,7 +89,7 @@ class BrushIdfaController extends Controller
 
         DB::table('brush_idfas_stat')->where('brush_idfa_id', $brush_idfa_task->brush_idfa_id)->increment('ciliu_returned');
 
-        $brush_idfa = DB::table('brush_idfas')->select('bundleId,process')->where('id', $brush_idfa_task->brush_idfa_id)->first();
+        $brush_idfa = DB::table('brush_idfas')->select('bundleId', 'process')->where('id', $brush_idfa_task->brush_idfa_id)->first();
 
         $brush_idfa_task->bundleId = $brush_idfa->bundleId;
         $brush_idfa_task->process  = $brush_idfa->process;
