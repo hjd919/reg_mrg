@@ -87,6 +87,7 @@ class IdfaController extends Controller
                 // 已存在
                 return response()->json(['error_code' => 2, 'message' => 'active fail']);
             }
+            $db = DB::connection('mysql3');
 
             DB::beginTransaction();
 
@@ -101,7 +102,6 @@ class IdfaController extends Controller
             // }
 
             // 记录激活 和 总idfa
-            $db  = DB::connection('mysql3');
             $res = $db->table('idfas')->insert(['idfa' => $idfa]);
             if (!$res) {
                 throw new Exception('db error');
@@ -119,7 +119,7 @@ class IdfaController extends Controller
 
             DB::commit();
         } catch (Exception $e) {
-            return response()->json(['error_code' => 3, 'message' => 'server error']);
+            return response()->json(['error_code' => 3, 'message' => 'server error' . $e->getMessage()]);
         }
 
         return response()->json(['error_code' => 0, 'message' => 'success']);
