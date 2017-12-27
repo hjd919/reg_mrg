@@ -16,7 +16,6 @@ class BrushIdfaController extends Controller
         if (!$idfa || !$device_id) {
             return $this->fail_response(['message' => '缺少参数cb_params']);
         }
-        $cb_data   = json_decode($cb_data);
 
         $response      = DB::table('brush_idfas')->find(1);
         $response->ret = 0;
