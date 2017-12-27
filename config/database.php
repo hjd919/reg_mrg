@@ -69,6 +69,21 @@ return [
             'engine'      => null,
         ],
 
+        'mysql3' => [
+            'driver'      => 'mysql',
+            'host'        => '60.205.58.24',
+            'port'        => '3306',
+            'database'    => 'slsw',
+            'username'    => 'hjd',
+            'password'    => 'hjd2015',
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset'     => 'utf8mb4',
+            'collation'   => 'utf8mb4_unicode_ci',
+            'prefix'      => '',
+            'strict'      => true,
+            'engine'      => null,
+        ],
+
         'pgsql'  => [
             'driver'   => 'pgsql',
             'host'     => env('DB_HOST', '127.0.0.1'),
