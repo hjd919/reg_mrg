@@ -103,7 +103,7 @@ class BrushIdfaController extends Controller
         $status = $request->input('status', '');
 
         if ($status === '' || !$id) {
-            return $this->fail_response(['message'=>'que shao id canshu']);
+            return $this->fail_response(['message' => 'que shao id canshu']);
         }
 
         $brush_idfa_task = DB::table('brush_idfa_tasks')->select('brush_idfa_id')->where('id', $id)->first();
@@ -114,7 +114,7 @@ class BrushIdfaController extends Controller
 
         $res = DB::table('brush_idfa_tasks')->where('id', $id)->update(['status' => $status]);
         if ($res) {
-            return $this->success_response($brush_idfa_task);
+            return $this->success_response((array) $brush_idfa_task);
         } else {
             return $this->fail_response();
         }
