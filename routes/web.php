@@ -29,7 +29,6 @@ $router->group(['middleware' => [], 'namespace' => 'Jishua', 'prefix' => 'jishua
     $router->post('/brush_idfa/get', 'BrushIdfaController@get');
     $router->post('/brush_idfa/ciliu_report', 'BrushIdfaController@ciliuReport');
     $router->post('/brush_idfa/ciliu_get', 'BrushIdfaController@ciliuGet');
-    $router->get('/brush_idfa/save_cache', 'BrushIdfaController@save_cache');
 });
 
 $router->group(['middleware' => [], 'namespace' => 'Appleid', 'prefix' => 'appleid'], function () use ($router) {
@@ -46,6 +45,7 @@ $router->group(['middleware' => [], 'namespace' => 'ADM'], function () use ($rou
     $router->get('/idfa/is_exist', 'IdfaController@isExist');
     $router->get('/idfa/import', 'IdfaController@import');
     $router->get('/idfa/active', 'IdfaController@active');
+   $router->get('/idfa/save_cache', 'IdfaController@save_cache');
 });
 
 // 后台
