@@ -11,33 +11,40 @@ class BrushIdfaController extends Controller
     public function get(
         Request $request
     ) {
-        $cb_params   = $request->input('cb_params', '');
-        $check_token = '';
-        if ($cb_params) {
-            $check_token = base64_encode($cb);
+        $cb_params = $request->input('cb_params');
+        if (!$cb_params) {
+            return $this->fail_response(['message' => '缺少参数cb_params']);
         }
+        $cb_data   = json_decode($cb_data);
+        $idfa      = $cb_data->idfa;
+        $device_id = $cb_data->device_id;
+
         $response      = DB::table('brush_idfas')->find(1);
         $response->ret = 0;
 
-        // 创建任务
-        $id = DB::table('brush_idfa_tasks')->insertGetId([
-            'brush_idfa_id' => $response->id,
+        // 创建任务 brush_idfa_tasks
+        $brush_idfa_id = $response->id;
+        $appid         = $response->appid;
+        $id            = DB::table('brush_idfa_tasks')->insertGetId([
             'idfa'          => $idfa,
             'appid'         => $appid,
             'device_id'     => $device_id,
             'brush_idfa_id' => $brush_idfa_id,
         ]);
 
+        // 创建统计表
         if (!Redis::sIsMember('exist_brush_idfas_stat', $brush_idfa_id)) {
-            $id = DB::table('brush_idfas_stat')->insertGetId([
+            $brush_idfas_stat_id = DB::table('brush_idfas_stat')->insertGetId([
                 'brush_idfa_id' => $brush_idfa_id,
                 'appid'         => $appid,
             ]);
-            Redis::sAdd('exist_brush_idfas_stat', $id);
+            Redis::sAdd('exist_brush_idfas_stat', $brush_idfas_stat_id);
         }
+        DB::table('brush_idfas_stat')->where('brush_idfa_id', $brush_idfa_id)->increment('returned');
 
+        // 回调任务，拼接回调地址
         if ($response->taskType == 1) {
-            $callback_url       = urlencode(url('backend/notify_success?appid=' . $response->appid . '&id=' . $response->id . '&check_token=' . $cb_params));
+            $callback_url       = urlencode(url('backend/notify_success?appid=' . $appid . '&id=' . $response->id . '&check_token=' . base64_encode($cb_params)));
             $response->callback = str_replace('{callback}', $callback_url, $response->callback);
         }
 
