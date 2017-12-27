@@ -29,10 +29,15 @@ class IdfaController extends Controller
         try {
             $res = $this->is_exist_idfa($idfa);
 
-            // 记录已获取
-            $db = DB::connection('mysql3');
-            $db->table('idfas_active')->insert(['idfa' => $idfa]);
-
+            if(!Redis::sIsMember(self::CACHE_KEY_FETCHED, $idfa)){
+                
+                // 防址多次请求排重接口
+                Redis::sAdd(self::CACHE_KEY_FETCHED, $idfa);
+                
+                // 记录已获取
+                $db = DB::connection('mysql3');
+                $db->table('idfas_active')->insert(['idfa' => $idfa]);                
+            }
         } catch (\Exception $e) {
             $res = true;
         }
@@ -84,6 +89,8 @@ class IdfaController extends Controller
             }
 
             DB::beginTransaction();
+
+            // 判断是否作弊 判断从获取到激活时间
 
             // 记录激活 和 总idfa
             $db  = DB::connection('mysql3');
