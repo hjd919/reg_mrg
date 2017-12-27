@@ -11,13 +11,12 @@ class BrushIdfaController extends Controller
     public function get(
         Request $request
     ) {
-        $cb_params = $request->input('cb_params');
-        if (!$cb_params) {
+        $idfa      = $request->input('idfa');
+        $device_id = $request->input('device_id');
+        if (!$idfa || !$device_id) {
             return $this->fail_response(['message' => '缺少参数cb_params']);
         }
         $cb_data   = json_decode($cb_data);
-        $idfa      = $cb_data->idfa;
-        $device_id = $cb_data->device_id;
 
         $response      = DB::table('brush_idfas')->find(1);
         $response->ret = 0;
@@ -41,6 +40,8 @@ class BrushIdfaController extends Controller
             Redis::sAdd('exist_brush_idfas_stat', $brush_idfas_stat_id);
         }
         DB::table('brush_idfas_stat')->where('brush_idfa_id', $brush_idfa_id)->increment('returned');
+
+        $cb_params = json_encode(compact('idfa','device_id'));
 
         // 回调任务，拼接回调地址
         if ($response->taskType == 1) {
