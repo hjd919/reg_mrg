@@ -114,9 +114,9 @@ class AppController extends Controller
 
             $brush_hour = round((strtotime($app_row->end_time) - strtotime($app_row->start_time)) / 3600, 1);
 
-            $rank_change = $app_row->before_rank - $app_row->after_rank;
-
-            if (!$app_row->rank_change && $app_row->after_rank) {
+            $rank_change = 0;
+            if ($app_row->after_rank) {
+                $rank_change = $app_row->before_rank - $app_row->after_rank;
                 // 更新排名变动记录
                 App::where('id', $app_row->id)->update(['rank_change' => $rank_change]);
             }
