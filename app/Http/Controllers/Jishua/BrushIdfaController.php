@@ -19,6 +19,23 @@ class BrushIdfaController extends Controller
         $response      = DB::table('brush_idfas')->find(1);
         $response->ret = 0;
 
+        // 创建任务
+        $id = DB::table('brush_idfa_tasks')->insertGetId([
+            'brush_idfa_id' => $response->id,
+            'idfa'          => $idfa,
+            'appid'         => $appid,
+            'device_id'     => $device_id,
+            'brush_idfa_id' => $brush_idfa_id,
+        ]);
+
+        if (!Redis::sIsMember('exist_brush_idfas_stat', $brush_idfa_id)) {
+            $id = DB::table('brush_idfas_stat')->insertGetId([
+                'brush_idfa_id' => $brush_idfa_id,
+                'appid'         => $appid,
+            ]);
+            Redis::sAdd('exist_brush_idfas_stat', $id);
+        }
+
         if ($response->taskType == 1) {
             $callback_url       = urlencode(url('backend/notify_success?appid=' . $response->appid . '&id=' . $response->id . '&check_token=' . $cb_params));
             $response->callback = str_replace('{callback}', $callback_url, $response->callback);
@@ -41,23 +58,6 @@ class BrushIdfaController extends Controller
                 $device_id = $check_token->device_id;
                 $idfa      = $check_token->idfa;
             }
-        }
-
-        // 创建任务
-        DB::table('brush_idfa_tasks')->insert([
-            'brush_idfa_id' => $brush_idfa_id,
-            'idfa'          => $idfa,
-            'appid'         => $appid,
-            'device_id'     => $device_id,
-            'brush_idfa_id' => $brush_idfa_id,
-        ]);
-
-        if (!Redis::sIsMember('exist_brush_idfas_stat', $brush_idfa_id)) {
-            $id = DB::table('brush_idfas_stat')->insertGetId([
-                'brush_idfa_id' => $brush_idfa_id,
-                'appid'         => $appid,
-            ]);
-            Redis::sAdd('exist_brush_idfas_stat', $id);
         }
 
         // 累加
@@ -98,7 +98,7 @@ class BrushIdfaController extends Controller
         }
 
         $res = DB::table('brush_idfa_tasks')->where('id', $id)->update(['status' => $status]);
-        if($res){
+        if ($res) {
             return $this->success_response($brush_idfa_task);
         } else {
             return $this->fail_response();
