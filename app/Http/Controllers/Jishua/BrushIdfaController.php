@@ -27,6 +27,9 @@ class BrushIdfaController extends Controller
                 ['end_time', '>=', $now_date],
             ])
             ->find(1);
+        if(!$response){
+            return $this->fail_response(['message' => 'no brush idfa task']);
+        }
         $response->ret = 0;
 
         // 创建任务 brush_idfa_tasks
