@@ -39,6 +39,11 @@ class MobileAdd extends Command
      */
     public function handle()
     {
+        $rows = DB::table('mobiles')->get();
+        foreach ($rows as $key => $row) {
+            DB::table('mobiles')->where('id', $row->id)->update(['no' => $key + 1]);
+        }
+        die;
         // * 导入手机device_id到mobile表
         // 从works获取device_id
         $rows = DB::table('works')

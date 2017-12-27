@@ -1,9 +1,9 @@
 <?php
 namespace App\Http\Controllers\Jishua;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redis;
 
 class BrushIdfaController extends Controller
@@ -24,7 +24,7 @@ class BrushIdfaController extends Controller
         // 创建任务 brush_idfa_tasks
         $brush_idfa_id = $response->id;
         $appid         = $response->appid;
-        $id            = DB::table('brush_idfa_tasks')->insertGetId([
+        $tid           = DB::table('brush_idfa_tasks')->insertGetId([
             'idfa'          => $idfa,
             'appid'         => $appid,
             'device_id'     => $device_id,
@@ -41,11 +41,11 @@ class BrushIdfaController extends Controller
         }
         DB::table('brush_idfas_stat')->where('brush_idfa_id', $brush_idfa_id)->increment('returned');
 
-        $cb_params = json_encode(compact('idfa','device_id'));
+        $cb_params = json_encode(compact('idfa', 'device_id'));
 
         // 回调任务，拼接回调地址
         if ($response->taskType == 1) {
-            $callback_url       = urlencode(url('backend/notify_success?appid=' . $appid . '&id=' . $response->id . '&check_token=' . base64_encode($cb_params)));
+            $callback_url       = urlencode(url('backend/notify_success?tid=' . $tid . '&appid=' . $appid . '&bid=' . $brush_idfa_id . '&check_token=' . base64_encode($cb_params)));
             $response->callback = str_replace('{callback}', $callback_url, $response->callback);
         }
 
@@ -57,7 +57,8 @@ class BrushIdfaController extends Controller
     ) {
         $check_token   = $request->input('check_token', '');
         $device_id     = $request->input('device_id', '');
-        $brush_idfa_id = $request->input('id', '');
+        $brush_idfa_id = $request->input('bid', '');
+        $task_id       = $request->input('tid', '');
         $appid         = $request->input('appid', '');
         $idfa          = $request->input('idfa', '');
         if ($check_token) {
@@ -67,6 +68,8 @@ class BrushIdfaController extends Controller
                 $idfa      = $check_token->idfa;
             }
         }
+
+        DB::table('brush_idfa_tasks')->where('id', $task_id)->update(['task_status' => 1]);
 
         // 累加
         DB::table('brush_idfas_stat')->where('brush_idfa_id', $brush_idfa_id)->increment('success_idfa_num');

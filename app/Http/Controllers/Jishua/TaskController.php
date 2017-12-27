@@ -1,13 +1,13 @@
 <?php
 namespace App\Http\Controllers\Jishua;
 
-use App\Models\Email;
-use App\Support\Util;
-use App\Models\WorkDetail;
-use Illuminate\Http\Request;
-use App\Jobs\UpdateWorkDetailJob;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Jobs\UpdateWorkDetailJob;
+use App\Models\Email;
+use App\Models\WorkDetail;
+use App\Support\Util;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redis;
 
@@ -189,7 +189,7 @@ class TaskController extends Controller
         if ('1' === $is_stop) {
             Util::die_jishua('停止任务获取', 1);
         }
-	$mtime = microtime(true);
+        $mtime = microtime(true);
 
         // func getdevice_id
         $get_device_id = function () {
@@ -263,10 +263,13 @@ class TaskController extends Controller
         // * 判断是否是新device_id，不是：则记录到数据库和缓存
         $row = DB::table('mobiles')->select('mobile_group_id')->where('device_id', $device_id)->first();
         if (!$row) {
+            $last_no = DB::table('mobiles')->max('no');
+            $last_no++;
             $mobile_group_id = 1; //默认组id
             DB::table('mobiles')->insert([
                 'device_id'       => $device_id,
                 'alias'           => '编号new',
+                'no'              => $last_no,
                 'mobile_group_id' => $mobile_group_id,
             ]);
         } else {
@@ -381,7 +384,7 @@ class TaskController extends Controller
                     ->limit(3)
                     ->get();
                 if ($email_rows->isEmpty()) {
-                    Util::log('刷完旧账号了，从头开始刷，标志为新账号_'.$mtime, 1);
+                    Util::log('刷完旧账号了，从头开始刷，标志为新账号_' . $mtime, 1);
 
                     // 设置last_id为min_account_id bug
                     $set_last_id($email_key, self::MAX_KEY);
@@ -443,9 +446,9 @@ class TaskController extends Controller
             } else {
                 Redis::incr($repeat_key, 1);
                 Redis::expire($repeat_key, 60);
-            }  
+            }
 
-           if($is_policy_2){
+            if ($is_policy_2) {
                 // 纪录为已经用过了
                 Redis::sAdd($used_account_ids_key, $email_rows[0]->id);
             }
