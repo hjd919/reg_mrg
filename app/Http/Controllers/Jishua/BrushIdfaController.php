@@ -55,10 +55,10 @@ class BrushIdfaController extends Controller
         $cb_params = json_encode(compact('idfa', 'device_id'));
 
         // 回调任务，拼接回调地址
-        if ($response->taskType == 1) {
+        //if ($response->taskType == 1) {
             $callback_url       = urlencode(url('backend/notify_success?tid=' . $tid . '&appid=' . $appid . '&bid=' . $brush_idfa_id . '&check_token=' . base64_encode($cb_params)));
             $response->callback = str_replace('{callback}', $callback_url, $response->callback);
-        }
+        //}
 
         return response()->json($response);
     }
