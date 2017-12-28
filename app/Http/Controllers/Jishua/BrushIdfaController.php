@@ -121,10 +121,12 @@ class BrushIdfaController extends Controller
         $brush_idfa_task = DB::table('brush_idfa_tasks')->select('brush_idfa_id')->where('id', $id)->first();
 
         if ($status == 1) {
+            // 统计累计
             DB::table('brush_idfas_stat')->where('brush_idfa_id', $brush_idfa_task->brush_idfa_id)->increment('ciliu_returned_success');
         }
 
-        $res = DB::table('brush_idfa_tasks')->where('id', $id)->update(['status' => $status]);
+        // 变更任务状态
+        $res = DB::table('brush_idfa_tasks')->where('id', $id)->increment('task_status', 1, ['status' => $status]);
         if ($res) {
             return $this->success_response((array) $brush_idfa_task);
         } else {
