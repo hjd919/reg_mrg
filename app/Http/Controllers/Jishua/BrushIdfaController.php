@@ -43,14 +43,20 @@ class BrushIdfaController extends Controller
             'is_ciliu'      => $response->is_ciliu,
         ]);
 
-        // 创建统计表
-        if (!Redis::sIsMember('exist_brush_idfas_stat', $brush_idfa_id)) {
-            $brush_idfas_stat_id = DB::table('brush_idfas_stat')->insertGetId([
-                'brush_idfa_id' => $brush_idfa_id,
-                'appid'         => $appid,
-            ]);
-            Redis::sAdd('exist_brush_idfas_stat', $brush_idfas_stat_id);
+        try{
+            // 创建统计表
+            if (!Redis::sIsMember('exist_brush_idfas_stat', $brush_idfa_id)
+                && !DB::table('brush_idfas_stat')->where('brush_idfa_id', $brush_idfa_id)->first()
+            ) {
+                $brush_idfas_stat_id = DB::table('brush_idfas_stat')->insertGetId([
+                    'brush_idfa_id' => $brush_idfa_id,
+                    'appid'         => $appid,
+                ]);
+                Redis::sAdd('exist_brush_idfas_stat', $brush_idfas_stat_id);
+            }
+        } catch(\Exception $e){
         }
+
         DB::table('brush_idfas_stat')->where('brush_idfa_id', $brush_idfa_id)->increment('returned');
 
         $cb_params = json_encode(compact('idfa', 'device_id'));
