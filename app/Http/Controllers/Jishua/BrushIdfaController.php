@@ -27,7 +27,7 @@ class BrushIdfaController extends Controller
                 ['end_time', '>=', $now_date],
             ])
             ->first();
-        if(!$response){
+        if (!$response) {
             return $this->fail_response(['message' => 'no brush idfa task']);
         }
         $response->ret = 0;
@@ -40,6 +40,7 @@ class BrushIdfaController extends Controller
             'appid'         => $appid,
             'device_id'     => $device_id,
             'brush_idfa_id' => $brush_idfa_id,
+            'is_ciliu'      => $response->is_ciliu,
         ]);
 
         // 创建统计表
@@ -56,8 +57,8 @@ class BrushIdfaController extends Controller
 
         // 回调任务，拼接回调地址
         //if ($response->taskType == 1) {
-            $callback_url       = urlencode(url('backend/notify_success?tid=' . $tid . '&appid=' . $appid . '&bid=' . $brush_idfa_id . '&check_token=' . base64_encode($cb_params)));
-            $response->callback = str_replace('{callback}', $callback_url, $response->callback);
+        $callback_url       = urlencode(url('backend/notify_success?tid=' . $tid . '&appid=' . $appid . '&bid=' . $brush_idfa_id . '&check_token=' . base64_encode($cb_params)));
+        $response->callback = str_replace('{callback}', $callback_url, $response->callback);
         //}
 
         return response()->json($response);
@@ -91,7 +92,7 @@ class BrushIdfaController extends Controller
     public function ciliuGet(Request $request)
     {
         // todo 混淆获取id
-        $brush_idfa_task = DB::table('brush_idfa_tasks')->where('task_status', 1)->limit(1)->first();
+        $brush_idfa_task = DB::table('brush_idfa_tasks')->where('task_status', 1)->where('is_ciliu', 1)->limit(1)->first();
         if (!$brush_idfa_task) {
             return $this->fail_response(['message' => 'no more brush_idfa_task']);
         }
