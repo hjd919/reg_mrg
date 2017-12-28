@@ -44,7 +44,9 @@ class BrushIdfaController extends Controller
         ]);
 
         // 创建统计表
-        if (!Redis::sIsMember('exist_brush_idfas_stat', $brush_idfa_id)) {
+        if (!Redis::sIsMember('exist_brush_idfas_stat', $brush_idfa_id)
+            && !DB::table('brush_idfas_stat')->where('brush_idfa_id', $brush_idfa_id)->first()
+        ) {
             $brush_idfas_stat_id = DB::table('brush_idfas_stat')->insertGetId([
                 'brush_idfa_id' => $brush_idfa_id,
                 'appid'         => $appid,
