@@ -19,8 +19,6 @@ class IdfaController extends Controller
     ) {
         $idfa = $request->input('idfa');
 
-        $channel  = Redis::get(self::CACHE_CHANNEL);
-
         // $idfas = $request->input('idfas');
         // $idfas = explode('|', $idfas);
         //         foreach ($idfas as $idfa) {
@@ -40,7 +38,8 @@ class IdfaController extends Controller
                 Redis::sAdd(self::CACHE_KEY_FETCHED, $idfa);
 
                 // 记录已获取
-                $db = DB::connection('mysql3');
+                $db      = DB::connection('mysql3');
+                $channel = Redis::get(self::CACHE_CHANNEL);
                 $db->table('idfas_active')->insert(['idfa' => $idfa, 'channel' => $channel]);
             }
         } catch (\Exception $e) {
@@ -57,8 +56,7 @@ class IdfaController extends Controller
 
     public function import(
         Request $request
-    )
-    {
+    ) {
         $channel = $request->input('channel');
         $res     = Redis::set(self::CACHE_CHANNEL, $channel);
         // echo $res;
