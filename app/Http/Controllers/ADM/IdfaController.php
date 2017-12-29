@@ -12,6 +12,13 @@ class IdfaController extends Controller
     const CACHE_KEY         = 'idfas';
     const CACHE_KEY_FETCHED = 'idfas_fetched';
     const CACHE_CHANNEL     = 'idfas_channel';
+    const CACHE_APPID       = 'idfas_appid';
+    private $appid          = 0;
+
+    public function __construct()
+    {
+        $this->appid = Redis::get(self::CACHE_APPID);
+    }
 
     // 查询是否存在idfa
     public function isExist(
@@ -40,7 +47,8 @@ class IdfaController extends Controller
                 // 记录已获取
                 $db      = DB::connection('mysql3');
                 $channel = Redis::get(self::CACHE_CHANNEL);
-                $db->table('idfas_active')->insert(['idfa' => $idfa, 'channel' => $channel]);
+                $appid   = $this->appid;
+                $db->table('idfas_active')->insert(['idfa' => $idfa, 'channel' => $channel, 'appid' => $appid]);
             }
         } catch (\Exception $e) {
             $res = true;
@@ -51,16 +59,27 @@ class IdfaController extends Controller
 
     private function is_exist_idfa($idfa)
     {
-        return Redis::sIsMember(self::CACHE_KEY, $idfa);
+        return Redis::sIsMember($this->cache_idfa_key(), $idfa);
+    }
+
+    private function cache_idfa_key()
+    {
+        if ($this->appid == '1279322671') {
+            return self::CACHE_KEY;
+        } else {
+            return self::CACHE_KEY . ':appid_' . $this->appid;
+        }
     }
 
     public function import(
         Request $request
     ) {
         $channel = $request->input('channel');
+        $appid   = $request->input('appid');
         $res     = Redis::set(self::CACHE_CHANNEL, $channel);
+        $res     = Redis::set(self::CACHE_APPID, $appid);
         // echo $res;
-        // $res = Redis::sRem(self::CACHE_KEY, 'DFE7CC57-9CA1-4A7B-8E74-130A23040FFS');
+        // $res = Redis::sRem($this->cache_idfa_key(), 'DFE7CC57-9CA1-4A7B-8E74-130A23040FFS');
         echo $res;
         die;
         // 导入
@@ -112,8 +131,9 @@ class IdfaController extends Controller
             //     return response()->json(['error_code' => 5, 'message' => 'active fail']);
             // }
 
+            $appid = $this->appid;
             // 记录激活 和 总idfa
-            $res = $db->table('idfas')->insert(['idfa' => $idfa]);
+            $res = $db->table('idfas')->insert(['idfa' => $idfa, 'appid' => $appid]);
             if (!$res) {
                 throw new Exception('db error');
             }
@@ -123,7 +143,7 @@ class IdfaController extends Controller
             }
 
             // 添加到idfa缓存
-            $res = Redis::sAdd(self::CACHE_KEY, $idfa);
+            $res = Redis::sAdd($this->cache_idfa_key(), $idfa);
             if (!$res) {
                 DB::rollBack();
             }
