@@ -212,8 +212,8 @@ EOF;
 
         $total_success_num = 0; // 总使用账号量
 
-        $total_hour = floor((strtotime($end_time) - strtotime($start_time)) / 3600); // 所需小时
-        $total_hour *= 26; // 所能打到的成功量
+        // $total_hour = floor((strtotime($end_time) - strtotime($start_time)) / 3600); // 所需小时
+        // $total_hour *= 26; // 所能打到的成功量
         $app_ids = [];
 
         $app_info = explode("\n", $app_info); //行
@@ -231,14 +231,14 @@ EOF;
             $app_info_row = explode(' ', $app_info_row);
 
             // 判断app_info格式是否正确
-            if (!isset($app_info_row[3])) {
+            if (!isset($app_info_row[4])) {
                 $this->error_message = '输入内容不正确，空格分割且含有4个纬度的值！';
                 break;
             }
 
-            list($keyword, $before_rank, $hot, $success_num) = $app_info_row;
+            list($keyword, $before_rank, $hot, $success_num, $mobile_num) = $app_info_row;
 
-            $mobile_group_id = empty($app_info_row[4]) ? false : $app_info_row[4];
+            $mobile_group_id = empty($app_info_row[5]) ? false : $app_info_row[5];
 
             // 判断关键词半小时内是否存在
             if (App::where('create_time', '>', date('Y-m-d H:i:s', strtotime('-30 minutes')))->where('is_brushing', 1)->where('appid', $ios_app->appid)->where('keyword', $keyword)->first()) {
@@ -247,8 +247,8 @@ EOF;
             }
 
             // 判断app_info格式是否正确
-            if (empty($hot) || empty($before_rank) || empty($keyword) || empty($success_num)) {
-                $this->error_message = '输入内容不正确，空格分割且含有4个纬度的值！';
+            if (empty($hot) || empty($before_rank) || empty($keyword) || empty($success_num) || empty($mobile_num)) {
+                $this->error_message = '输入内容不正确，空格分割且含有5个纬度的值！';
                 break;
             }
 
@@ -260,8 +260,8 @@ EOF;
             if (empty($mobile_group_id)) { // bug 因为mobile_group_id循环时已经存在了,1重置它 2判断这种情况
 
                 // 计算手机数量 总量/30*所需小时
-                $mobile_num = round($success_num / $total_hour);
-                $mobile_num = $mobile_num <= 0 ? 1 : $mobile_num;
+                // $mobile_num = round($success_num / $total_hour);
+                // $mobile_num = $mobile_num <= 0 ? 1 : $mobile_num;
 
                 // 判断是否多于空闲手机数
                 $free_mobile_num = DB::table('mobiles')->where('mobile_group_id', 0)->where('is_normal', 1)->count(); // 获取空闲手机数
