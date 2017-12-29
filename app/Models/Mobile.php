@@ -22,7 +22,7 @@ class Mobile extends Model
     // 分配可用手机
     public static function updateMobileGroupId($mobile_num, $mobile_group_id)
     {
-        return self::where('mobile_group_id', '<', 1000)
+        return self::where('mobile_group_id', 0)
             ->where('is_normal', 1)
             ->limit($mobile_num)
             ->update(['mobile_group_id' => $mobile_group_id]);

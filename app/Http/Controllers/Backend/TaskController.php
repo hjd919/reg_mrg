@@ -264,7 +264,7 @@ EOF;
                 $mobile_num = $mobile_num <= 0 ? 1 : $mobile_num;
 
                 // 判断是否多于空闲手机数
-                $free_mobile_num = DB::table('mobiles')->where('mobile_group_id', 0)->count(); // 获取空闲手机数
+                $free_mobile_num = DB::table('mobiles')->where('mobile_group_id', 0)->where('is_normal', 1)->count(); // 获取空闲手机数
                 if ($mobile_num > $free_mobile_num) {
                     $this->error_message = '已经多于空闲手机数';
                     break;
@@ -293,6 +293,15 @@ EOF;
                 // 更新手机分组（1000以上是自己用的)
                 Mobile::updateMobileGroupId($mobile_num, $mobile_group_id);
             } else {
+                // 如果不存在分组，则添加分组表
+                if (!DB::table('mobile_group')->find($mobile_group_id)) {
+                    DB::table('mobile_group')->insert([
+                        'id'     => $mobile_group_id,
+                        'name'   => '随机' . $mobile_group_id,
+                        'remark' => 'no remark',
+                    ]);
+                }
+
                 $mobile_num = DB::table('mobiles')->where('mobile_group_id', $mobile_group_id)->count(); // 获取空闲手机数
             }
 
