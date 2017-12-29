@@ -232,7 +232,7 @@ EOF;
 
             // 判断app_info格式是否正确
             if (!isset($app_info_row[3])) {
-                $this->error_message = '输入内容不正确，空格分割且含有4个纬度的值！';
+                $this->error_message = '输入内容格式:关键词 排名 热度 量级';
                 break;
             }
 
@@ -243,12 +243,6 @@ EOF;
             // 判断关键词半小时内是否存在
             if (App::where('create_time', '>', date('Y-m-d H:i:s', strtotime('-30 minutes')))->where('is_brushing', 1)->where('appid', $ios_app->appid)->where('keyword', $keyword)->first()) {
                 $this->error_message = '已经存在该app的关键词【' . $keyword . '】了，别重复添加';
-                break;
-            }
-
-            // 判断app_info格式是否正确
-            if (empty($hot) || empty($before_rank) || empty($keyword) || empty($success_num)) {
-                $this->error_message = '输入内容不正确，空格分割且含有4个纬度的值！';
                 break;
             }
 
