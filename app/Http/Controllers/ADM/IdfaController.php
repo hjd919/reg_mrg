@@ -15,9 +15,11 @@ class IdfaController extends Controller
     const CACHE_APPID       = 'idfas_appid';
     private $appid          = 0;
 
-    public function __construct()
-    {
-        $this->appid = Redis::get(self::CACHE_APPID);
+    public function __construct(
+        Request $request
+    ) {
+        $appid       = $request->input('appid');
+        $this->appid = $appid ?: Redis::get(self::CACHE_APPID);
     }
 
     // 查询是否存在idfa
@@ -45,9 +47,12 @@ class IdfaController extends Controller
                 Redis::sAdd(self::CACHE_KEY_FETCHED, $idfa);
 
                 // 记录已获取
-                $db      = DB::connection('mysql3');
-                $channel = Redis::get(self::CACHE_CHANNEL);
-                $appid   = $this->appid;
+                $db = DB::connection('mysql3');
+
+                $channel = $request->input('channel');
+                $channel = $channel ?: Redis::get(self::CACHE_CHANNEL);
+
+                $appid = $this->appid;
                 $db->table('idfas_active')->insert(['idfa' => $idfa, 'channel' => $channel, 'appid' => $appid]);
             }
         } catch (\Exception $e) {
@@ -74,33 +79,42 @@ class IdfaController extends Controller
     public function import(
         Request $request
     ) {
-        $channel = $request->input('channel');
-        $appid   = $request->input('appid');
-        $res     = Redis::set(self::CACHE_CHANNEL, $channel);
-        $res     = Redis::set(self::CACHE_APPID, $appid);
-        // echo $res;
-        // $res = Redis::sRem($this->cache_idfa_key(), 'DFE7CC57-9CA1-4A7B-8E74-130A23040FFS');
-        echo $res;
-        die;
+        $appid = $this->appid;
+
         // 导入
-        $rows = file('/Users/jdhu/Downloads/ai.txt');
-        $db   = DB::connection('mysql3');
-        $r    = 0;
+        $rows      = file('/Users/jdhu/Downloads/ai.txt');
+        $db        = DB::connection('mysql3');
+        $r         = 0;
+        $cache_key = $this->cache_idfa_key();
+        echo "appid_{$appid}:cache_key_{$cache_key}:cache_size_" . Redis::sCard($cache_key) . "\n";
+
         foreach ($rows as $key => $row) {
             $idfa = trim($row);
             if (!$idfa || strlen($idfa) < 30) {
                 continue;
             }
-            $res = $db->table('idfas')->where(['idfa' => $idfa])->first();
-            if ($res) {
-                $r++;
-                continue;
-            }
-            $res = $db->table('idfas')->insert(['idfa' => $idfa]);
-            if ($res) {
+            // $res = $db->table('idfas')->where(['appid' => $appid, 'idfa' => $idfa])->first();
+            // if ($res) {
+            //     $r++;
+            //     continue;
+            // }
+            // $res  = $db->table('idfas')->insert(['idfa' => $idfa, 'appid' => $appid]);
+            $res1 = Redis::sAdd($cache_key, $idfa);
+            // if ($res && $res1) {
                 echo $key . "\n";
-            }
+            // }
         }
+
+        echo "appid_{$appid}:cache_key_{$cache_key}:cache_size_" . Redis::sCard($cache_key);
+    }
+
+    public function set_info(
+        Request $request
+    ) {
+        $channel = $request->input('channel');
+        $appid   = $request->input('appid');
+        $res     = Redis::set(self::CACHE_CHANNEL, $channel);
+        $res     = Redis::set(self::CACHE_APPID, $appid);
     }
 
     public function active(
@@ -137,7 +151,7 @@ class IdfaController extends Controller
             if (!$res) {
                 throw new Exception('db error');
             }
-            $res = $db->table('idfas_active')->where(['idfa' => $idfa])->update(['is_active' => 1]);
+            $res = $db->table('idfas_active')->where(['idfa' => $idfa, 'appid' => $appid])->update(['is_active' => 1]);
             if (!$res) {
                 DB::rollBack();
             }

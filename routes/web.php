@@ -44,6 +44,7 @@ $router->get('/backend/notify_success', 'Jishua\BrushIdfaController@notifySucces
 $router->group(['middleware' => [], 'namespace' => 'ADM'], function () use ($router) {
     $router->get('/idfa/is_exist', 'IdfaController@isExist');
     $router->get('/idfa/import', 'IdfaController@import');
+    $router->get('/idfa/set_info', 'IdfaController@set_info');
     $router->get('/idfa/active', 'IdfaController@active');
    $router->get('/idfa/save_cache', 'IdfaController@save_cache');
 });
