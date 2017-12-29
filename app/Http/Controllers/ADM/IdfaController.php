@@ -11,17 +11,22 @@ class IdfaController extends Controller
 {
     const CACHE_KEY         = 'idfas';
     const CACHE_KEY_FETCHED = 'idfas_fetched';
+    const CACHE_CHANNEL     = 'idfas_channel';
 
     // 查询是否存在idfa
     public function isExist(
         Request $request
     ) {
         $idfa = $request->input('idfa');
+
+        $channel  = Redis::get(self::CACHE_CHANNEL);
+
         // $idfas = $request->input('idfas');
         // $idfas = explode('|', $idfas);
         //         foreach ($idfas as $idfa) {
         //     $res = $is_exist_idfa($idfa);
         // }
+
         if (!$idfa || strlen($idfa) < 30) {
             return response()->json(['error_code' => 1, 'message' => '缺少参数']);
         }
@@ -36,7 +41,7 @@ class IdfaController extends Controller
 
                 // 记录已获取
                 $db = DB::connection('mysql3');
-                $db->table('idfas_active')->insert(['idfa' => $idfa]);
+                $db->table('idfas_active')->insert(['idfa' => $idfa, 'channel' => $channel]);
             }
         } catch (\Exception $e) {
             $res = true;
@@ -50,13 +55,16 @@ class IdfaController extends Controller
         return Redis::sIsMember(self::CACHE_KEY, $idfa);
     }
 
-    public function import()
+    public function import(
+        Request $request
+    )
     {
-        // $res = Redis::delete(self::CACHE_KEY_FETCHED);
+        $channel = $request->input('channel');
+        $res     = Redis::set(self::CACHE_CHANNEL, $channel);
         // echo $res;
         // $res = Redis::sRem(self::CACHE_KEY, 'DFE7CC57-9CA1-4A7B-8E74-130A23040FFS');
-        // echo $res;
-
+        echo $res;
+        die;
         // 导入
         $rows = file('/Users/jdhu/Downloads/ai.txt');
         $db   = DB::connection('mysql3');
