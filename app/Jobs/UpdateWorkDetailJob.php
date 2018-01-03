@@ -32,6 +32,8 @@ class UpdateWorkDetailJob extends Job
      */
     public function handle()
     {
+        Util::log('UpdateWorkDetailJob', json_encode([$this->work_id, $this->account_id, $this->status, $this->fail_reason]));
+
         // * 根据任务id和账号id更新刷任务记录状态
         WorkDetail::updateStatus($this->work_id, $this->account_id, $this->status, $this->fail_reason);
     }
