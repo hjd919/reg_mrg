@@ -83,7 +83,7 @@ class ToIosApp extends Command
 // die;
         // TODO 停止任务
         // 添加策略2
-        $res = sAdd('account_policy_2', $appid);
+        $res = Redis::sAdd('account_policy_2', $appid);
         echo "添加策略2-{$res}\n";
         $sort_key = "used_account_ids:appid_{$appid}";
         $offset   = 10000;
