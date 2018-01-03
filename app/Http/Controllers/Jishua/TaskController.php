@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Redis;
 class TaskController extends Controller
 {
     const MAX_KEY      = 9999999999;
+    const TASK_SIZE    = 3;
     const STOP_GET_APP = 'stop_get_app';
 
     public $fixed_device = [
@@ -403,9 +404,7 @@ class TaskController extends Controller
                     if ($email_rows->isEmpty()) {
                         $email_rows = false;
                     }
-
                 }
-
             }
         }
         if (!$email_rows) {
@@ -555,6 +554,9 @@ class TaskController extends Controller
 
             // 添加work_detail记录
             WorkDetail::add($appid, $work_detail);
+
+            // 剩余数量减少3
+            App::where('id', $app_row->id)->decrement('brush_num', self::TASK_SIZE);
         } catch (Exception $e) {
             Util::errorLog('transaction error:file_' . __FILE__, $e->getMessage());
 

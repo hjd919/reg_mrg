@@ -40,6 +40,11 @@ class MakeupUsedAccountId extends Command
      */
     public function handle()
     {
+        // 重新分配appid到新的表
+        
+        die;
+
+        // 增加work缓存
         Redis::hMSet('work_table_key', ['work_id' => 3286177, 'work_table' => 'works1']);
         $rpows = Redis::hMGet('work_table_key', ['work_id', 'work_table']);
         print_r($rpows);
