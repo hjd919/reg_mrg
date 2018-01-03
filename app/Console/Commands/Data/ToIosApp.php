@@ -87,7 +87,7 @@ class ToIosApp extends Command
         echo "添加策略2-{$res}\n";
         $sort_key = "used_account_ids:appid_{$appid}";
         $offset   = 10000;
-        $j        = $i        = 0;
+        $r        = $s        = 0;
         while (1) {
             $data = WorkDetail::getWorkDetailTable($appid)->select('account_id')->where('appid', $appid)->where('create_time', '<', '2017-12-21')->groupBy('account_id')->orderBy('account_id', 'asc')->offset($offset)->limit(10000)->get();
             if ($data->isEmpty()) {
@@ -108,7 +108,7 @@ class ToIosApp extends Command
             }
         }
         echo Redis::sSize($sort_key) . "\n";
-        echo "执行success:{$s}\n";
+        echo "执行success:{$s}--re:{$r}\n";
         // die;
         // diff two sort
         // 某个时间点未用过账号
