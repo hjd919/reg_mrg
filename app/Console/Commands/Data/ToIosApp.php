@@ -102,9 +102,9 @@ class ToIosApp extends Command
                 } else {
                     $r++;
                 }
-                if ($r > 100) {
+                if ($r > 10000) {
                     echo "account_id:{$row->account_id}";
-                    break 2;
+                    $r=0;
                 }
             }
         }
