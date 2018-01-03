@@ -64,9 +64,9 @@ class ToIosApp extends Command
         // $appid    = '1141755797';
         $appid = $this->option('appid');
 // $useful_key = "useful_account_ids:appid_{$appid}";
-        //         $sort_key = "used_account_ids:appid_{$appid}";
-        // echo Redis::sSize($sort_key) . "\n";
-
+                $sort_key = "used_account_ids:appid_{$appid}";
+        echo Redis::sSize($sort_key) . "\n";
+            die;
 // $redis = Redis::connection();
         // $it = null;
         // $redis->setOption(\Redis::OPT_SCAN, \Redis::SCAN_RETRY); /* don't return empty results until we're done */
@@ -103,6 +103,7 @@ class ToIosApp extends Command
                     $r++;
                 }
                 if ($r > 100) {
+                    echo "account_id:{$row->account_id}";
                     break 2;
                 }
             }
