@@ -5,6 +5,7 @@ namespace App\Console\Commands\Data;
 use App\App;
 use App\Models\WorkDetail;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 
 class MakeupUsedAccountId extends Command
@@ -14,7 +15,7 @@ class MakeupUsedAccountId extends Command
      *
      * @var string
      */
-    protected $signature = 'make_up:used_account_id';
+    protected $signature = 'dispatch:appid_work_detail';
 
     /**
      * The console command description.
@@ -41,7 +42,19 @@ class MakeupUsedAccountId extends Command
     public function handle()
     {
         // 重新分配appid到新的表
-        
+        $table_key = 2;
+        $appid     = 1120180668;
+        $new_table = 'work_detail' . $table_key;
+        $old_table = 'work_detail';
+        // $res       = DB::insert("insert into {$new_table} select * from {$old_table} where appid={$appid}");
+        // $res1      = DB::delete("delete  FROM `work_detail` WHERE `appid` = {$appid} ");
+        // $res2      = DB::update("UPDATE `ios_apps` SET `work_detail_table` = '{$table_key}' WHERE `ios_apps`.`appid` = {$appid}");
+        $res3 = Redis::hSet('work_detail_table', $appid, $table_key);
+
+        var_dump($res);
+        var_dump($res1);
+        var_dump($res2);
+        var_dump($res3);
         die;
 
         // 增加work缓存
