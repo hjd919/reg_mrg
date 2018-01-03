@@ -40,6 +40,11 @@ class MakeupUsedAccountId extends Command
      */
     public function handle()
     {
+        Redis::hMSet('work_table_key', ['work_id' => 3286177, 'work_table' => 'works1']);
+        $rpows = Redis::hMGet('work_table_key', ['work_id', 'work_table']);
+        print_r($rpows);
+        die;
+
         $appid               = '1211055336';
         $used_account_id_key = "used_account_ids:appid_{$appid}";
         echo Redis::sSize($used_account_id_key);

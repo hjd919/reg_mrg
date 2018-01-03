@@ -62,11 +62,12 @@ class ToIosApp extends Command
         // die;
         // 已用过账号
         // $appid    = '1141755797';
-        $appid = $this->option('appid');
-// $useful_key = "useful_account_ids:appid_{$appid}";
-        //         $sort_key = "used_account_ids:appid_{$appid}";
-        // echo Redis::sSize($sort_key) . "\n";
-        //     die;
+        $appid      = $this->option('appid');
+        $total_key  = 'valid_account_ids';
+        $useful_key = "useful_account_ids:appid_{$appid}";
+        $sort_key   = "used_account_ids:appid_{$appid}";
+        echo Redis::sSize($total_key) . "\n";
+        die;
 // $redis = Redis::connection();
         // $it = null;
         // $redis->setOption(\Redis::OPT_SCAN, \Redis::SCAN_RETRY); /* don't return empty results until we're done */
@@ -86,10 +87,10 @@ class ToIosApp extends Command
         $res = Redis::sAdd('account_policy_2', $appid);
         echo "添加策略2-{$res}\n";
         $sort_key = "used_account_ids:appid_{$appid}";
-        $offset   = 10000;
+        $offset   = 0;
         $r        = $s        = 0;
         while (1) {
-            $data = WorkDetail::getWorkDetailTable($appid)->select('account_id')->where('appid', $appid)->where('create_time', '<', '2017-12-21')->groupBy('account_id')->orderBy('account_id', 'asc')->offset($offset)->limit(10000)->get();
+            $data = WorkDetail::getWorkDetailTable($appid)->select('account_id')->where('appid', $appid)->where('create_time', '<', '2017-12-21')->groupBy('account_id')->orderBy('id', 'asc')->offset($offset)->limit(10000)->get();
             if ($data->isEmpty()) {
                 break;
             }
@@ -104,7 +105,7 @@ class ToIosApp extends Command
                 }
                 if ($r > 10000) {
                     echo "account_id:{$row->account_id}";
-                    $r=0;
+                    $r = 0;
                 }
             }
         }
