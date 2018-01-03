@@ -2,8 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Support\Util;
 use App\Models\WorkDetail;
+use App\Support\Util;
 
 class UpdateWorkDetailJob extends Job
 {
@@ -11,7 +11,7 @@ class UpdateWorkDetailJob extends Job
     protected $account_id;
     protected $status;
     protected $fail_reason;
-    
+
     /**
      * Create a new job instance.
      *
