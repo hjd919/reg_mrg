@@ -1,14 +1,14 @@
 <?php
 namespace App\Http\Controllers\Jishua;
 
+use App\Http\Controllers\Controller;
+use App\Jobs\UpdateWorkDetailJob;
 use App\Models\App;
 use App\Models\Email;
-use App\Support\Util;
 use App\Models\WorkDetail;
+use App\Support\Util;
 use Illuminate\Http\Request;
-use App\Jobs\UpdateWorkDetailJob;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redis;
 
@@ -518,7 +518,7 @@ class TaskController extends Controller
                 'device_id' => $device_id,
                 'keyword'   => $app_row->keyword,
             ]);
-            Redis::hIncrBy('work_table_key', 'work_id', 1);
+            Redis::hSet('work_table_key', 'work_id', ++$work_id);
 
             // 插入work_detail
             $response = $work_detail = [];
