@@ -509,9 +509,9 @@ class TaskController extends Controller
 
             // 获取work_id
             $work_table_key = Redis::hMGet('work_table_key', ['work_table', 'work_id']);
-            $work_id        = $work_table_key['work_id'];
+            $work_id        = $work_table_key[1];
             // 插入works
-            DB::table($work_table_key['work_table'])->insert([
+            DB::table($work_table_key[0])->insert([
                 'id'        => $work_id,
                 'app_id'    => $app_row->id,
                 'appid'     => $appid,
