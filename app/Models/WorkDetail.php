@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
-use App\Support\Util;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
-use Illuminate\Database\Eloquent\Model;
 
 class WorkDetail extends Model
 {
@@ -113,7 +112,7 @@ class WorkDetail extends Model
         // 根据work_id查询appid
         $work_table = Redis::get('work_table');
         $appid      = DB::table($work_table)->select('appid')->where('id', $work_id)->value('appid');
-        Util::log('updateStatus-appid-', $appid);
+        // Util::log('updateStatus-appid-', $appid);
         return self::getWorkDetailTable($appid)->where([
             'work_id'    => $work_id,
             'account_id' => $account_id,
