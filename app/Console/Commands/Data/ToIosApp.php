@@ -95,8 +95,8 @@ class ToIosApp extends Command
             }
             echo 'offset-' . $offset . "\n";
             $offset += 10000;
-            foreach ($data as $key => $r) {
-                $res = Redis::sAdd($sort_key, $r->account_id);
+            foreach ($data as $key => $row) {
+                $res = Redis::sAdd($sort_key, $row->account_id);
                 if ($res) {
                     $s++;
                 } else {
