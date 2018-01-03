@@ -5,7 +5,6 @@ namespace App\Console\Commands\Data;
 use App\App;
 use App\Models\WorkDetail;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 
 class ToIosApp extends Command
@@ -64,35 +63,60 @@ class ToIosApp extends Command
         // 已用过账号
         // $appid    = '1141755797';
         $appid = $this->option('appid');
+// $useful_key = "useful_account_ids:appid_{$appid}";
+        //         $sort_key = "used_account_ids:appid_{$appid}";
+        // echo Redis::sSize($sort_key) . "\n";
 
+// $redis = Redis::connection();
+        // $it = null;
+        // $redis->setOption(\Redis::OPT_SCAN, \Redis::SCAN_RETRY); /* don't return empty results until we're done */
+        // while ($arr_mems = $redis->sScan($sort_key, $it)) {
+        //     foreach ($arr_mems as $key =>$str_mem) {
+        //         if($key <5){
+        //             echo "Member: $str_mem\n";
+        //         }else{
+        //             break 2;
+        //         }
+        //     }
+        // }
+
+// die;
+        // TODO 停止任务
+        // 添加策略2
+        $res = sAdd('account_policy_2', $appid);
+        echo "添加策略2-{$res}\n";
         $sort_key = "used_account_ids:appid_{$appid}";
         $offset   = 10000;
         $j        = $i        = 0;
         while (1) {
-            $data = WorkDetail::getWorkDetailTable($appid)->select('account_id')->where('appid', $appid)->groupBy('account_id')->orderBy('account_id', 'asc')->offset($offset)->limit(10000)->get();
+            $data = WorkDetail::getWorkDetailTable($appid)->select('account_id')->where('appid', $appid)->where('create_time', '<', '2017-12-21')->groupBy('account_id')->orderBy('account_id', 'asc')->offset($offset)->limit(10000)->get();
             if ($data->isEmpty()) {
                 break;
             }
             echo 'offset-' . $offset . "\n";
             $offset += 10000;
             foreach ($data as $key => $r) {
-                $i++;
                 $res = Redis::sAdd($sort_key, $r->account_id);
                 if ($res) {
-                    $j++;
+                    $s++;
+                } else {
+                    $r++;
+                }
+                if ($r > 100) {
+                    break 2;
                 }
             }
         }
         echo Redis::sSize($sort_key) . "\n";
-        echo "执行了多少次--{$i}--{$j}\n";
+        echo "执行success:{$s}\n";
         // die;
         // diff two sort
         // 某个时间点未用过账号
         $total_key  = 'valid_account_ids';
         $sort_key   = "used_account_ids:appid_{$appid}";
         $useful_key = "useful_account_ids:appid_{$appid}";
-        var_dump(Redis::delete($useful_key)) . "\n";
+        var_dump(Redis::delete($useful_key)) . "\n"; // 先清除旧集合
         var_dump(Redis::sDiffStore($useful_key, $total_key, $sort_key)) . "\n";
-        echo Redis::sSize($useful_key) . "\n";
+        echo 'used_account_ids--' . Redis::sSize($useful_key) . "\n";
     }
 }
