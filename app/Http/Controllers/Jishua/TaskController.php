@@ -507,13 +507,18 @@ class TaskController extends Controller
         DB::beginTransaction();
         try {
 
+            // 获取work_id
+            $work_table_key = Redis::hMGet('work_table_key', ['work_table', 'work_id']);
+            $work_id        = $work_table_key['work_id'];
             // 插入works
-            $work_id = DB::table('works')->insertGetId([
+            DB::table($work_table_key['work_table'])->insert([
+                'id'        => $work_id,
                 'app_id'    => $app_row->id,
                 'appid'     => $appid,
                 'device_id' => $device_id,
                 'keyword'   => $app_row->keyword,
             ]);
+            Redis::hIncrBy('work_table_key', 'work_id', 1);
 
             // 插入work_detail
             $response = $work_detail = [];
