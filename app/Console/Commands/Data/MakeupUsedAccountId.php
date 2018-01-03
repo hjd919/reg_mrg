@@ -5,7 +5,6 @@ namespace App\Console\Commands\Data;
 use App\App;
 use App\Models\WorkDetail;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 
 class MakeupUsedAccountId extends Command
@@ -41,6 +40,11 @@ class MakeupUsedAccountId extends Command
      */
     public function handle()
     {
+        // 增加work缓存
+        Redis::set('work_id', 3289142);
+        Redis::set('work_table', 'works1');
+        die;
+
         // 重新分配appid到新的表
         $table_key = 2;
         $appid     = 1120180668;
@@ -55,12 +59,6 @@ class MakeupUsedAccountId extends Command
         var_dump($res1);
         var_dump($res2);
         var_dump($res3);
-        die;
-
-        // 增加work缓存
-        Redis::hMSet('work_table_key', ['work_id' => 3286177, 'work_table' => 'works1']);
-        $rpows = Redis::hMGet('work_table_key', ['work_id', 'work_table']);
-        print_r($rpows);
         die;
 
         $appid               = '1211055336';
