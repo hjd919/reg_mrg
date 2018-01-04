@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Log;
  */
 class Util
 {
+    static $mobile_id = 0;
+
     public static function errorLog($title, $data = null)
     {
         if (!$data) {
@@ -32,28 +34,32 @@ class Util
         if (is_array($message) || is_object($message)) {
             // 成功
             $data = array(
-                'data' => $message,
-                'msg'  => 'ok',
-                'ret'  => 0,
+                'data'      => $message,
+                'msg'       => 'ok',
+                'ret'       => 0,
+                'mobile_id' => self::$mobile_id,
             );
         } else {
             if (0 == $code) {
                 // 成功
                 $data = array(
-                    'data' => [],
-                    'msg'  => $message,
-                    'ret'  => 0,
+                    'data'      => [],
+                    'msg'       => $message,
+                    'ret'       => 0,
+                    'mobile_id' => self::$mobile_id,
                 );
             } else {
                 // 失败
                 $data = array(
-                    'data' => [],
-                    'msg'  => $message,
-                    'ret'  => 1,
+                    'data'      => [],
+                    'msg'       => $message,
+                    'ret'       => 1,
+                    'mobile_id' => self::$mobile_id,
                 );
             }
 
         }
+        self::log('data', $data);
         header("Content-type: application/json; charset=utf-8");
         $json_str = json_encode($data, JSON_UNESCAPED_UNICODE);
         die($json_str);
