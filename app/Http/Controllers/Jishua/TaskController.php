@@ -263,7 +263,7 @@ class TaskController extends Controller
 
         // * 根据device_id获取手机组id
         // * 判断是否是新device_id，不是：则记录到数据库和缓存
-        $row = DB::table('mobiles')->select('id','mobile_group_id')->where('device_id', $device_id)->first();
+        $row = DB::table('mobiles')->select('id', 'mobile_group_id')->where('device_id', $device_id)->first();
         if (!$row) {
             $last_no = DB::table('mobiles')->max('no');
             $last_no++;
@@ -511,40 +511,16 @@ class TaskController extends Controller
             // 获取work_id
             $work_table = Redis::get('work_table');
 
-            try {
+            // 防止获取脏id 不好使会用重复插入表的问题
 
-                // 防止获取脏id
-                $i = 0;
-                while (Redis::get('is_get_work_id')) {
-                    $i++;
-                    Util::log('fetching work_id' . $i);
-                    if ($i > 50) {
-                        Util::log('chaoguo 1000 fetching work_id');
-                        break;
-                    }
-                }
-                Redis::set('is_get_work_id', 1);
+            // 插入works
+            $work_id = DB::table($work_table)->insertGetId([
+                'app_id'    => $app_row->id,
+                'appid'     => $appid,
+                'device_id' => $device_id,
+                'keyword'   => $app_row->keyword,
+            ]);
 
-                $work_id = Redis::get('work_id');
-                Redis::incr('work_id');
-
-                // 插入works
-                DB::table($work_table)->insert([
-                    'id'        => $work_id,
-                    'app_id'    => $app_row->id,
-                    'appid'     => $appid,
-                    'device_id' => $device_id,
-                    'keyword'   => $app_row->keyword,
-                ]);
-
-                Redis::set('is_get_work_id', 0); // 下一个继续获取
-
-            } catch (\Exception $e) {
-                $message = '异常插入works表' . $e->getMessage();
-                Util::log($message);
-
-                Util::die_jishua($message, 1);
-            }
             // 插入work_detail
             $response = $work_detail = [];
             foreach ($email_rows as $key => $email_row) {
