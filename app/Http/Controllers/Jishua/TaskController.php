@@ -517,7 +517,7 @@ class TaskController extends Controller
                 while (Redis::get('is_get_work_id')) {
                     $i++;
                     Util::log('fetching work_id' . $i);
-                    if ($i > 1000) {
+                    if ($i > 50) {
                         Util::log('chaoguo 1000 fetching work_id');
                         break;
                     }
