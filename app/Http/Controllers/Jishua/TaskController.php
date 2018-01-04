@@ -515,10 +515,10 @@ class TaskController extends Controller
                 // 防止获取脏id
                 $i = 0;
                 while (Redis::get('is_get_work_id')) {
-                    Util::log('fetching work_id');
                     $i++;
-                    if($i>1000){
-                         Util::log('chaoguo 1000 fetching work_id');
+                    Util::log('fetching work_id' . $i);
+                    if ($i > 1000) {
+                        Util::log('chaoguo 1000 fetching work_id');
                         break;
                     }
                 }
@@ -526,7 +526,6 @@ class TaskController extends Controller
 
                 $work_id = Redis::get('work_id');
                 Redis::incr('work_id');
-
 
                 // 插入works
                 DB::table($work_table)->insert([
@@ -538,7 +537,7 @@ class TaskController extends Controller
                 ]);
 
                 Redis::set('is_get_work_id', 0); // 下一个继续获取
-                
+
             } catch (\Exception $e) {
                 $message = '异常插入works表' . $e->getMessage();
                 Util::log($message);
