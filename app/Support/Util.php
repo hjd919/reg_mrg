@@ -59,7 +59,7 @@ class Util
             }
 
         }
-        self::log('data', $data);
+        // self::log('data', $data);
         header("Content-type: application/json; charset=utf-8");
         $json_str = json_encode($data, JSON_UNESCAPED_UNICODE);
         die($json_str);
