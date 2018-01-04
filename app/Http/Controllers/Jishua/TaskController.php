@@ -509,17 +509,40 @@ class TaskController extends Controller
 
             // 获取work_id
             $work_table = Redis::get('work_table');
-            $work_id        = Redis::get('work_id');
-            Redis::incr('work_id');
-            // 插入works
-            DB::table($work_table)->insert([
-                'id'        => $work_id,
-                'app_id'    => $app_row->id,
-                'appid'     => $appid,
-                'device_id' => $device_id,
-                'keyword'   => $app_row->keyword,
-            ]);
 
+            try {
+
+                // 防止获取脏id
+                $i = 0;
+                while (Redis::get('is_get_work_id')) {
+                    Util::log('fetching work_id');
+                    $i++;
+                    if($i>1000){
+                         Util::log('chaoguo 1000 fetching work_id');
+                        break;
+                    }
+                }
+                Redis::set('is_get_work_id', 1);
+
+                $work_id = Redis::get('work_id');
+                Redis::incr('work_id');
+
+                Redis::set('is_get_work_id', 0); // 下一个继续获取
+
+                // 插入works
+                DB::table($work_table)->insert([
+                    'id'        => $work_id,
+                    'app_id'    => $app_row->id,
+                    'appid'     => $appid,
+                    'device_id' => $device_id,
+                    'keyword'   => $app_row->keyword,
+                ]);
+            } catch (\Exception $e) {
+                $message = '异常插入works表' . $e->getMessage();
+                Util::log($message);
+
+                Util::die_jishua($message, 1);
+            }
             // 插入work_detail
             $response = $work_detail = [];
             foreach ($email_rows as $key => $email_row) {
