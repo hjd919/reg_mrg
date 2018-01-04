@@ -527,7 +527,6 @@ class TaskController extends Controller
                 $work_id = Redis::get('work_id');
                 Redis::incr('work_id');
 
-                Redis::set('is_get_work_id', 0); // 下一个继续获取
 
                 // 插入works
                 DB::table($work_table)->insert([
@@ -537,6 +536,9 @@ class TaskController extends Controller
                     'device_id' => $device_id,
                     'keyword'   => $app_row->keyword,
                 ]);
+
+                Redis::set('is_get_work_id', 0); // 下一个继续获取
+                
             } catch (\Exception $e) {
                 $message = '异常插入works表' . $e->getMessage();
                 Util::log($message);
