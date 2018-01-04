@@ -263,7 +263,7 @@ class TaskController extends Controller
 
         // * 根据device_id获取手机组id
         // * 判断是否是新device_id，不是：则记录到数据库和缓存
-        $row = DB::table('mobiles')->select('id,mobile_group_id')->where('device_id', $device_id)->first();
+        $row = DB::table('mobiles')->select('id','mobile_group_id')->where('device_id', $device_id)->first();
         if (!$row) {
             $last_no = DB::table('mobiles')->max('no');
             $last_no++;
