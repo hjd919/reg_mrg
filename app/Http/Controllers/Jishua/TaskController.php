@@ -583,6 +583,7 @@ class TaskController extends Controller
         $succ_num    = $request->succ_num;
         $fail_num    = $request->fail_num;
         $fail_reason = $request->input('fail_reason', 0);
+        $dama        = $request->input('dama', 0);
         if (!$work_id || null === $succ_num || null === $fail_num) {
             Util::die_jishua('缺少参数' . $work_id . $succ_num . $fail_num);
         }
@@ -591,7 +592,7 @@ class TaskController extends Controller
             $status = 3;
         }
 
-        dispatch(new UpdateWorkDetailJob($work_id, $account_id, $status, $fail_reason));
+        dispatch(new UpdateWorkDetailJob($work_id, $account_id, $status, $fail_reason, $dama));
 
         Util::die_jishua('ok');
     }
