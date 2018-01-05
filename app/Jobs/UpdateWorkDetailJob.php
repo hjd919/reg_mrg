@@ -13,6 +13,7 @@ class UpdateWorkDetailJob extends Job
     protected $account_id;
     protected $status;
     protected $fail_reason;
+    protected $dama;
 
     /**
      * Create a new job instance.
