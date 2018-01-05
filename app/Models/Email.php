@@ -12,4 +12,8 @@ class Email extends Model
     {
         return 'last_email_id:appid_' . $appid;
     }
+
+    public static function get_device_key($appid){
+        return 'last_device_id:appid_' . $appid;
+    }
 }

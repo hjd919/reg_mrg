@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Http\Controllers\Backend\BackendController;
 use App\Models\App;
-use App\Models\Mobile;
 use App\Models\Task;
+use App\Models\Email;
+use App\Models\Mobile;
 use App\Models\WorkDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
+use App\Http\Controllers\Backend\BackendController;
 
 class TaskController extends BackendController
 {
@@ -67,6 +68,9 @@ class TaskController extends BackendController
         // 判断app是否存在,不存在则添加
         $app = DB::table('ios_apps')->select('id')->where('appid', $appid)->first();
         if (!$app) {
+            // 设备从真实开始
+            $device_key = Email::get_device_key($appid);
+            Redis::set($device_key, 771387);
 
             // * 如果work_detail最近的表数据量大于10000数据，则新建表
             $work_detail_table = DB::table('ios_apps')->max('work_detail_table');
@@ -154,9 +158,9 @@ EOF;
         $exception_mobile_num = Mobile::getExceptionNum(); // 获取异常手机数
 
         $task_id = $request->task_id;
-        if($task_id){
-            $task    = DB::table('tasks')->where('id', $task_id)->first();
-            $appid   = $task->appid;
+        if ($task_id) {
+            $task  = DB::table('tasks')->where('id', $task_id)->first();
+            $appid = $task->appid;
 
             // 获取账号策略
             if (Redis::sIsMember('account_policy_2', $appid)) {
@@ -164,10 +168,9 @@ EOF;
             } else {
                 $usable_brush_num = WorkDetail::getUsableBrushNum($appid);
             }
-        }else{
+        } else {
             $usable_brush_num = 0;
         }
-
 
         // 获取可刷设备信息数 total-已使用设备数
         $total_device_num    = DB::table('devices')->count();
