@@ -20,6 +20,7 @@ class EmailController extends BackendController
         // 统计导入
         $where = [
             ['create_time', '>', date('Y-m-d', strtotime('-2 weeks'))],
+            ['source', '=', 1],
         ];
         // $total      = Email::where($where)->get(); //total
         $total      = 10; //total
