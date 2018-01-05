@@ -2,7 +2,10 @@
 
 namespace App\Jobs;
 
+use App\Models\App;
 use App\Models\WorkDetail;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 
 class UpdateWorkDetailJob extends Job
 {
@@ -16,12 +19,13 @@ class UpdateWorkDetailJob extends Job
      *
      * @return void
      */
-    public function __construct($work_id, $account_id, $status, $fail_reason)
+    public function __construct($work_id, $account_id, $status, $fail_reason, $dama)
     {
         $this->work_id     = $work_id;
         $this->account_id  = $account_id;
         $this->status      = $status;
         $this->fail_reason = $fail_reason;
+        $this->dama        = $dama;
     }
 
     /**
@@ -33,7 +37,17 @@ class UpdateWorkDetailJob extends Job
     {
         // Util::log('UspdateWorkDetailJob', json_encode([$this->work_id, $this->account_id, $this->status, $this->fail_reason]));
 
+        // 根据work_id查询appid
+        $work_table = Redis::get('work_table');
+        $work_rows  = DB::table($work_table)->select('appid', 'app_id')->where('id', $work_id)->first();
+
+        if($this->dama){
+            // 统计打码次数
+            App::where('id', $work_rows->app_id)->increment('dama', $this->dama);            
+        }
+
         // * 根据任务id和账号id更新刷任务记录状态
-        WorkDetail::updateStatus($this->work_id, $this->account_id, $this->status, $this->fail_reason);
+        WorkDetail::updateStatus($work_rows->appid, $this->work_id, $this->account_id, $this->status, $this->fail_reason);
+
     }
 }

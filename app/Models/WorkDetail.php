@@ -107,11 +107,8 @@ class WorkDetail extends Model
     }
 
     // 更新状态
-    public static function updateStatus($work_id, $account_id, $status, $fail_reason = 0)
+    public static function updateStatus($appid, $work_id, $account_id, $status, $fail_reason = 0)
     {
-        // 根据work_id查询appid
-        $work_table = Redis::get('work_table');
-        $appid      = DB::table($work_table)->select('appid')->where('id', $work_id)->value('appid');
         // Util::log('updateStatus-appid-', $appid);
         return self::getWorkDetailTable($appid)->where([
             'work_id'    => $work_id,
