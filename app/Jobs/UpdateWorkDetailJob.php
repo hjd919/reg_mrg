@@ -40,7 +40,7 @@ class UpdateWorkDetailJob extends Job
 
         // 根据work_id查询appid
         $work_table = Redis::get('work_table');
-        $work_rows  = DB::table($work_table)->select('appid', 'app_id')->where('id', $work_id)->first();
+        $work_rows  = DB::table($work_table)->select('appid', 'app_id')->where('id', $this->work_id)->first();
 
         if($this->dama){
             // 统计打码次数
