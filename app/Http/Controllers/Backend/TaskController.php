@@ -88,7 +88,7 @@ CREATE TABLE `work_detail{$work_detail_table}` (
   `report_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `work_id_2` (`work_id`,`account_id`),
-  KEY `appid_email` (`appid`)
+  KEY `appid_email` (`appid`,`account_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 EOF;
 //                 $table_sql2 = <<<EOF
@@ -154,15 +154,20 @@ EOF;
         $exception_mobile_num = Mobile::getExceptionNum(); // 获取异常手机数
 
         $task_id = $request->task_id;
-        $task    = DB::table('tasks')->where('id', $task_id)->first();
-        $appid   = $task->appid;
+        if($task_id){
+            $task    = DB::table('tasks')->where('id', $task_id)->first();
+            $appid   = $task->appid;
 
-        // 获取账号策略
-        if (Redis::sIsMember('account_policy_2', $appid)) {
-            $usable_brush_num = Redis::sDiffStore("useful_account_ids:appid_{$appid}", 'valid_account_ids', "used_account_ids:appid_{$appid}");
-        } else {
-            $usable_brush_num = WorkDetail::getUsableBrushNum($appid);
+            // 获取账号策略
+            if (Redis::sIsMember('account_policy_2', $appid)) {
+                $usable_brush_num = Redis::sDiffStore("useful_account_ids:appid_{$appid}", 'valid_account_ids', "used_account_ids:appid_{$appid}");
+            } else {
+                $usable_brush_num = WorkDetail::getUsableBrushNum($appid);
+            }
+        }else{
+            $usable_brush_num = 0;
         }
+
 
         // 获取可刷设备信息数 total-已使用设备数
         $total_device_num    = DB::table('devices')->count();
