@@ -57,6 +57,7 @@ Route::group([
 ], function ($router) {
     $router->post('/auth/login', 'AuthController@login');
     $router->get('/auth/login2', 'AuthController@login2');
+   $router->get('/email/state_import', 'EmailController@stateImport');
 });
 
 Route::group([
@@ -90,5 +91,4 @@ Route::group([
     $router->post('/app/import_rank', 'AppController@importRank');
 
     $router->get('/email/get_today_num', 'EmailController@getTodayNum');
-
 });

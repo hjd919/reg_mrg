@@ -2,13 +2,45 @@
 
 namespace App\Http\Controllers\Backend;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\Backend\BackendController;
+use App\Models\Email;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 
 class EmailController extends BackendController
 {
+    public function stateImport(
+        Request $request
+    ) {
+        // 统计导入列表
+        $current_page = $request->input('currentPage', 1);
+        $page_size    = $request->input('pageSize', 10);
+
+        // 统计导入
+        $where = [
+            ['create_time', '>', date('Y-m-d', strtotime('-2 weeks'))],
+        ];
+        // $total      = Email::where($where)->get(); //total
+        $total      = 10; //total
+        $pagination = [
+            'current'  => (int) $current_page,
+            'pageSize' => (int) $page_size,
+            'total'    => (int) $total,
+        ];
+
+        $offset = ($current_page - 1) * $page_size;
+        $list   = Email::where($where)
+            ->selectRaw("count(*) total,date_format(create_time,'%Y-%m-%d') as create_day")
+            ->groupBy('create_day')
+            ->orderBy('id', 'desc')
+            ->limit($page_size)
+            ->offset($offset)
+            ->get(); // list
+
+        return response()->json(compact('pagination', 'list'));
+    }
+
     public function getTodayNum()
     {
         $today_num = DB::table('emails')->where('create_time', '>=', date('Y-m-d'))->where('source', 1)->count();
