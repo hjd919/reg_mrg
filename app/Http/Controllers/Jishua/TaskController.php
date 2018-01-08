@@ -1,15 +1,16 @@
 <?php
 namespace App\Http\Controllers\Jishua;
 
-use App\Http\Controllers\Controller;
-use App\Jobs\UpdateWorkDetailJob;
 use App\Models\App;
+use App\Support\Util;
 use App\Models\Email;
 use App\Models\WorkDetail;
-use App\Support\Util;
+use App\Jobs\CreateWorkJob;
 use Illuminate\Http\Request;
+use App\Jobs\UpdateWorkDetailJob;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redis;
 
 class TaskController extends Controller
@@ -505,7 +506,7 @@ class TaskController extends Controller
         }
 
         // * 增加刷任务记录   -> 任务数量减一
-        DB::beginTransaction();
+        $app_id = $app_row->id;
         try {
 
             // 获取work_id
@@ -515,57 +516,48 @@ class TaskController extends Controller
 
             // 插入works
             $work_id = DB::table($work_table)->insertGetId([
-                'app_id'    => $app_row->id,
+                'app_id'    => $app_id,
                 'appid'     => $appid,
                 'device_id' => $device_id,
                 'keyword'   => $app_row->keyword,
             ]);
 
+            dispatch(new CreateWorkJob($work_id, $appid, $email_rows, $device_rows, $app_id));
+
             // 插入work_detail
-            $response = $work_detail = [];
+            $response = [];
             foreach ($email_rows as $key => $email_row) {
 
-                // 统计账号使用次数
-                DB::table('emails')->where('id', $email_row->id)->increment('use_num');
+                // // 统计账号使用次数
+                // DB::table('emails')->where('id', $email_row->id)->increment('use_num');
 
-                $data = [
+                $response[] = [
                     'work_id'    => $work_id,
                     'appid'      => $appid,
-                    'app_id'     => $app_row->id,
+                    'app_id'     => $app_id,
                     'account_id' => $email_row->id,
                     'device_id'  => $device_rows[$key]->id,
+                    'email'      => $email_row->email,
+                    'password'   => $email_row->appleid_password,
+                    'udid'       => empty($udid) ? $device_rows[$key]->udid : $udid,
+                    'imei'       => empty($imei) ? $device_rows[$key]->imei : $imei,
+                    'serial'     => empty($serial) ? $device_rows[$key]->serial_number : $serial,
+                    'bt'         => empty($bt) ? $device_rows[$key]->lanya : $bt,
+                    'wifi'       => empty($wifi) ? $device_rows[$key]->mac : $wifi,
+                    'keyword'    => $app_row->keyword,
+                    'app_name'   => $app_row->bundle_id,
+                    'app_id'     => (string) $appid,
                 ];
-                $work_detail[] = $data;
-
-                // 构造所需格式的结果
-                $data1 = [
-                    'email'    => $email_row->email,
-                    'password' => $email_row->appleid_password,
-                    'udid'     => empty($udid) ? $device_rows[$key]->udid : $udid,
-                    'imei'     => empty($imei) ? $device_rows[$key]->imei : $imei,
-                    'serial'   => empty($serial) ? $device_rows[$key]->serial_number : $serial,
-                    'bt'       => empty($bt) ? $device_rows[$key]->lanya : $bt,
-                    'wifi'     => empty($wifi) ? $device_rows[$key]->mac : $wifi,
-                    'keyword'  => $app_row->keyword,
-                    'app_name' => $app_row->bundle_id,
-                    'app_id'   => (string) $appid,
-                ];
-
-                $response[] = array_merge($data, $data1);
             }
 
-            // 添加work_detail记录
-            WorkDetail::add($appid, $work_detail);
+            // // 添加work_detail记录
+            // WorkDetail::add($appid, $work_detail);
 
-            // 剩余数量减少3
-            App::where('id', $app_row->id)->decrement('brush_num', self::TASK_SIZE);
+            // // 剩余数量减少3
+            // App::where('id', $app_row->id)->decrement('brush_num', self::TASK_SIZE);
         } catch (Exception $e) {
             Util::errorLog('transaction error:file_' . __FILE__, $e->getMessage());
-
-            DB::rollBack();
         }
-
-        DB::commit();
 
         //Util::log('ok', $response);
 
