@@ -1,16 +1,16 @@
 <?php
 namespace App\Http\Controllers\Jishua;
 
+use App\Http\Controllers\Controller;
+use App\Jobs\CreateWorkJob;
+use App\Jobs\UpdateWorkDetailJob;
 use App\Models\App;
-use App\Support\Util;
 use App\Models\Email;
 use App\Models\WorkDetail;
-use App\Jobs\CreateWorkJob;
+use App\Support\Util;
 use Illuminate\Http\Request;
-use App\Jobs\UpdateWorkDetailJob;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redis;
 
 class TaskController extends Controller
@@ -527,7 +527,6 @@ class TaskController extends Controller
             // 插入work_detail
             $response = [];
             foreach ($email_rows as $key => $email_row) {
-
                 // // 统计账号使用次数
                 // DB::table('emails')->where('id', $email_row->id)->increment('use_num');
 

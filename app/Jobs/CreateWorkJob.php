@@ -45,6 +45,7 @@ class CreateWorkJob extends Job
         // 插入work_detail
         $work_detail = [];
         foreach ($email_rows as $key => $email_row) {
+Util::log('$email_row', $email_row);
 
             // 统计账号使用次数
             DB::table('emails')->where('id', $email_row->id)->increment('use_num');
