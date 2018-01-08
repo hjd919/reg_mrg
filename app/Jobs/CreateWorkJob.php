@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\DB;
 class CreateWorkJob extends Job
 {
     const TASK_SIZE = 3;
+    protected $appid;
+    protected $work_id;
+    protected $email_rows;
+    protected $device_rows;
+    protected $app_id;
 
     /**
      * Create a new job instance.
