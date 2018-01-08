@@ -44,7 +44,6 @@ class CreateWorkJob extends Job
 
         // 插入work_detail
         $work_detail = [];
-        file_put_contents('$email_row.txt', var_export($email_rows, true), FILE_APPEND);
         foreach ($email_rows as $key => $email_row) {
 
             // 统计账号使用次数
