@@ -522,7 +522,7 @@ class TaskController extends Controller
                 'keyword'   => $app_row->keyword,
             ]);
 
-            dispatch(new CreateWorkJob($work_id, $appid, $email_rows, $device_rows, $app_id));
+            dispatch(new CreateWorkJob($work_id, $appid, $email_rows->toArray(), $device_rows->toArray(), $app_id));
 
             // 插入work_detail
             $response = [];
