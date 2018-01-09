@@ -76,6 +76,9 @@ class MarkFinishedTasks extends Command
             // 统计成功刷数
             $success_brushed_num = WorkDetail::getSuccessBrushedNum($app_row->appid, $app_row->id);
 
+            // 统计账号被封数
+            $invalid_email_num = WorkDetail::countInvalidEmailNum($app_row->appid, $app_row->id);
+
             // 计算失败数
             $fail_brushed_num = $brushed_num - $success_brushed_num;
 
@@ -104,6 +107,7 @@ class MarkFinishedTasks extends Command
                 'brushed_num'         => $brushed_num, // 已刷数量
                 'success_brushed_num' => $success_brushed_num, // 已刷数量
                 'fail_brushed_num'    => $fail_brushed_num, // 已刷数量
+                'invalid_email_num'   => $invalid_email_num,
             ]);
 
             // * 释放手机

@@ -17,6 +17,11 @@ class WorkDetail extends Model
         return self::getWorkDetailTable($appid)->where('appid', $appid)->count();
     }
 
+    public static function countInvalidEmailNum($appid, $app_id)
+    {
+        return self::getWorkDetailTable($appid)->where('app_id', $app_id)->where('fail_reason', 4)->count();
+    }
+
     // 获取可刷数
     public static function getUsableBrushNum($appid)
     {
