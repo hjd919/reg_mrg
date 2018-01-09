@@ -43,7 +43,7 @@ class BrushIdfaController extends Controller
             'is_ciliu'      => $response->is_ciliu,
         ]);
 
-        try{
+        try {
             // 创建统计表
             if (!Redis::sIsMember('exist_brush_idfas_stat', $brush_idfa_id)
                 && !DB::table('brush_idfas_stat')->where('brush_idfa_id', $brush_idfa_id)->first()
@@ -54,7 +54,7 @@ class BrushIdfaController extends Controller
                 ]);
                 Redis::sAdd('exist_brush_idfas_stat', $brush_idfas_stat_id);
             }
-        } catch(\Exception $e){
+        } catch (\Exception $e) {
         }
 
         DB::table('brush_idfas_stat')->where('brush_idfa_id', $brush_idfa_id)->increment('returned');
@@ -97,8 +97,20 @@ class BrushIdfaController extends Controller
 
     public function ciliuGet(Request $request)
     {
+        // 获取有次留量的任务
+        $brush_idfa_id = DB::table('brush_idfas_stat')->select('brush_idfa_id')->whereColumn([
+            ['ciliu_returned_success', '<=', 'ciliu_return_num'],
+        ])->value('brush_idfa_id');
+        if(!$brush_idfa_id){
+            return $this->fail_response(['message' => 'ciliu task finished']);
+        }
         // todo 混淆获取id
-        $brush_idfa_task = DB::table('brush_idfa_tasks')->where('task_status', 1)->where('is_ciliu', 1)->limit(1)->first();
+        $brush_idfa_task = DB::table('brush_idfa_tasks')
+            ->where('brush_idfa_id', $brush_idfa_id)
+            ->where('task_status', 1)
+            ->where('is_ciliu', 1)
+            ->limit(1)
+            ->first();
         if (!$brush_idfa_task) {
             return $this->fail_response(['message' => 'no more brush_idfa_task']);
         }
