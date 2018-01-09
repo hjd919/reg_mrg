@@ -41,11 +41,16 @@ class UpdateWorkDetailJob extends Job
         // 根据work_id查询appid
         $work_table = Redis::get('work_table');
         $work_rows  = DB::table($work_table)->select('appid', 'app_id')->where('id', $this->work_id)->first();
+        if (!$work_rows) {
+            return true;
+        }
+
         if ($work_rows->app_id >= 5095 && $work_rows->app_id <= 5097) {
             $message = 'app_id:' . $work_rows->app_id . "--dama:" . $this->dama;
             Util::log('UpdateWorkDetailJob', $message);
             file_put_contents('UpdateWorkDetailJob.txt', $message, FILE_APPEND);
         }
+
         if ($this->dama) {
             // 统计打码次数
             App::where('id', $work_rows->app_id)->increment('dama', $this->dama);
