@@ -3,8 +3,8 @@
 namespace App\Jobs;
 
 use App\Models\App;
-use App\Support\Util;
 use App\Models\WorkDetail;
+use App\Support\Util;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 
@@ -47,9 +47,8 @@ class UpdateWorkDetailJob extends Job
         }
 
         if ($work_rows->app_id >= 5095 && $work_rows->app_id <= 5097) {
-            $message = 'app_id:' . $work_rows->app_id . "--dama:" . $this->dama;
+            $message = 'work_id:' . $this->work_id . 'app_id:' . $work_rows->app_id . "--dama:" . $this->dama;
             Util::log('UpdateWorkDetailJob', $message);
-            file_put_contents('UpdateWorkDetailJob.txt', $message, FILE_APPEND);
         }
 
         if ($this->dama) {
