@@ -213,6 +213,17 @@ class TaskController extends Controller
             return $value;
         };
 
+        // func getid
+        $get_email_id = function ($key, $init_value = '', $prefix = '') {
+            $value = $redis->decrBy($key, self::TASK_SIZE);
+            if (-3 === $value) {
+                $value = $init_value ?: self::MAX_KEY;
+                Redis::set($key, $value);
+                //Redis::expire($key, 86400);
+            }
+            return $value;
+        };
+
         // func setid
         $set_last_id = function ($key, $value, $prefix = '') {
             $value = Redis::set($key, $value);
@@ -334,7 +345,7 @@ class TaskController extends Controller
             }
 
         } else {
-            $last_email_id = $get_last_id($email_key);
+            $last_email_id = $get_email_id($email_key);
 
             $is_new_email = Redis::get("is_new_email:appid_{$appid}"); // 判断是否在刷新账号
             if ($is_new_email) {
@@ -413,7 +424,7 @@ class TaskController extends Controller
         if (!$email_rows) {
             Util::die_jishua('该app没有苹果账号可用了', 1);
         }
-        $set_last_id($email_key, $email_rows->last()->id);
+        // $set_last_id($email_key, $email_rows->last()->id);
 
         // * 判断app是否刷过此设备信息
         // foreach ($email_rows as $key => $email_row) {
