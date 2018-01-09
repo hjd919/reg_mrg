@@ -46,11 +46,6 @@ class UpdateWorkDetailJob extends Job
             return true;
         }
 
-        if ($work_rows->app_id >= 5095 && $work_rows->app_id <= 5097) {
-            $message = 'work_id:' . $this->work_id . 'app_id:' . $work_rows->app_id . "--dama:" . $this->dama;
-            Util::log('UpdateWorkDetailJob', $message);
-        }
-
         if ($this->dama) {
             // 统计打码次数
             App::where('id', $work_rows->app_id)->increment('dama', $this->dama);
