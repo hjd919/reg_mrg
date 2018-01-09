@@ -345,9 +345,8 @@ class TaskController extends Controller
             }
 
         } else {
-            $last_email_id = $get_email_id($email_key);
-
             $is_new_email = Redis::get("is_new_email:appid_{$appid}"); // 判断是否在刷新账号
+            $last_email_id = $get_last_id($email_key);
             if ($is_new_email) {
                 //Util::log('刷新账号_'.$mtime, $is_new_email);
 
@@ -424,7 +423,7 @@ class TaskController extends Controller
         if (!$email_rows) {
             Util::die_jishua('该app没有苹果账号可用了', 1);
         }
-        // $set_last_id($email_key, $email_rows->last()->id);
+        $set_last_id($email_key, $email_rows->last()->id);
 
         // * 判断app是否刷过此设备信息
         // foreach ($email_rows as $key => $email_row) {
