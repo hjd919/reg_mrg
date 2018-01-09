@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\App;
+use App\Support\Util;
 use App\Models\WorkDetail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
