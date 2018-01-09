@@ -215,7 +215,7 @@ class TaskController extends Controller
 
         // func getid
         $get_email_id = function ($key, $init_value = '', $prefix = '') {
-            $value = $redis->decrBy($key, self::TASK_SIZE);
+            $value = Redis::decrBy($key, self::TASK_SIZE);
             if (-3 === $value) {
                 $value = $init_value ?: self::MAX_KEY;
                 Redis::set($key, $value);
