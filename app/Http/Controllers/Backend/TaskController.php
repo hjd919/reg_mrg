@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Http\Controllers\Backend\BackendController;
 use App\Models\App;
-use App\Models\Task;
 use App\Models\Email;
 use App\Models\Mobile;
+use App\Models\Task;
 use App\Models\WorkDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
-use App\Http\Controllers\Backend\BackendController;
 
 class TaskController extends BackendController
 {
@@ -194,19 +194,13 @@ EOF;
         $user    = $this->guard()->user();
         $user_id = $user->id;
 
-        $task_id         = $request->input('task_id');
-        $keyword         = $request->input('keyword');
-        $success_num     = $request->input('success_num');
-        $mobile_num      = $request->input('mobile_num');
-        $app_info        = $request->input('app_info');
-        $start_time      = $request->input('start_time');
-        $end_time        = $request->input('end_time');
-        $mobile_group_id = $request->input('mobile_group_id');
-
-        // 判断mobile_num和mobile_group_id必须存在一个
-        if ($mobile_group_id && $mobile_group_id < 1000) {
-            return response()->json(['error_code' => 3, 'message' => '手机组id是测试用，且需要小于1000']);
-        }
+        $task_id     = $request->input('task_id');
+        $keyword     = $request->input('keyword');
+        $success_num = $request->input('success_num');
+        $mobile_num  = $request->input('mobile_num');
+        $app_info    = $request->input('app_info');
+        $start_time  = $request->input('start_time');
+        $end_time    = $request->input('end_time');
 
         // 判断日期时间
         if (!$start_time || !$end_time
@@ -247,6 +241,11 @@ EOF;
             list($keyword, $before_rank, $hot, $success_num) = $app_info_row;
 
             $mobile_group_id = empty($app_info_row[4]) ? false : $app_info_row[4];
+            if ($mobile_group_id) {
+                if ($mobile_group_id < 1000 || $mobile_group_id > 1300) {
+                    return response()->json(['error_code' => 3, 'message' => '手机组id不能小于1000或者大于1300']);
+                }
+            }
 
             // 判断关键词半小时内是否存在
             if (App::where('create_time', '>', date('Y-m-d H:i:s', strtotime('-30 minutes')))->where('is_brushing', 1)->where('appid', $ios_app->appid)->where('keyword', $keyword)->first()) {
