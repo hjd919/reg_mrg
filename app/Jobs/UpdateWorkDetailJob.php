@@ -4,7 +4,6 @@ namespace App\Jobs;
 
 use App\Models\App;
 use App\Models\WorkDetail;
-use App\Support\Util;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 
@@ -45,14 +44,22 @@ class UpdateWorkDetailJob extends Job
         if (!$work_rows) {
             return true;
         }
-
-        if ($this->dama) {
+        $appid = $work_rows->appid;
+        $app_id = $work_rows->app_id;
+        $dama  = $this->dama;
+        if ($dama) {
             // 统计打码次数
-            App::where('id', $work_rows->app_id)->increment('dama', $this->dama);
+            App::where('id', $app_id)->increment('dama', $dama);
+
+            DB::table('dama')->insert([
+                'appid'  => $appid,
+                'app_id' => $app_id,
+                'dama'   => $dama,
+            ]);
         }
 
         // * 根据任务id和账号id更新刷任务记录状态
-        WorkDetail::updateStatus($work_rows->appid, $this->work_id, $this->account_id, $this->status, $this->fail_reason);
+        WorkDetail::updateStatus($appid, $this->work_id, $this->account_id, $this->status, $this->fail_reason);
 
     }
 }
