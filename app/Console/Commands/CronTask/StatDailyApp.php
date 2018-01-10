@@ -49,7 +49,7 @@ class StatDailyApp extends Command
         for ($table_id = 0; $table_id <= $max_table_id; $table_id++) {
             $table_name = "work_detail" . ($table_id ?: '');
 
-            // 3. 统计昨天每个app的数量
+            // 3. 统计昨天每个app的数量 succss_num fail_num
             $stat_rows = DB::table($table_name)
                 ->select(DB::raw('appid,status,count(*) as num'))
                 ->where([
@@ -60,11 +60,11 @@ class StatDailyApp extends Command
                 ->groupBy('status')
                 ->get();
 
-            // 4. 遍历统计并整理数据
+            // 整理数据
             $succss_num = $fail_num = [];
             foreach ($stat_rows as $stat_row) {
                 $appid = $stat_row->appid;
-         
+
                 if ($stat_row->status == 3) {
                     $succss_num[$appid] = $stat_row->num;
                 } else {
@@ -72,14 +72,45 @@ class StatDailyApp extends Command
                 }
             }
 
+            // 4. 统计昨天每个app的被封账号数 invalid_email_num
+            $stat_rows = DB::table($table_name)
+                ->select(DB::raw('appid,fail_reason,count(*) as num'))
+                ->where([
+                    ['create_time', '>=', $yester_date],
+                    ['fail_reason', '=', 4],
+                ])
+                ->groupBy('appid')
+                ->get();
+
+            // 整理数据
+            $invalid_email_num = [];
+            foreach ($stat_rows as $stat_row) {
+                $invalid_email_num[$stat_row->appid] = $stat_row->num;
+            }
+
             // 5. 添加每日app统计记录
             foreach ($succss_num as $appid => $success) {
+
+                // 6. 统计昨天每个appid的打码的数量 dama
+                $dama = DB::table('dama')
+                    ->where([
+                        ['created_at', '>=', $yester_date],
+                        ['appid', '=', $appid],
+                    ])
+                    ->groupBy('appid')
+                    ->count();
+
+                $f_num  = isset($fail_num[$appid]) ? $fail_num[$appid] : 0;
+                $i_email_num = isset($invalid_email_num[$appid]) ? $invalid_email_num[$appid] : 0;
+
                 $data[] = [
-                    'date'        => $yester_date,
-                    'appid'       => $appid,
-                    'total_num'   => $success + $fail_num[$appid],
-                    'fail_num'    => $fail_num[$appid],
-                    'success_num' => $success,
+                    'date'              => $yester_date,
+                    'appid'             => $appid,
+                    'total_num'         => $success + $f_num,
+                    'fail_num'          => $f_num,
+                    'success_num'       => $success,
+                    'invalid_email_num' => $i_email_num,
+                    'dama'              => $dama,
                 ];
             }
 
