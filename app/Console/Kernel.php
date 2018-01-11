@@ -114,7 +114,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('sAdd:appleids')->cron('*/30 * * * * *');
         
         // 统计每天的app情况
-        $schedule->command('stat:daily_app')->cron('0 0 * * * *')->withoutOverlapping()->appendOutputTo('daily_app.txt');
+        $schedule->command('stat:daily_app')->cron('0 0 * * * *')->withoutOverlapping();
 
         // 抓取排名更新
         $schedule->command('crond_fetch:keyword_rank')->cron('0 */1 * * * *');
