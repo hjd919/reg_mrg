@@ -82,6 +82,7 @@ Route::group([
 
     $router->get('/app/query', 'AppController@query');
     $router->get('/app/query_hourly_stat', 'AppController@queryHourlyStat');
+    $router->get('/app/query_daily_stat', 'AppController@queryDailyStat');
 
     $router->post('/email/import', 'EmailController@import');
     $router->post('/appleid/import', 'AppleidController@import');

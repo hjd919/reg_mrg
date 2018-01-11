@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\App;
+use App\Models\DailyAppStat;
 use App\Models\HourlAppStat;
 use App\Models\WorkDetail;
 use Illuminate\Http\Request;
@@ -12,6 +13,47 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class AppController extends Controller
 {
+    public function queryDailyStat(Request $request)
+    {
+        $current_page = $request->input('currentPage', 1);
+        $page_size    = $request->input('pageSize', 10);
+        $appid        = $request->input('appid', '');
+
+        // 查询条件
+        $where = [];
+        if ($appid) {
+            $where['appid'] = $appid;
+        }
+        
+        // * total
+        $total = DB::table('daily_app_stat')->where($where)->count();
+
+        // * 列表
+        // offset
+        $offset = ($current_page - 1) * $page_size;
+        $list   = DailyAppStat::with('app')->where($where)
+            ->limit($page_size)
+            ->offset($offset)
+            ->orderBy('id', 'desc')
+            ->get();
+
+        // 获取关联
+        foreach ($list as &$row) {
+            $row->app_name = preg_replace(['#_\d+#','#\d+\.\d+-#'], '', $row->app->app_name);
+            unset($row->app);
+        }
+
+        // 整理分页
+        $pagination = [
+            'current'  => (int) $current_page,
+            'pageSize' => (int) $page_size,
+            'total'    => (int) $total,
+        ];
+
+        return response()->json(compact('pagination', 'list'));
+
+    }
+
     public function importRank(Request $request)
     {
         // 上传文件
