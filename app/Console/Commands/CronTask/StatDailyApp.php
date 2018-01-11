@@ -44,6 +44,7 @@ class StatDailyApp extends Command
         // 1. 获取最大表索引
         $max_table_id = DB::table('ios_apps')->max('work_detail_table');
         $yester_date  = date('Y-m-d', strtotime('-1 days'));
+        $today_date   = date('Y-m-d');
 
         // 2. 遍历所有work_detail表
         for ($table_id = 0; $table_id <= $max_table_id; $table_id++) {
@@ -54,11 +55,16 @@ class StatDailyApp extends Command
                 ->select(DB::raw('appid,status,count(*) as num'))
                 ->where([
                     ['create_time', '>=', $yester_date],
+                    ['create_time', '<', $today_date],
                     ['status', '!=', 1],
                 ])
                 ->groupBy('appid')
                 ->groupBy('status')
                 ->get();
+            // 判断是否有数据
+            if ($stat_rows->isEmpty()) {
+                continue;
+            }
 
             // 整理数据
             $succss_num = $fail_num = [];
@@ -77,6 +83,7 @@ class StatDailyApp extends Command
                 ->select(DB::raw('appid,fail_reason,count(*) as num'))
                 ->where([
                     ['create_time', '>=', $yester_date],
+                    ['create_time', '<', $today_date],
                     ['fail_reason', '=', 4],
                 ])
                 ->groupBy('appid')
@@ -87,8 +94,8 @@ class StatDailyApp extends Command
             foreach ($stat_rows as $stat_row) {
                 $invalid_email_num[$stat_row->appid] = $stat_row->num;
             }
-
             // 5. 添加每日app统计记录
+            $data = [];
             foreach ($succss_num as $appid => $success) {
 
                 // 6. 统计昨天每个appid的打码的数量 dama
@@ -100,7 +107,7 @@ class StatDailyApp extends Command
                     ->groupBy('appid')
                     ->count();
 
-                $f_num  = isset($fail_num[$appid]) ? $fail_num[$appid] : 0;
+                $f_num       = isset($fail_num[$appid]) ? $fail_num[$appid] : 0;
                 $i_email_num = isset($invalid_email_num[$appid]) ? $invalid_email_num[$appid] : 0;
 
                 $data[] = [
