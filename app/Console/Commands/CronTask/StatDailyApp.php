@@ -102,10 +102,18 @@ class StatDailyApp extends Command
                 $dama = DB::table('dama')
                     ->where([
                         ['created_at', '>=', $yester_date],
+                        ['created_at', '<', $today_date],
                         ['appid', '=', $appid],
                     ])
                     ->groupBy('appid')
                     ->count();
+
+                // 查找user_id
+                $user_id = App::where([
+                    ['created_at', '>=', $yester_date],
+                    ['created_at', '<', $today_date],
+                    ['appid', '=', $appid],
+                ])->value('user_id');
 
                 $f_num       = isset($fail_num[$appid]) ? $fail_num[$appid] : 0;
                 $i_email_num = isset($invalid_email_num[$appid]) ? $invalid_email_num[$appid] : 0;
@@ -113,6 +121,7 @@ class StatDailyApp extends Command
                 $data[] = [
                     'date'              => $yester_date,
                     'appid'             => $appid,
+                    'user_id'           => $user_id,
                     'total_num'         => $success + $f_num,
                     'fail_num'          => $f_num,
                     'success_num'       => $success,

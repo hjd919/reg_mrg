@@ -16,4 +16,17 @@ class BackendController extends Controller
     {
         return Auth::guard();
     }
+
+    public function where_view($where, $where_type = 1)
+    {
+        $user_id = $this->guard()->user()->id;
+        if ($user_id != 10) {
+            if ($where_type == 1) {
+                $where['user_id'] = $user_id;
+            } else {
+                $where[] = ['user_id', '=', $user_id];
+            }
+        }
+        return $where;
+    }
 }
