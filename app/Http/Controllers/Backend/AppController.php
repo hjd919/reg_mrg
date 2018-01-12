@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Http\Controllers\Controller;
 use App\Models\App;
 use App\Models\DailyAppStat;
 use App\Models\HourlAppStat;
@@ -11,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
-class AppController extends Controller
+class AppController extends BackendController
 {
     public function queryDailyStat(Request $request)
     {
