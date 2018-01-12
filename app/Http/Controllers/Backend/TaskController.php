@@ -22,10 +22,15 @@ class TaskController extends BackendController
         $page_size    = $request->input('pageSize', 10);
         $appid        = $request->input('appid', '');
 
+        $where = [];
+        // 判断
+        $where = $this->where_view($where);
+
         // * total
         $total = Task::when($appid, function ($query) use ($appid) {
             return $query->where('appid', $appid);
         })
+            ->where($where)
             ->count();
 
         // * 列表
@@ -35,6 +40,7 @@ class TaskController extends BackendController
             ->when($appid, function ($query) use ($appid) {
                 return $query->where('appid', $appid);
             })
+            ->where($where)
             ->limit($page_size)
             ->offset($offset)
             ->orderBy('id', 'desc')

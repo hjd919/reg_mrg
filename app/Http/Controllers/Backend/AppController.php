@@ -24,7 +24,7 @@ class AppController extends Controller
         if ($appid) {
             $where['appid'] = $appid;
         }
-        
+
         // * total
         $total = DB::table('daily_app_stat')->where($where)->count();
 
@@ -39,7 +39,7 @@ class AppController extends Controller
 
         // 获取关联
         foreach ($list as &$row) {
-            $row->app_name = preg_replace(['#_\d+#','#\d+\.\d+-#'], '', $row->app->app_name);
+            $row->app_name = preg_replace(['#_\d+#', '#\d+\.\d+-#'], '', $row->app->app_name);
             unset($row->app);
         }
 
@@ -108,6 +108,7 @@ class AppController extends Controller
         $where = [
             ['create_time', '>=', $start_date],
         ];
+        $where = $this->where_view($where, $where_type = 2);
         if ($end_date) {
             $where[] = ['create_time', '<=', $end_date . ' 23:59:59'];
         }
@@ -277,6 +278,8 @@ class AppController extends Controller
         $end_date     = $request->input('end_date', '');
 
         $where = [];
+        // 判断可见权限
+        $where = $this->where_view($where, $where_type = 2);
 
         if ($id) {
             $where[] = ['id', '=', $id];
