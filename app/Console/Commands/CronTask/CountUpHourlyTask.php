@@ -111,7 +111,7 @@ class CountUpHourlyTask extends Command
         $hour_time = $this->hour_time;
         // total_count
         $total_count_rows = DB::table($table)
-            ->select(DB::raw('count(app_id) as app_id_count,app_id,appid,user_id'))
+            ->select(DB::raw('count(app_id) as app_id_count,app_id,appid'))
             ->where([
                 ['create_time', '>=', $hour_time],
                 ['create_time', '<=', date('Y-m-d H', strtotime('+1 hours', strtotime($hour_time)))],
@@ -149,9 +149,11 @@ class CountUpHourlyTask extends Command
             ? $app_id_valid_count[$total_count_row->app_id]
             : 0;
 
+            $user_id = App::where('id',$total_count_row->app_id)->value('user_id');
+
             DB::table('hourl_app_stat')->insert([
                 'app_id'              => $total_count_row->app_id,
-                'user_id'             => $total_count_row->user_id,
+                'user_id'             => $user_id,
                 'appid'               => $total_count_row->appid,
                 'hour_time'           => $hour_time,
                 'brushed_num'         => $brushed_num,

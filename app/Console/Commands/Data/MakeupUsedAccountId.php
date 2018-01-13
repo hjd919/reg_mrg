@@ -47,9 +47,10 @@ class MakeupUsedAccountId extends Command
         // EOF;
         DB::transaction(function () {
             // 重新分配appid到新的表
-            $table_key = 9;
-            $appid     = 1211055336;
-            $old_table = 'work_detail';
+            $table_key     = 11;
+            $old_table_key = 5;
+            $appid         = 1325424608;
+            $old_table     = 'work_detail' . $old_table_key;
 
             $table_sql1 = <<<EOF
 CREATE TABLE `work_detail{$table_key}` (
@@ -68,16 +69,16 @@ CREATE TABLE `work_detail{$table_key}` (
   KEY `appid_email` (`appid`,`account_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 EOF;
-            $res0 = DB::statement($table_sql1);
+            // $res0 = DB::statement($table_sql1);
 
             $new_table = 'work_detail' . $table_key;
-            $res       = DB::insert("insert into {$new_table} select * from {$old_table} where appid={$appid}");
-            $res1      = DB::delete("delete  FROM `work_detail` WHERE `appid` = {$appid} ");
-            $res2      = DB::update("UPDATE `ios_apps` SET `work_detail_table` = '{$table_key}' WHERE `appid` = {$appid}");
-            $res3      = Redis::hSet('work_detail_table', $appid, $table_key);
+            // $res       = DB::insert("insert into {$new_table} select * from {$old_table} where appid={$appid}");
+            $res1 = DB::delete("delete  FROM {$old_table} WHERE `appid` = {$appid} ");
+            $res2 = DB::update("UPDATE `ios_apps` SET `work_detail_table` = '{$table_key}' WHERE `appid` = {$appid}");
+            $res3 = Redis::hSet('work_detail_table', $appid, $table_key);
 
-            var_dump($res0) . "\n";
-            var_dump($res) . "\n";
+            // var_dump($res0) . "\n";
+            // var_dump($res) . "\n";
             var_dump($res1) . "\n";
             var_dump($res2) . "\n";
             var_dump($res3) . "\n";
