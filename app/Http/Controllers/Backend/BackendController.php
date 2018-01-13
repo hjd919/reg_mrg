@@ -20,7 +20,7 @@ class BackendController extends Controller
     public function where_view($where, $where_type = 1)
     {
         $user_id = $this->guard()->user()->id;
-        if ($user_id != 10) {
+        if ($user_id != 10 && $user_id != 5) {
             if ($where_type == 1) {
                 $where['user_id'] = $user_id;
             } else {
