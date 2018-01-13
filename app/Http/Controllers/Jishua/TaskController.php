@@ -438,14 +438,15 @@ class TaskController extends Controller
             $repeat_key = 'repeat_account_do:appid_' . $appid;
 
             if (Redis::get($repeat_key) > 50 && !in_array($appid, ['1211055336', '1141755797'])) {
-                // 重置跑新账号
-                // exec('curl http://jsapi.yz210.com/jishua/task/brush_new_email/appid_' . $appid);
 
                 // 1800秒通知一次
                 $notify_key = 'notify_repeat_account_do';
                 if (!Redis::get($notify_key)) {
                     Redis::set($notify_key, 1);
                     Redis::expire($notify_key, 1800);
+                // 重置跑新账号
+                    $this->brushNewEmail($appid);
+// exec('curl http://jsapi.yz210.com/jishua/task/brush_new_email/appid_' . $appid);
 
                     // 邮箱通知
                     $msg    = json_encode(compact('appid'));
