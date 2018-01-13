@@ -40,6 +40,8 @@ class ToIosApp extends Command
      */
     public function handle()
     {
+        $appid = $this->option('appid');
+        
         // $res = Redis::sAdd('account_policy_2','1211055336');
         // $res1 = Redis::sAdd('account_policy_2','1141755797');
         // if (Redis::sIsMember('account_policy_2', '1141755797')) {
@@ -62,12 +64,11 @@ class ToIosApp extends Command
         // die;
         // 已用过账号
         // $appid    = '1141755797';
-        $appid      = $this->option('appid');
-        $total_key  = 'valid_account_ids';
-        $useful_key = "useful_account_ids:appid_{$appid}";
-        $sort_key   = "used_account_ids:appid_{$appid}";
-        echo Redis::sSize($total_key) . "\n";
-        die;
+        // $total_key  = 'valid_account_ids';
+        // $useful_key = "useful_account_ids:appid_{$appid}";
+        // $sort_key   = "used_account_ids:appid_{$appid}";
+        // echo Redis::sSize($total_key) . "\n";
+        // die;
 // $redis = Redis::connection();
         // $it = null;
         // $redis->setOption(\Redis::OPT_SCAN, \Redis::SCAN_RETRY); /* don't return empty results until we're done */
