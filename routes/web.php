@@ -13,6 +13,8 @@
 
 // 接口
 $router->group(['middleware' => [], 'namespace' => 'Jishua', 'prefix' => 'jishua'], function () use ($router) {
+    $router->get('/app/isUpdate', 'AppController@isUpdate');
+    
     $router->get('/task/get', 'TaskController@get');
     $router->get('/task/report', 'TaskController@report');
     $router->get('/task/invalid_account', 'TaskController@invalid_account');
