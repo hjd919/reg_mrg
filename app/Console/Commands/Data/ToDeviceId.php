@@ -40,6 +40,37 @@ class ToDeviceId extends Command
      */
     public function handle()
     {
+        // 删除今天早上导入的账号ID
+        $offset = 0;
+        while(1){
+            $ids = DB::table('emails')->where('create_time','>','2018-01-14')->where('create_time','<','2018-01-14 22:00:00')->offset($offset)->limit(1000)->pluck('id');
+            dd($ids);
+            if(!$ids){
+                break;
+            }
+
+            foreach ($ids as $key => $account_id) {
+                $res = Redis::sRem('valid_account_ids',$account_id);
+                if(!$res){
+                    // 删除不聊
+                    break;
+                }else{
+                    echo $key."\n";
+                }
+            }
+            $offset += 1000;
+        }
+        echo "更新可用账号数量\n";
+        $appids = Redis::sMembers('account_policy_2');
+        foreach($appids as $appid){
+            $total_key  = 'valid_account_ids';
+            $sort_key   = "used_account_ids:appid_{$appid}";
+            $useful_key = "useful_account_ids:appid_{$appid}";
+            echo '清除旧集合'.var_dump(Redis::delete($useful_key)) . "\n"; // 先清除旧集合
+            var_dump(Redis::sDiffStore($useful_key, $total_key, $sort_key)) . "\n";
+        }
+
+        die;
         // 更新假设备机器
         for ($i = 1011; $i <= 1012; $i++) {
             $res = DB::table('mobiles')->where('mobile_group_id', 0)->where('is_normal', 1)->limit(4)->update(['mobile_group_id' => $i]);
