@@ -40,15 +40,19 @@ class ToDeviceId extends Command
      */
     public function handle()
     {
+           /* $total_key  = 'valid_account_ids';
+        $appids = Redis::sSize($total_key);
+	dd($appids);
+*/
+
         // 删除今天早上导入的账号ID
-        $offset = 0;
+        /*$offset = 0;
         while(1){
-            $ids = DB::table('emails')->where('create_time','>','2018-01-14')->where('create_time','<','2018-01-14 22:00:00')->offset($offset)->limit(1000)->pluck('id');
-            dd($ids);
+            $ids = DB::table('emails')->where('create_time','>','2018-01-14')->where('create_time','<','2018-01-14 22:00:00')->orderBy('id','desc')->offset($offset)->limit(1000)->pluck('id');
             if(!$ids){
                 break;
             }
-
+echo count($ids)."\n";
             foreach ($ids as $key => $account_id) {
                 $res = Redis::sRem('valid_account_ids',$account_id);
                 if(!$res){
@@ -60,6 +64,7 @@ class ToDeviceId extends Command
             }
             $offset += 1000;
         }
+*/
         echo "更新可用账号数量\n";
         $appids = Redis::sMembers('account_policy_2');
         foreach($appids as $appid){
