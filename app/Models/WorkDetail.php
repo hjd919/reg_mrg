@@ -43,9 +43,6 @@ class WorkDetail extends Model
         $min_account_id = $ios_app->min_account_id;
         //echo json_encode(compact('is_new_email','last_id','max_account_id','min_account_id'))."\n";
 
-	if($is_new_email){
-		
-	}
         // 判断是否在刷新账号中
         if ($last_id > $ios_app->max_account_id) {
             $brush_num = DB::table('emails')->where('id', '>', $ios_app->max_account_id)->where('id', '<', $last_id)->where('valid_status', 1)->count();
@@ -53,7 +50,7 @@ class WorkDetail extends Model
         } else if ($last_id > $ios_app->min_account_id && $last_id < $ios_app->max_account_id) {
             $brush_num = 0;
             $min_num   = DB::table('emails')->where('id', '>', $ios_app->min_account_id)->where('id', '<', $last_id)->where('valid_status', 1)->count();
-	    if(!$is_new_email){
+	    if($is_new_email === '0'){
 		$min_num=0;
 	     }
         } else {
