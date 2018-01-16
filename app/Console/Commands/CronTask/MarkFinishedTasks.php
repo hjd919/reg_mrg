@@ -114,7 +114,7 @@ class MarkFinishedTasks extends Command
             if ($app_row->mobile_group_id < 1000 || ($app_row->mobile_group_id >= 1008 && $app_row->mobile_group_id <= 1015)) {
 
                 // 删除组id缓存
-                $device_ids = DB::table('mobiles')->select('device_id')->where(['mobile_group_id' => $app_row->mobile_group_id])->pluck();
+                $device_ids = DB::table('mobiles')->select('device_id')->where(['mobile_group_id' => $app_row->mobile_group_id])->pluck('device_id');
                 foreach ($device_ids as $device_id) {
                     Redis::hDel('did_to_gid', $device_id);
                 }
