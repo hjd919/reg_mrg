@@ -275,20 +275,32 @@ class TaskController extends Controller
 
         // * 根据device_id获取手机组id
         // * 判断是否是新device_id，不是：则记录到数据库和缓存
-        $row = DB::table('mobiles')->select('id', 'mobile_group_id')->where('device_id', $device_id)->first();
-        if (!$row) {
-            $last_no = DB::table('mobiles')->max('no');
-            $last_no++;
-            $mobile_group_id = 1; //默认组id
-            DB::table('mobiles')->insert([
-                'device_id'       => $device_id,
-                'alias'           => '编号new',
-                'no'              => $last_no,
-                'mobile_group_id' => $mobile_group_id,
-            ]);
+        $mobile_group_id = Redis::hGet("did_to_gid", $device_id);
+        if (!$mobile_group_id) {
+
+            // 查不到缓存查数据库
+            $row = DB::table('mobiles')->select('id', 'mobile_group_id')->where('device_id', $device_id)->first();
+            if (!$row) {
+                $last_no = DB::table('mobiles')->max('no');
+                $last_no++;
+                $mobile_group_id = 1; //默认组id
+                $mobile_id       = DB::table('mobiles')->insertGetId([
+                    'device_id'       => $device_id,
+                    'alias'           => date('Y-m-d'),
+                    'no'              => $last_no,
+                    'mobile_group_id' => $mobile_group_id,
+                ]);
+                Redis::hSet("did_to_mid", $device_id, $mobile_id);
+                Util::$mobile_id = $mobile_id;
+            } else {
+                $mobile_group_id = $row->mobile_group_id;
+                Util::$mobile_id = $mobile_id = $row->id;
+
+                Redis::hSet("did_to_gid", $device_id, $mobile_group_id);
+            }
+
         } else {
-            $mobile_group_id = $row->mobile_group_id;
-            Util::$mobile_id = $row->id;
+            Util::$mobile_id = Redis::hGet("did_to_mid", $device_id);
         }
 
         // * 循环获取任务记录 正在刷、有数量
@@ -340,12 +352,12 @@ class TaskController extends Controller
                 $total_key = 'valid_account_ids';
                 Redis::sDiffStore("useful_account_ids:appid_{$appid}", $total_key, $used_account_ids_key);
 
-                Util::log('没有可用账号了:' . $appid, $useful_account_id_num)."\n";
+                Util::log('没有可用账号了:' . $appid, $useful_account_id_num) . "\n";
                 Util::die_jishua("appid-{$appid}-app_name-{$app_row->app_name},没有苹果账号了,请联系运营补充", 1);
             }
 
         } else {
-            $is_new_email = Redis::get("is_new_email:appid_{$appid}"); // 判断是否在刷新账号
+            $is_new_email  = Redis::get("is_new_email:appid_{$appid}"); // 判断是否在刷新账号
             $last_email_id = $get_last_id($email_key);
             if ($is_new_email) {
                 //Util::log('刷新账号_'.$mtime, $is_new_email);
@@ -444,7 +456,7 @@ class TaskController extends Controller
                 if (!Redis::get($notify_key)) {
                     Redis::set($notify_key, 1);
                     Redis::expire($notify_key, 1800);
-                // 重置跑新账号
+                    // 重置跑新账号
                     $this->brushNewEmail($appid);
 // exec('curl http://jsapi.yz210.com/jishua/task/brush_new_email/appid_' . $appid);
 
