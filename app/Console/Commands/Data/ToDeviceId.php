@@ -40,46 +40,68 @@ class ToDeviceId extends Command
      */
     public function handle()
     {
+        $apps_row = DB::table('apps')->where('is_brushing', '0')->where('create_time', '>', '2018-01-15')->get();
+        foreach ($apps_row as $app_row) {
+            // 删除组id缓存
+            $device_ids = DB::table('mobiles')->select('device_id')->where(['mobile_group_id' => $app_row->mobile_group_id])->pluck('device_id');
+            if (!$device_ids) {
+                echo 'mobile_id' . $app_row->mobile_group_id;
+                continue;
+            }
+            foreach ($device_ids as $device_id) {
+                Redis::hDel('did_to_gid', $device_id);
+            }
+
+            // 正式
+            $res = DB::table('mobiles')->where([
+                ['mobile_group_id', '=', $app_row->mobile_group_id],
+            ])->update([
+                'mobile_group_id' => 0,
+            ]);
+        }
+
+        die;
+
         $mobiles = DB::table('mobiles')->get();
-        foreach($mobiles as $mobile){
+        foreach ($mobiles as $mobile) {
             $device_id = $mobile->device_id;
             $mobile_id = $mobile->id;
             Redis::hSet("did_to_mid", $device_id, $mobile_id);
         }
         dd(count(Redis::hGetAll('did_to_mid')));
         die;
-           /* $total_key  = 'valid_account_ids';
+        /* $total_key  = 'valid_account_ids';
         $appids = Redis::sSize($total_key);
-	dd($appids);
-*/
+        dd($appids);
+         */
 
         // 删除今天早上导入的账号ID
         /*$offset = 0;
         while(1){
-            $ids = DB::table('emails')->where('create_time','>','2018-01-14')->where('create_time','<','2018-01-14 22:00:00')->orderBy('id','desc')->offset($offset)->limit(1000)->pluck('id');
-            if(!$ids){
-                break;
-            }
-echo count($ids)."\n";
-            foreach ($ids as $key => $account_id) {
-                $res = Redis::sRem('valid_account_ids',$account_id);
-                if(!$res){
-                    // 删除不聊
-                    break;
-                }else{
-                    echo $key."\n";
-                }
-            }
-            $offset += 1000;
+        $ids = DB::table('emails')->where('create_time','>','2018-01-14')->where('create_time','<','2018-01-14 22:00:00')->orderBy('id','desc')->offset($offset)->limit(1000)->pluck('id');
+        if(!$ids){
+        break;
         }
-*/
+        echo count($ids)."\n";
+        foreach ($ids as $key => $account_id) {
+        $res = Redis::sRem('valid_account_ids',$account_id);
+        if(!$res){
+        // 删除不聊
+        break;
+        }else{
+        echo $key."\n";
+        }
+        }
+        $offset += 1000;
+        }
+         */
         echo "更新可用账号数量\n";
         $appids = Redis::sMembers('account_policy_2');
-        foreach($appids as $appid){
+        foreach ($appids as $appid) {
             $total_key  = 'valid_account_ids';
             $sort_key   = "used_account_ids:appid_{$appid}";
             $useful_key = "useful_account_ids:appid_{$appid}";
-            echo '清除旧集合'.var_dump(Redis::delete($useful_key)) . "\n"; // 先清除旧集合
+            echo '清除旧集合' . var_dump(Redis::delete($useful_key)) . "\n"; // 先清除旧集合
             var_dump(Redis::sDiffStore($useful_key, $total_key, $sort_key)) . "\n";
         }
 
