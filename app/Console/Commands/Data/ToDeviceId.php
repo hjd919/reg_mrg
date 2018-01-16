@@ -40,6 +40,14 @@ class ToDeviceId extends Command
      */
     public function handle()
     {
+        $mobiles = DB::table('mobiles')->get();
+        foreach($mobiles as $mobile){
+            $device_id = $mobile->device_id;
+            $mobile_id = $mobile->id;
+            Redis::hSet("did_to_mid", $device_id, $mobile_id);
+        }
+        dd(count(Redis::hGetAll('did_to_mid')));
+        die;
            /* $total_key  = 'valid_account_ids';
         $appids = Redis::sSize($total_key);
 	dd($appids);

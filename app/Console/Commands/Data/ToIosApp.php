@@ -41,7 +41,7 @@ class ToIosApp extends Command
     public function handle()
     {
         $appid = $this->option('appid');
-        
+
         // $res = Redis::sAdd('account_policy_2','1211055336');
         // $res1 = Redis::sAdd('account_policy_2','1141755797');
         // if (Redis::sIsMember('account_policy_2', '1141755797')) {
@@ -51,17 +51,19 @@ class ToIosApp extends Command
         // }
         // die;
         // $appid = '1141755797';
-        // // $key ="useful_account_ids:appid_{$appid}";
-        // // $key   = "used_account_ids:appid_{$appid}";
-        // $key = "used_account_ids:appid_{$appid}";
-        // // $total_key = 'valid_account_ids';
-        // // // var_dump(Redis::sDiffStore("useful_account_ids:appid_{$appid}", $total_key, $used_account_ids_key));
-        // $num = WorkDetail::getWorkDetailTable($appid)->where('appid', $appid)->count();
-        // echo $num . "\n";
-        // // // $key = 'valid_account_ids';
-        // echo Redis::sSize($key) . "\n";
-        // // var_dump(Redis::sIsMember($key, '1592129')) . "\n";
-        // die;
+        // $key ="useful_account_ids:appid_{$appid}";
+        // $key   = "used_account_ids:appid_{$appid}";
+        $total_key  = 'valid_account_ids';
+        echo Redis::sSize($total_key) . "\n";
+        $used_account_ids_key = "used_account_ids:appid_{$appid}";
+
+        var_dump(Redis::sDiffStore("useful_account_ids:appid_{$appid}", $total_key, $used_account_ids_key));
+        $num = WorkDetail::getWorkDetailTable($appid)->where('appid', $appid)->count();
+        echo $num . "\n";
+        $key = 'valid_account_ids';
+        echo Redis::sSize($key) . "\n";
+        // var_dump(Redis::sIsMember($key, '1592129')) . "\n";
+        die;
         // 已用过账号
         // $appid    = '1141755797';
         // $total_key  = 'valid_account_ids';
@@ -69,7 +71,7 @@ class ToIosApp extends Command
         // $sort_key   = "used_account_ids:appid_{$appid}";
         // echo Redis::sSize($total_key) . "\n";
         // die;
-// $redis = Redis::connection();
+        // $redis = Redis::connection();
         // $it = null;
         // $redis->setOption(\Redis::OPT_SCAN, \Redis::SCAN_RETRY); /* don't return empty results until we're done */
         // while ($arr_mems = $redis->sScan($sort_key, $it)) {

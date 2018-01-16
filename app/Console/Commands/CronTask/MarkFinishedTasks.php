@@ -112,13 +112,19 @@ class MarkFinishedTasks extends Command
 
             // * 释放手机
             if ($app_row->mobile_group_id < 1000 || ($app_row->mobile_group_id >= 1008 && $app_row->mobile_group_id <= 1015)) {
+
+                // 删除组id缓存
+                $device_ids = DB::table('mobiles')->select('device_id')->where(['mobile_group_id' => $app_row->mobile_group_id])->pluck();
+                foreach ($device_ids as $device_id) {
+                    Redis::hDel('did_to_gid', $device_id);
+                }
+
                 // 正式
                 $res = DB::table('mobiles')->where([
                     ['mobile_group_id', '=', $app_row->mobile_group_id],
                 ])->update([
                     'mobile_group_id' => 0,
                 ]);
-
             }
 
             // 按照用户表的email去通知
