@@ -34,7 +34,7 @@ class EmailController extends BackendController
         $list   = DB::connection('stat')->table('emails')->where($where)
             ->selectRaw("count(*) total,import_date")
             ->groupBy('import_date')
-            ->orderBy('id', 'desc')
+            ->orderBy('import_date', 'desc')
             ->limit($page_size)
             ->offset($offset)
             ->get(); // list
