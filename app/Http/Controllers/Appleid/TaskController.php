@@ -20,7 +20,7 @@ class TaskController extends Controller
     // 获取代理
     public function getproxy()
     {
-        return response()->json('connect to jiande please');
+        // return response()->json('connect to jiande please');
         
         $uid1 = Redis::get('proxy_ip_uid');
         Redis::incr('proxy_ip_uid');
@@ -61,7 +61,7 @@ class TaskController extends Controller
     public function getverifycode(
         Request $request
     ) {
-        return response()->json('connect to jiande please');
+        // return response()->json('connect to jiande please');
 
         $start_time = microtime(true);
         $email      = $request->email;
