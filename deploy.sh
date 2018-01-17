@@ -1,4 +1,5 @@
 #!/bin/bash
+git commit -a -m $1
 git push
 cmd="cd jishua_api && git pull"
 ssh hjd@60.205.58.24 ${cmd}
