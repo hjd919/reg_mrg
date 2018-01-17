@@ -1,6 +1,8 @@
 #!/bin/bash
+if [ $1 ]; then
 git commit -a -m $1
+fi
 git push
-cmd="cd jishua_api && git pull && sudo chown -R nobody:nobody *"
+cmd="cd jishua_api && git pull"
 ssh hjd@60.205.58.24 ${cmd}
 ssh hjd@101.201.28.127 ${cmd}
