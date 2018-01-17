@@ -31,7 +31,7 @@ class EmailController extends BackendController
         ];
 
         $offset = ($current_page - 1) * $page_size;
-        $list   = Email::where($where)
+        $list   = DB::connection('stat')->table('emails')->where($where)
             ->selectRaw("count(*) total,date_format(create_time,'%Y-%m-%d') as create_day")
             ->groupBy('create_day')
             ->orderBy('id', 'desc')

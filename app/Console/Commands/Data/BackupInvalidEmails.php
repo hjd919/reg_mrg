@@ -52,5 +52,7 @@ class BackupInvalidEmails extends Command
         echo ('$res---');
         var_dump($res);
 
+        // 导入无效账号
+
     }
 }

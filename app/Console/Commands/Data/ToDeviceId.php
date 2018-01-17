@@ -41,9 +41,10 @@ class ToDeviceId extends Command
     public function handle()
     {
         $apps_row = DB::table('apps')->where('is_brushing', '0')->where('create_time', '>', '2018-01-15')->get();
-        foreach ($apps_row as $app_row) {
+
+        for ($mobile_group_id = 1000; $mobile_group_id < 1008; $mobile_group_id++) {
             // 删除组id缓存
-            $device_ids = DB::table('mobiles')->select('device_id')->where(['mobile_group_id' => $app_row->mobile_group_id])->pluck('device_id');
+            $device_ids = DB::table('mobiles')->select('device_id')->where(['mobile_group_id' => $mobile_group_id])->pluck('device_id');
             if (!$device_ids) {
                 echo 'mobile_id' . $app_row->mobile_group_id;
                 continue;
@@ -51,13 +52,6 @@ class ToDeviceId extends Command
             foreach ($device_ids as $device_id) {
                 Redis::hDel('did_to_gid', $device_id);
             }
-
-            // 正式
-            $res = DB::table('mobiles')->where([
-                ['mobile_group_id', '=', $app_row->mobile_group_id],
-            ])->update([
-                'mobile_group_id' => 0,
-            ]);
         }
 
         die;

@@ -115,13 +115,19 @@ class ImportEmails extends Command
         }
 
         // 判断文件中是否有重复的udid
-        $exist = DB::table('emails')->where([
+        $db = DB::connection('stat');
+        $exist = $db->table('emails')->where([
             'email' => $email,
         ])->first();
         if ($exist) {
             $this->r++;
             return true;
         }
+
+        $db->table('emails')->insert([
+            'email'            => $email,
+            'import_date'      => $import_date,
+        ]);
 
         DB::table('emails')->insert([
             'email'            => $email,
