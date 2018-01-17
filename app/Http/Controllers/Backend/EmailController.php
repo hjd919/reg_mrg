@@ -19,7 +19,7 @@ class EmailController extends BackendController
 
         // 统计导入
         $where = [
-            ['create_time', '>', date('Y-m-d', strtotime('-2 weeks'))],
+            ['import_day', '>=', date('Y-m-d', strtotime('-2 weeks'))],
             ['source', '=', 1],
         ];
         // $total      = Email::where($where)->get(); //total
@@ -32,8 +32,8 @@ class EmailController extends BackendController
 
         $offset = ($current_page - 1) * $page_size;
         $list   = DB::connection('stat')->table('emails')->where($where)
-            ->selectRaw("count(*) total,date_format(create_time,'%Y-%m-%d') as create_day")
-            ->groupBy('create_day')
+            ->selectRaw("count(*) total,import_day")
+            ->groupBy('import_day')
             ->orderBy('id', 'desc')
             ->limit($page_size)
             ->offset($offset)
