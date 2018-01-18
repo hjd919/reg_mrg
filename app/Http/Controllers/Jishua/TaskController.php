@@ -303,22 +303,27 @@ class TaskController extends Controller
             Util::$mobile_id = Redis::hGet("did_to_mid", $device_id);
         }
 
+        if(!$mobile_group_id){
+            Util::die_jishua('当前机器空闲-{mobile_group_id:' . $mobile_group_id, 1);
+        }
+
+        // 判断当前group_id是否有任务
         // * 循环获取任务记录 正在刷、有数量
-        $last_app_id = $get_last_id('last_app_id');
+        // $last_app_id = $get_last_id('last_app_id');
         $now_date    = date('Y-m-d H:i:s');
         $where       = [
-            ['brush_num', '>', 0],
-            ['start_time', '<=', $now_date],
-            ['end_time', '>=', $now_date],
             ['is_brushing', '=', 1],
             ['mobile_group_id', '=', $mobile_group_id],
+            ['start_time', '<=', $now_date],
+            ['end_time', '>=', $now_date],
+            ['brush_num', '>', 0],
         ];
-        $app_rows = $query_rows($last_app_id, 'apps', $where, 1);
-        if (!$app_rows) {
-            Util::die_jishua('没有任务记录数据了{mobile_group_id:' . $mobile_group_id, 1);
+        $app_row = DB::table('apps')->where($where)->first();
+        // $app_rows = $query_rows($last_app_id, 'apps', $where, 1);
+        if (!$app_row) {
+            Util::die_jishua('当前机器没有任务-{mobile_group_id:' . $mobile_group_id, 1);
         }
-        $app_row = $app_rows->first();
-        $set_last_id('last_app_id', $app_row->id);
+        // $set_last_id('last_app_id', $app_row->id);
 
         $appid = $app_row->appid;
 
