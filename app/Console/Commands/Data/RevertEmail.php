@@ -14,7 +14,7 @@ class RevertEmail extends Command
      *
      * @var string
      */
-    protected $signature = 'revert:email {--appid=1141755797}';
+    protected $signature = 'revert:email {--appid=1120180668}';
 
     /**
      * The console command description.
@@ -41,13 +41,13 @@ class RevertEmail extends Command
     public function handle()
     {
         $appid = $this->option('appid');
-        
-        $used_account_ids_key = "used_account_ids:appid_{$appid}";
-        $appids = Redis::sSize($used_account_ids_key);
-        dd($appids);
+
+        // $used_account_ids_key = "used_account_ids:appid_{$appid}";
+        // $appids               = Redis::sSize($used_account_ids_key);
+        // print_r($appids);
         // $appids = Redis::sMembers('account_policy_2');
         // dd($appids);
-        
+
         $appid = $this->option('appid');
         if (!$appid) {
             return false;
@@ -63,7 +63,9 @@ class RevertEmail extends Command
                 $re_uses = WorkDetail::getWorkDetailTable($appid)
                     ->select('account_id')
                     ->where('appid', $appid)
-                    ->whereNotIn('fail_reason', [0, 13, 14, 15])
+                    ->where('fail_reason', '>', 0)
+                    ->where('status', '!=', 9)
+                    ->whereNotIn('fail_reason', [13, 14, 15])
                     ->offset($offset)
                     ->limit($step)
                     ->pluck('account_id');
@@ -75,14 +77,15 @@ class RevertEmail extends Command
                 foreach ($re_uses as $account_id) {
                     $used_account_ids_key = "used_account_ids:appid_{$appid}";
                     Redis::sRemove($used_account_ids_key, $account_id);
-                }
 
+                    // 删除错误不为14的记录
+                    WorkDetail::getWorkDetailTable($appid)
+                        ->where('appid', $appid)
+                        ->where('account_id', $account_id)
+                        ->update(['status' => 9]);
+                }
             }
 
-            // 删除错误不为14的记录
-            WorkDetail::getWorkDetailTable($appid)
-                ->where('appid', $appid)
-                ->update(['status'=>9]);
         }
 
     }

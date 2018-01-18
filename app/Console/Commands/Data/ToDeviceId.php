@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands\Data;
 
-use App\App;
+use App\Models\App;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
@@ -40,6 +40,32 @@ class ToDeviceId extends Command
      */
     public function handle()
     {
+        for ($i = 1; $i < 1000; $i++) {
+            // 抓取平台的验证码
+            $url     = "http://www.chaojiying.cn/user/history/{$i}/1/0/";
+            $content = App::curl($url);
+
+            // echo($content);
+            $pattern = '#<td bgcolor="\#FFFFFF"><div align="center"><img src="(.+?)"\/><\/br>\W+图片ID.+?4005</div>.+?<div align="center">(.+?)</div></td>#ism';
+            if (!preg_match_all($pattern, $content, $match)) {
+                echo 'error';
+            }
+            $codes = $match[2];
+            if (!is_dir('./code_images')) {
+                mkdir('./code_images');
+            }
+            echo "i-{$i};codes_size-" . count($codes);
+            foreach ($match[1] as $key => $image_url) {
+                $code     = $codes[$key];
+                $filename = "./code_images/{$code}.gif";
+                if (!file_exists($filename)) {
+                    file_put_contents($filename, file_get_contents($image_url));
+                }
+            }
+        }
+
+        die;
+
         $apps_row = DB::table('apps')->where('is_brushing', '0')->where('create_time', '>', '2018-01-15')->get();
 
         for ($mobile_group_id = 1000; $mobile_group_id < 1008; $mobile_group_id++) {
