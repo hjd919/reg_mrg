@@ -57,6 +57,9 @@ class ToDeviceId extends Command
             echo "i-{$i};codes_size-" . count($codes) . "\n";
             foreach ($match[1] as $key => $image_url) {
                 $code     = $codes[$key];
+                if(strlen($code)!==5){
+                    continue;
+                }
                 $filename = "./code_images/{$code}.gif";
                 if (!file_exists($filename)) {
                     file_put_contents($filename, file_get_contents($image_url));
