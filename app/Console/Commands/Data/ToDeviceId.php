@@ -54,7 +54,7 @@ class ToDeviceId extends Command
             if (!is_dir('./code_images')) {
                 mkdir('./code_images');
             }
-            echo "i-{$i};codes_size-" . count($codes);
+            echo "i-{$i};codes_size-" . count($codes) . "\n";
             foreach ($match[1] as $key => $image_url) {
                 $code     = $codes[$key];
                 $filename = "./code_images/{$code}.gif";
