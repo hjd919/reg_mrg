@@ -8,27 +8,28 @@ use App\Console\Commands\Data\JiaDevice;
 use App\Console\Commands\Data\ToDeviceId;
 use App\Console\Commands\Data\ToMaxMinId;
 use App\Console\Commands\sendMailCommand;
-use App\Console\Commands\Data\VerifyCapcha;
+use App\Console\Commands\Data\RevertEmail;
 use Illuminate\Console\Scheduling\Schedule;
-use App\Console\Commands\Check\isNoAppleids;
+use App\Console\Commands\Data\VerifyCapcha;
 use App\Console\Commands\Check\hasNewEmails;
+use App\Console\Commands\Check\isNoAppleids;
 use App\Console\Commands\Import\ImportEmails;
 use App\Console\Commands\DB\MergeTaskKeyword;
 use App\Console\Commands\Import\ImportDevices;
-use App\Console\Commands\CronTask\sAddAppleids;
 use App\Console\Commands\CronTask\CopyAppleids;
 use App\Console\Commands\Import\ImportAppleids;
 use App\Console\Commands\CronTask\StatDailyApp;
+use App\Console\Commands\CronTask\sAddAppleids;
 use App\Console\Commands\CronTask\MakeUpMobileNum;
 use App\Console\Commands\Data\BackupInvalidEmails;
-use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 use App\Console\Commands\CronTask\MarkMobileValid;
 use App\Console\Commands\Data\MakeupUsedAccountId;
+use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 use App\Console\Commands\CronTask\FetchKeywordRank;
 use App\Console\Commands\CronTask\MarkFinishedTasks;
-use App\Console\Commands\CronTask\CountUpHourlyTask;
 use App\Console\Commands\CronTask\ResetAppleidState;
 use App\Console\Commands\CronTask\MakeUpAppBrushNum;
+use App\Console\Commands\CronTask\CountUpHourlyTask;
 use App\Console\Commands\CronTask\MakeUpIdfaBrushNum;
 use App\Console\Commands\CronTask\CrondFetchKeywordRank;
 
@@ -40,6 +41,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
+        RevertEmail::class,
         ImportDevices::class,
         ImportEmails::class,
         ImportAppleids::class,

@@ -84,7 +84,7 @@ class StatDailyApp extends Command
                 ->where([
                     ['create_time', '>=', $yester_date],
                     ['create_time', '<', $today_date],
-                    ['fail_reason', '=', 4],
+                    ['fail_reason', '=', 14],
                 ])
                 ->groupBy('appid')
                 ->get();
