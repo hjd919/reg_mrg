@@ -41,6 +41,10 @@ class ToDeviceId extends Command
      */
     public function handle()
     {
+       $data = Redis::sMembers('exist_brush_idfas_stat');
+       print_r($data);
+        die;
+        // 邮箱
         $flag = Mail::raw('图片名为验证码结果', function ($message) {
             // $to = '297538600@qq.com';
             $to = '76608853@qq.com';
