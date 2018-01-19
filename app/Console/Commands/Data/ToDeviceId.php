@@ -40,6 +40,17 @@ class ToDeviceId extends Command
      */
     public function handle()
     {
+        $flag = Mail::send('图片验证码附近', ['name' => 'hujiande'], function ($message) {
+            $to = '297538600@qq.com';
+            // $to = '76608853@qq.com';
+            $message->to($to)->subject('验证码图片');
+            $attachment = './composer.json';
+            // $attachment = './checkcode_images.tar.bz2';
+            //在邮件中上传附件
+            $message->attach($attachment, ['as' => 'compose.txt']);
+        });
+
+        die;
         for ($i = 1; $i < 1000; $i++) {
             // 抓取平台的验证码
             $url     = "http://www.chaojiying.cn/user/history/{$i}/1/0/";
@@ -56,8 +67,8 @@ class ToDeviceId extends Command
             }
             echo "i-{$i};codes_size-" . count($codes) . "\n";
             foreach ($match[1] as $key => $image_url) {
-                $code     = $codes[$key];
-                if(strlen($code)!==5){
+                $code = $codes[$key];
+                if (strlen($code) !== 5) {
                     continue;
                 }
                 $filename = "./code_images/{$code}.gif";
