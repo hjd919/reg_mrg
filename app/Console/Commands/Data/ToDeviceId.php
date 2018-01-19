@@ -41,14 +41,14 @@ class ToDeviceId extends Command
      */
     public function handle()
     {
-        $flag = Mail::raw('图片验证码文字', function ($message) {
-            $to = '297538600@qq.com';
-            // $to = '76608853@qq.com';
-            $message->to($to)->subject('验证码图片');
-            $attachment = './composer.json';
-            // $attachment = './checkcode_images.tar.bz2';
+        $flag = Mail::raw('图片名为验证码结果', function ($message) {
+            // $to = '297538600@qq.com';
+            $to = '76608853@qq.com';
+            $message->to($to)->subject('apple验证码图片');
+            $filename   = 'checkcode_images.tar.bz2';
+            $attachment = './' . $filename;
             //在邮件中上传附件
-            $message->attach($attachment, ['as' => 'compose.txt']);
+            $message->attach($attachment, ['as' => $filename]);
         });
 
         die;
