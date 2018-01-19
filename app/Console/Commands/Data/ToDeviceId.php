@@ -5,6 +5,7 @@ namespace App\Console\Commands\Data;
 use App\Models\App;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redis;
 
 class ToDeviceId extends Command
