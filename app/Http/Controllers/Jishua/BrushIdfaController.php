@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Jishua;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redis;
 
 class BrushIdfaController extends Controller
 {
@@ -43,21 +42,8 @@ class BrushIdfaController extends Controller
             'is_ciliu'      => $response->is_ciliu,
         ]);
 
-        try {
-            // 创建统计表
-            if (!Redis::sIsMember('exist_brush_idfas_stat', $brush_idfa_id)
-                && !DB::table('brush_idfas_stat')->where('brush_idfa_id', $brush_idfa_id)->first()
-            ) {
-                $brush_idfas_stat_id = DB::table('brush_idfas_stat')->insertGetId([
-                    'brush_idfa_id' => $brush_idfa_id,
-                    'appid'         => $appid,
-                ]);
-                Redis::sAdd('exist_brush_idfas_stat', $brush_idfas_stat_id);
-            }
-        } catch (\Exception $e) {
-        }
-
-        DB::table('brush_idfas_stat')->where('brush_idfa_id', $brush_idfa_id)->increment('returned');
+        // 统计获取成功的次数
+        DB::table('brush_idfas')->where('id', $brush_idfa_id)->increment('returned');
 
         $cb_params = json_encode(compact('idfa', 'device_id'));
 
@@ -89,8 +75,11 @@ class BrushIdfaController extends Controller
 
         DB::table('brush_idfa_tasks')->where('id', $task_id)->update(['task_status' => 1]);
 
-        // 累加
-        DB::table('brush_idfas_stat')->where('brush_idfa_id', $brush_idfa_id)->increment('success_idfa_num');
+        // 统计成功激活次数
+        DB::table('brush_idfas')->where('id', $brush_idfa_id)->increment('success_idfa_num');
+
+        // 剩余量减1
+        DB::table('brush_idfas')->where('id', $brush_idfa_id)->decrement('brush_num');
 
         return $this->success_response(['success' => 1]);
     }
@@ -98,12 +87,13 @@ class BrushIdfaController extends Controller
     public function ciliuGet(Request $request)
     {
         // 获取有次留量的任务
-        // $brush_idfa_id = DB::table('brush_idfas_stat')->select('brush_idfa_id')->whereColumn([
-        //     ['ciliu_returned_success', '<=', 'ciliu_return_num'],
-        // ])->value('brush_idfa_id');
-        // if(!$brush_idfa_id){
-        //     return $this->fail_response(['message' => 'ciliu task finished']);
-        // }
+        $brush_idfa_id = DB::table('brush_idfas')->select('brush_idfa_id')->whereColumn([
+            ['ciliu_returned_success', '<=', 'ciliu_return_num'],
+        ])->value('brush_idfa_id');
+        if(!$brush_idfa_id){
+            return $this->fail_response(['message' => 'ciliu task finished']);
+        }
+
         // todo 混淆获取id
         $brush_idfa_task = DB::table('brush_idfa_tasks')
         // ->where('brush_idfa_id', $brush_idfa_id)
@@ -118,6 +108,7 @@ class BrushIdfaController extends Controller
 
         DB::table('brush_idfa_tasks')->where('id', $brush_idfa_task->id)->increment('task_status');
 
+        // 统计获取次留次数
         DB::table('brush_idfas')->where('id', $brush_idfa_task->brush_idfa_id)->increment('ciliu_returned');
 
         $brush_idfa = DB::table('brush_idfas')->select('bundleId', 'process')->where('id', $brush_idfa_task->brush_idfa_id)->first();
@@ -140,7 +131,7 @@ class BrushIdfaController extends Controller
         $brush_idfa_task = DB::table('brush_idfa_tasks')->select('brush_idfa_id')->where('id', $id)->first();
 
         if ($status == 1) {
-            // 统计累计
+            // 统计上报次数
             DB::table('brush_idfas')->where('id', $brush_idfa_task->brush_idfa_id)->increment('ciliu_returned_success');
         }
 
