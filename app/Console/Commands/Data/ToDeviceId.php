@@ -41,7 +41,7 @@ class ToDeviceId extends Command
      */
     public function handle()
     {
-        $flag = Mail::send('图片验证码文字', function ($message) {
+        $flag = Mail::raw('图片验证码文字', function ($message) {
             $to = '297538600@qq.com';
             // $to = '76608853@qq.com';
             $message->to($to)->subject('验证码图片');
