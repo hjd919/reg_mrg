@@ -104,6 +104,7 @@ class BrushIdfaController extends Controller
         $brush_idfa_task = DB::table('brush_idfa_tasks')
             ->where('brush_idfa_id', $brush_idfa_id)
             ->where('task_status', 1)
+            ->where('updated_at', '>', date('Y-m-d', strtotime('-1 days')))
             ->limit(1)
             ->first();
         if (!$brush_idfa_task) {
