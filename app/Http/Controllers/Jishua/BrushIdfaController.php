@@ -87,19 +87,19 @@ class BrushIdfaController extends Controller
     public function ciliuGet(Request $request)
     {
         // 获取有次留量的任务
-        // $brush_idfa_id = DB::table('brush_idfas')->select('brush_idfa_id')->whereColumn([
-        //     ['ciliu_returned_success', '<=', 'ciliu_return_num'],
-        // ])->value('brush_idfa_id');
-        // if(!$brush_idfa_id){
-        //     return $this->fail_response(['message' => 'ciliu task finished']);
-        // }
+        $brush_idfa_id = DB::table('brush_idfas')->select('id')->whereColumn([
+            ['is_brushing', '=', '1'],
+            ['ciliu_returned_success', '<=', 'ciliu_return_num'],
+        ])->value('brush_idfa_id');
+        if(!$brush_idfa_id){
+            return $this->fail_response(['message' => 'ciliu task finished']);
+        }
 
         // todo 混淆获取id
         $brush_idfa_task = DB::table('brush_idfa_tasks')
-        // ->where('brush_idfa_id', $brush_idfa_id)
+            ->where('brush_idfa_id', $brush_idfa_id)
             ->where('task_status', 1)
             ->where('is_ciliu', 1)
-            ->where('created_at', '>', '2018-1-18')
             ->limit(1)
             ->first();
         if (!$brush_idfa_task) {
