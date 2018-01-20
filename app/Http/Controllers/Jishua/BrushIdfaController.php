@@ -1,10 +1,10 @@
 <?php
 namespace App\Http\Controllers\Jishua;
 
+use App\Http\Controllers\Controller;
 use App\Support\Util;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
 
 class BrushIdfaController extends Controller
 {
@@ -86,13 +86,16 @@ class BrushIdfaController extends Controller
     public function ciliuGet(Request $request)
     {
         Util::log('ciliu-req', 1);
-        
+
         // 获取有次留量的任务
-        $brush_idfa_id = DB::table('brush_idfas')->select('id')->whereColumn([
-            ['is_brushing', '=', '1'],
-            ['is_ciliu', '=', '1'],
-            ['ciliu_returned_success', '<=', 'ciliu_return_num'],
-        ])->value('brush_idfa_id');
+        $brush_idfa_id = DB::table('brush_idfas')->select('id')
+            ->where([
+                ['is_brushing', '=', '1'],
+                ['is_ciliu', '=', '1'],
+            ])
+            ->whereColumn([
+                ['ciliu_returned_success', '<=', 'ciliu_return_num'],
+            ])->value('brush_idfa_id');
         if (!$brush_idfa_id) {
             return $this->fail_response(['message' => 'ciliu task finished']);
         }
