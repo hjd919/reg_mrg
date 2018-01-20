@@ -85,8 +85,6 @@ class BrushIdfaController extends Controller
 
     public function ciliuGet(Request $request)
     {
-        Util::log('ciliu-req', 1);
-
         // 获取有次留量的任务
         $brush_idfa_id = DB::table('brush_idfas')->select('id')
             ->where([
@@ -120,7 +118,6 @@ class BrushIdfaController extends Controller
 
         $brush_idfa_task->bundleId = $brush_idfa->bundleId;
         $brush_idfa_task->process  = $brush_idfa->process;
-        Util::log('ciliu-res', $brush_idfa_task);
 
         return $this->success_response((array) $brush_idfa_task);
     }
