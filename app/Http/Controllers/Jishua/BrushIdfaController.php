@@ -1,9 +1,10 @@
 <?php
 namespace App\Http\Controllers\Jishua;
 
-use App\Http\Controllers\Controller;
+use App\Support\Util;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 
 class BrushIdfaController extends Controller
 {
@@ -39,7 +40,6 @@ class BrushIdfaController extends Controller
             'appid'         => $appid,
             'device_id'     => $device_id,
             'brush_idfa_id' => $brush_idfa_id,
-            'is_ciliu'      => $response->is_ciliu,
         ]);
 
         // 统计获取成功的次数
@@ -80,18 +80,20 @@ class BrushIdfaController extends Controller
 
         // 剩余量减1
         DB::table('brush_idfas')->where('id', $brush_idfa_id)->decrement('brush_num');
-
         return $this->success_response(['success' => 1]);
     }
 
     public function ciliuGet(Request $request)
     {
+        Util::log('ciliu-req', 1);
+        
         // 获取有次留量的任务
         $brush_idfa_id = DB::table('brush_idfas')->select('id')->whereColumn([
             ['is_brushing', '=', '1'],
+            ['is_ciliu', '=', '1'],
             ['ciliu_returned_success', '<=', 'ciliu_return_num'],
         ])->value('brush_idfa_id');
-        if(!$brush_idfa_id){
+        if (!$brush_idfa_id) {
             return $this->fail_response(['message' => 'ciliu task finished']);
         }
 
@@ -99,7 +101,6 @@ class BrushIdfaController extends Controller
         $brush_idfa_task = DB::table('brush_idfa_tasks')
             ->where('brush_idfa_id', $brush_idfa_id)
             ->where('task_status', 1)
-            ->where('is_ciliu', 1)
             ->limit(1)
             ->first();
         if (!$brush_idfa_task) {
@@ -115,6 +116,7 @@ class BrushIdfaController extends Controller
 
         $brush_idfa_task->bundleId = $brush_idfa->bundleId;
         $brush_idfa_task->process  = $brush_idfa->process;
+        Util::log('ciliu-res', $brush_idfa_task);
 
         return $this->success_response((array) $brush_idfa_task);
     }
