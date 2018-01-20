@@ -92,7 +92,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('make_up:app_brush_num')->cron('*/1 * * * * *')->withoutOverlapping();
         
         // 每分钟判断并补充idfa成功量
-        $schedule->command('make_up:idfa_brush_num')->cron('*/5 * * * * *')->withoutOverlapping();
+        // $schedule->command('make_up:idfa_brush_num')->cron('*/5 * * * * *')->withoutOverlapping();
 
         // 每3分钟判断并标示手机无效
         $schedule->command('make_up:mobile_num')->cron('*/3 * * * * *')->withoutOverlapping();
