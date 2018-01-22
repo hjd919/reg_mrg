@@ -2,7 +2,6 @@
 namespace App\Http\Controllers\Jishua;
 
 use App\Http\Controllers\Controller;
-use App\Support\Util;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -42,16 +41,19 @@ class BrushIdfaController extends Controller
             'brush_idfa_id' => $brush_idfa_id,
         ]);
 
+        $response->tid = $tid;
+        $response->bid = $brush_idfa_id;
+
         // 统计获取成功的次数
         DB::table('brush_idfas')->where('id', $brush_idfa_id)->increment('returned');
 
         $cb_params = json_encode(compact('idfa', 'device_id'));
 
         // 回调任务，拼接回调地址
-        //if ($response->taskType == 1) {
-        $callback_url       = urlencode(url('backend/notify_success?tid=' . $tid . '&appid=' . $appid . '&bid=' . $brush_idfa_id . '&check_token=' . base64_encode($cb_params)));
-        $response->callback = str_replace('{callback}', $callback_url, $response->callback);
-        //}
+        if ($response->apiType == 1) {
+            $callback_url       = urlencode(url('backend/notify_success?tid=' . $tid . '&appid=' . $appid . '&bid=' . $brush_idfa_id . '&check_token=' . base64_encode($cb_params)));
+            $response->callback = str_replace('{callback}', $callback_url, $response->callback);
+        }
 
         return response()->json($response);
     }
