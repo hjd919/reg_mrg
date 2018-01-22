@@ -31,6 +31,8 @@ $router->group(['middleware' => [], 'namespace' => 'Jishua', 'prefix' => 'jishua
     $router->post('/brush_idfa/get', 'BrushIdfaController@get');
     $router->post('/brush_idfa/ciliu_report', 'BrushIdfaController@ciliuReport');
     $router->post('/brush_idfa/ciliu_get', 'BrushIdfaController@ciliuGet');
+
+    $router->get('/brush_idfa/notify_success', 'BrushIdfaController@notifySuccess');
 });
 
 $router->group(['middleware' => [], 'namespace' => 'Appleid', 'prefix' => 'appleid'], function () use ($router) {
