@@ -74,6 +74,9 @@ class BrushIdfaController extends Controller
                 $idfa      = $check_token->idfa;
             }
         }
+        if(!$task_id ||!$brush_idfa_id){
+            return $this->fail_response(['message' => 'no task_id and brush_idfa_id']);
+        }
 
         DB::table('brush_idfa_tasks')->where('id', $task_id)->update(['task_status' => 1]);
 
