@@ -21,9 +21,11 @@ class BrushIdfaController extends Controller
         $response = DB::table('brush_idfas')
             ->where([
                 ['is_brushing', '=', 1],
-                ['brush_num', '>', 0],
                 ['start_time', '<=', $now_date],
                 ['end_time', '>=', $now_date],
+            ])
+            ->whereColumn([
+                ['success_idfa_num', '<', 'order_num'],
             ])
             ->first();
         if (!$response) {
@@ -83,8 +85,6 @@ class BrushIdfaController extends Controller
         // 统计成功激活次数
         DB::table('brush_idfas')->where('id', $brush_idfa_id)->increment('success_idfa_num');
 
-        // 剩余量减1
-        DB::table('brush_idfas')->where('id', $brush_idfa_id)->decrement('brush_num');
         return $this->success_response(['success' => 1]);
     }
 
@@ -97,7 +97,7 @@ class BrushIdfaController extends Controller
                 ['is_ciliu', '=', '1'],
             ])
             ->whereColumn([
-                ['ciliu_returned_success', '<=', 'ciliu_return_num'],
+                ['ciliu_returned_success', '<', 'ciliu_return_num'],
             ])->value('brush_idfa_id');
         if (!$brush_idfa_id) {
             return $this->fail_response(['message' => 'ciliu task finished']);
