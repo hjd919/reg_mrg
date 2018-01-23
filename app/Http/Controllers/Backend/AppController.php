@@ -17,11 +17,15 @@ class AppController extends BackendController
         $current_page = $request->input('currentPage', 1);
         $page_size    = $request->input('pageSize', 10);
         $appid        = $request->input('appid', '');
+        $keyword      = trim($request->input('keyword', ''));
 
         // 查询条件
         $where = [];
         if ($appid) {
             $where['appid'] = $appid;
+        }
+        if ($keyword) {
+            $where['keyword'] = $keyword;
         }
 
         // * total

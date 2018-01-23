@@ -41,6 +41,9 @@ class ToDeviceId extends Command
      */
     public function handle()
     {
+       $data = Redis::delete('did_to_gid');
+        var_dump($data);
+        die;
        $data = Redis::sMembers('exist_brush_idfas_stat');
        print_r($data);
         die;
