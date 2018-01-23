@@ -17,15 +17,11 @@ class AppController extends BackendController
         $current_page = $request->input('currentPage', 1);
         $page_size    = $request->input('pageSize', 10);
         $appid        = $request->input('appid', '');
-        $keyword      = trim($request->input('keyword', ''));
 
         // 查询条件
         $where = [];
         if ($appid) {
             $where['appid'] = $appid;
-        }
-        if ($keyword) {
-            $where['keyword'] = $keyword;
         }
 
         // * total
@@ -279,11 +275,15 @@ class AppController extends BackendController
         $id           = $request->input('id', '');
         $start_date   = $request->input('start_date', '');
         $end_date     = $request->input('end_date', '');
+        $keyword      = $request->input('keyword', '');
 
         $where = [];
         // 判断可见权限
         $where = $this->where_view($where, $where_type = 2);
 
+        if ($keyword) {
+            $where[] = ['keyword', '=', urldecode($keyword)];
+        }
         if ($id) {
             $where[] = ['id', '=', $id];
         }
