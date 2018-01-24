@@ -53,17 +53,17 @@ class ToIosApp extends Command
         // $appid = '1141755797';
         // $key ="useful_account_ids:appid_{$appid}";
         // $key   = "used_account_ids:appid_{$appid}";
-        $total_key  = 'valid_account_ids';
-        echo Redis::sSize($total_key) . "\n";
-        $used_account_ids_key = "used_account_ids:appid_{$appid}";
+        // $total_key  = 'valid_account_ids';
+        // echo Redis::sSize($total_key) . "\n";
+        // $used_account_ids_key = "used_account_ids:appid_{$appid}";
 
-        var_dump(Redis::sDiffStore("useful_account_ids:appid_{$appid}", $total_key, $used_account_ids_key));
-        $num = WorkDetail::getWorkDetailTable($appid)->where('appid', $appid)->count();
-        echo $num . "\n";
-        $key = 'valid_account_ids';
-        echo Redis::sSize($key) . "\n";
-        // var_dump(Redis::sIsMember($key, '1592129')) . "\n";
-        die;
+        // var_dump(Redis::sDiffStore("useful_account_ids:appid_{$appid}", $total_key, $used_account_ids_key));
+        // $num = WorkDetail::getWorkDetailTable($appid)->where('appid', $appid)->count();
+        // echo $num . "\n";
+        // $key = 'valid_account_ids';
+        // echo Redis::sSize($key) . "\n";
+        // // var_dump(Redis::sIsMember($key, '1592129')) . "\n";
+        // die;
         // 已用过账号
         // $appid    = '1141755797';
         // $total_key  = 'valid_account_ids';
@@ -93,7 +93,11 @@ class ToIosApp extends Command
         $offset   = 0;
         $r        = $s        = 0;
         while (1) {
-            $data = WorkDetail::getWorkDetailTable($appid)->select('account_id')->where('appid', $appid)->where('create_time', '<', '2017-12-21')->groupBy('account_id')->orderBy('id', 'asc')->offset($offset)->limit(10000)->get();
+            $data = WorkDetail::getWorkDetailTable($appid)->select('account_id')->where('appid', $appid)
+                ->groupBy('account_id')->orderBy('id', 'asc')
+                ->where('create_time', '>=', '2017-12-20')
+                ->where('create_time', '<', '2018-1-5')
+                ->offset($offset)->limit(10000)->get();
             if ($data->isEmpty()) {
                 break;
             }
@@ -114,6 +118,7 @@ class ToIosApp extends Command
         }
         echo Redis::sSize($sort_key) . "\n";
         echo "执行success:{$s}--re:{$r}\n";
+        die;
         // die;
         // diff two sort
         // 某个时间点未用过账号
