@@ -1,40 +1,8 @@
 // casperjs --web-security=no ./casperjs/reg_ru.js --cookies-file=./casperjs/cookie.txt
 // https://stackoverflow.com/questions/19199641/casperjs-download-csv-file
 // https://www.icloud.com/
-/*
-var utils = require('utils')
-var process = require("child_process")
-var fs = require('fs');
-fs.removeTree('./casperjs/capture');
-console.log('111')
-var execFile = process.execFile
-execFile("php", ["./artisan", "verify:capcha"], null, function (err, stdout, stderr) {
-    console.log('jinlaile')
-    console.log('stdout', stdout)
-    if (stdout.indexOf('error') !== -1) {
-        casper.echo(stdout, 'ERROR')
-        return false
-    }
-    console.log('stdout', stdout)
 
-    var capcha = stdout
-    // 获取验证码
-    // casper.evaluate(function (capcha_code) {
-    //     document.querySelector('.b-captcha__code').value = capcha_code
-    //     document.querySelector('button[data-name="submit"]').click()
-    //     // 截图
-    //     casper.capture(get_pic_name(step));
-    //     step++
-    // }, capcha)
-    console.log('stdout', stdout)
-
-    // 查看注册结果
-    console.log('stdout', stdout)
-    
-    phantom.exit()
-})
-*/
-
+// var utils = require('utils')
 var process = require("child_process")
 var execFile = process.execFile
 var spawn = process.spawn
