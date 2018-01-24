@@ -110,8 +110,8 @@ class StatDailyApp extends Command
 
                 // 查找user_id
                 $user_id = App::where([
-                    ['created_at', '>=', $yester_date],
-                    ['created_at', '<', $today_date],
+                    ['create_time', '>=', $yester_date],
+                    ['create_time', '<', $today_date],
                     ['appid', '=', $appid],
                 ])->value('user_id');
 
