@@ -352,8 +352,8 @@ class TaskController extends Controller
             if ($email_num != 3) {
 
                 // 获取可用账号
-                $total_key = 'valid_account_ids';
-                Redis::sDiffStore("useful_account_ids:appid_{$appid}", $total_key, $used_account_ids_key);
+                // $total_key = 'valid_account_ids';
+                // Redis::sDiffStore("useful_account_ids:appid_{$appid}", $total_key, $used_account_ids_key);
 
                 Util::log('没有可用账号了:' . $appid, $useful_account_id_num) . "\n";
                 Util::die_jishua("appid-{$appid}-app_name-{$app_row->app_name},没有苹果账号了,请联系运营补充", 1);
