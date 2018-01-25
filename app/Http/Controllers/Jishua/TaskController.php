@@ -301,15 +301,15 @@ class TaskController extends Controller
             Util::$mobile_id = Redis::hGet("did_to_mid", $device_id);
         }
 
-        if(!$mobile_group_id){
+        if (!$mobile_group_id) {
             Util::die_jishua('当前机器空闲-{mobile_group_id:' . $mobile_group_id, 1);
         }
 
         // 判断当前group_id是否有任务
         // * 循环获取任务记录 正在刷、有数量
         // $last_app_id = $get_last_id('last_app_id');
-        $now_date    = date('Y-m-d H:i:s');
-        $where       = [
+        $now_date = date('Y-m-d H:i:s');
+        $where    = [
             ['is_brushing', '=', 1],
             ['mobile_group_id', '=', $mobile_group_id],
             ['start_time', '<=', $now_date],
@@ -552,11 +552,25 @@ class TaskController extends Controller
 
             // 插入work_detail
             $response = [];
+
+            // 评论
+            $comments = [];
+            if ($app_id == 9523) {
+                $comment_id = rand(1, 10000);
+                // 获取评论
+                $comments = DB::table("comments")->select('title', 'content')->where('id', '>', $comment_id)->limit(3)->get()->toArray();
+                foreach ($comments as &$comment) {
+                    // 获取昵称
+                    $comment->nickname = '小欢d抄' . rand(1, 100000);
+                }
+            }
+            $comment_len = count($comments);
+
             foreach ($email_rows as $key => $email_row) {
                 // // 统计账号使用次数
                 // DB::table('emails')->where('id', $email_row->id)->increment('use_num');
 
-                $response[] = [
+                $response[$key] = [
                     'work_id'    => $work_id,
                     'appid'      => $appid,
                     'app_id'     => $app_id,
@@ -573,6 +587,10 @@ class TaskController extends Controller
                     'app_name'   => $app_row->bundle_id,
                     'app_id'     => (string) $appid,
                 ];
+
+                if ($comment_len) {
+                    $response[$key]['comment'] = $comments[$key];
+                }
             }
 
             // // 添加work_detail记录

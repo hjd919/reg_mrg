@@ -1,4 +1,4 @@
-// casperjs --web-security=no ./casperjs/reg_ru.js --cookies-file=./casperjs/cookie.txt
+// casperjs --web-security=no ./reg_ru.js --cookies-file=./cookie.txt
 // https://stackoverflow.com/questions/19199641/casperjs-download-csv-file
 // https://www.icloud.com/
 
@@ -7,7 +7,7 @@ var process = require("child_process")
 var execFile = process.execFile
 var spawn = process.spawn
 var fs = require('fs');
-fs.removeTree('./casperjs/capture');
+fs.removeTree('./capture');
 
 var casper = require('casper').create({
     viewportSize: { width: 1024, height: 768 },
@@ -30,7 +30,7 @@ casper.on("remote.message", function (msg) {
 // 获取截图名称
 var step = 1;
 var get_pic_name = function (step) {
-    return './casperjs/capture/step_' + step + '.jpg'
+    return './capture/step_' + step + '.jpg'
 }
 
 // 注册页面
@@ -79,7 +79,7 @@ casper.start('https://account.mail.ru/signup/simple', function () {
     // })
 });
 
-var img_path = './casperjs/capture/capcha.png'
+var img_path = './capture/capcha.png'
 
 // 填写验证码页面
 casper.waitForSelector('.b-captcha__captcha', function () { //等选择器内容找到后,
@@ -92,7 +92,7 @@ casper.waitForSelector('.b-captcha__captcha', function () { //等选择器内容
         this.captureSelector(img_path, '.b-captcha__captcha');//对指定元素截图 
 
         // 从子进程中获取验证码结果
-        var child = spawn("php", ["./artisan", "verify:capcha"])
+        var child = spawn("php", ["verify_code.php"])
         var capcha = ''
         child.stdout.on("data", function (data) {
             if (data == 'error' || !data) {
