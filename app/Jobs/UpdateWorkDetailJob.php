@@ -62,7 +62,7 @@ class UpdateWorkDetailJob extends Job
             ]);
         }
 
-        $comment_id = $work_rows->comment_id;
+        $comment_id = $this->comment_id;
 
         // 错误原因
         $fail_reason = $this->fail_reason;
