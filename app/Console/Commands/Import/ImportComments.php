@@ -5,8 +5,8 @@ namespace App\Console\Commands\Import;
 use App\App;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Redis;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ImportComments extends Command
 {
@@ -48,7 +48,7 @@ class ImportComments extends Command
         $reader = Excel::selectSheetsByIndex(0)->load($file);
 
         $offset    = 0;
-        $s         = $r         = $i         = 0;
+        $s         = $r         = 0;
         $db        = DB::connection('mysql4');
         $step_size = 1000; // 每次处理1000条记录
 
@@ -61,6 +61,7 @@ class ImportComments extends Command
 
             $results     = $reader->skipRows($offset)->takeRows($step_size)->get();
             $is_continue = false;
+            $i           = 0;
             foreach ($results as $row) {
                 $is_continue = true; // 没有记录不会进来
                 $data        = [
@@ -90,8 +91,8 @@ class ImportComments extends Command
             $offset += $step_size;
         }
         echo json_encode([
-            '成功数' => $s,
-            '异常数' => $r,
+            'good_num' => $s,
+            'fail_num' => $r,
         ]);
 
         return true;
