@@ -555,11 +555,11 @@ class TaskController extends Controller
 
             // 评论
             $comments = [];
-            if ($app_id == 9765) {
+            if ($app_row->is_comment) {
                 $comment_id = $get_last_id('comment_id');
 
                 // 获取评论
-                $comments = DB::table("comments")->select('nickname', 'title', 'content')->where('app_id', $app_id)->where('id', '<', $comment_id)->limit(3)->get()->toArray();
+                $comments = DB::table("comments")->select('nickname', 'title', 'content')->where('app_id', $app_id)->where('id', '<', $comment_id)->orderBy('id','desc')->limit(3)->get()->toArray();
 
                 // 如果不够3条，补充够
                 $count_comments = count($comments);
