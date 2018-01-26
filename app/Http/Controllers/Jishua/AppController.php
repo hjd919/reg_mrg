@@ -1,10 +1,10 @@
 <?php
 namespace App\Http\Controllers\Jishua;
 
+use App\Http\Controllers\Controller;
 use App\Support\Util;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redis;
 
 class AppController extends Controller
@@ -13,7 +13,7 @@ class AppController extends Controller
     public function resetTestGroupId()
     {
         $mobiles = DB::table('mobiles')->select('device_id', 'mobile_group_id')->where('mobile_group_id', '>', 1000)->get();
-        $s       = 0;
+        $i       = $s       = 0;
         foreach ($mobiles as $row) {
             $device_id       = $row->device_id;
             $mobile_group_id = $row->mobile_group_id;
@@ -22,8 +22,9 @@ class AppController extends Controller
             if ($res) {
                 $s++;
             }
+            $i++;
         }
-        echo "成功重置{$s}台手机的组id缓存";
+        echo "成功重置手机的组id缓存";
     }
 
     // 判断app更新接口
