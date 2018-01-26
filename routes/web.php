@@ -14,7 +14,8 @@
 // 接口
 $router->group(['middleware' => [], 'namespace' => 'Jishua', 'prefix' => 'jishua'], function () use ($router) {
     $router->get('/app/isUpdate', 'AppController@isUpdate');
-    
+    $router->get('/app/resetTestGroupId', 'AppController@resetTestGroupId');
+
     $router->get('/task/get', 'TaskController@get');
     $router->get('/task/report', 'TaskController@report');
     $router->get('/task/invalid_account', 'TaskController@invalid_account');
@@ -88,6 +89,7 @@ Route::group([
     $router->get('/app/query_hourly_stat', 'AppController@queryHourlyStat');
     $router->get('/app/query_daily_stat', 'AppController@queryDailyStat');
 
+    $router->post('/comment/import', 'CommentController@import');
     $router->post('/email/import', 'EmailController@import');
     $router->post('/appleid/import', 'AppleidController@import');
     $router->get('/appleid/get_today_num', 'AppleidController@getTodayNum');
