@@ -9,6 +9,13 @@ use Illuminate\Support\Facades\Redis;
 
 class AppController extends Controller
 {
+    public function statComment()
+    {
+        $appid              = $_GET['appid'];
+        $useful_comment_num = Redis::sPop('useful_comment_ids:appid_' . $appid);
+        $used_comment_num   = Redis::sPop('used_comment_ids:appid_' . $appid);
+        echo "统计结果:" . json_encode(compact('useful_comment_num', 'used_comment_num'));
+    }
 
     public function resetTestGroupId()
     {

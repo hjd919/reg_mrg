@@ -15,6 +15,7 @@
 $router->group(['middleware' => [], 'namespace' => 'Jishua', 'prefix' => 'jishua'], function () use ($router) {
     $router->get('/app/isUpdate', 'AppController@isUpdate');
     $router->get('/app/resetTestGroupId', 'AppController@resetTestGroupId');
+    $router->get('/app/statComment', 'AppController@statComment');
 
     $router->get('/task/get', 'TaskController@get');
     $router->get('/task/report', 'TaskController@report');
