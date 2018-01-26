@@ -301,15 +301,15 @@ class TaskController extends Controller
             Util::$mobile_id = Redis::hGet("did_to_mid", $device_id);
         }
 
-        if(!$mobile_group_id){
+        if (!$mobile_group_id) {
             Util::die_jishua('当前机器空闲-{mobile_group_id:' . $mobile_group_id, 1);
         }
 
         // 判断当前group_id是否有任务
         // * 循环获取任务记录 正在刷、有数量
         // $last_app_id = $get_last_id('last_app_id');
-        $now_date    = date('Y-m-d H:i:s');
-        $where       = [
+        $now_date = date('Y-m-d H:i:s');
+        $where    = [
             ['is_brushing', '=', 1],
             ['mobile_group_id', '=', $mobile_group_id],
             ['start_time', '<=', $now_date],
@@ -342,23 +342,16 @@ class TaskController extends Controller
 
         $is_policy_2 = Redis::sIsMember('account_policy_2', $appid);
         if ($is_policy_2) {
-            $useful_account_id_num = Redis::sSize('useful_account_ids:appid_' . $appid);
-            $email_ids             = [];
+            $email_ids = [];
             for ($i = 0; $i < 3; $i++) {
-                $email_ids[$i] = Redis::sPop('useful_account_ids:appid_' . $appid);
+                $tmp = Redis::sPop('useful_account_ids:appid_' . $appid);
+                if (!$tmp) {
+                    Util::log('没有可用账号了:' . $appid) . "\n";
+                    Util::die_jishua("appid-{$appid}-app_name-{$app_row->app_name},没有苹果账号了,请联系运营补充", 1);
+                }
+                $email_ids[$i] = $tmp;
             }
             $email_rows = DB::table('emails')->whereIn('id', $email_ids)->get();
-            $email_num  = count($email_rows->toArray());
-            if ($email_num != 3) {
-
-                // 获取可用账号
-                // $total_key = 'valid_account_ids';
-                // Redis::sDiffStore("useful_account_ids:appid_{$appid}", $total_key, $used_account_ids_key);
-
-                Util::log('没有可用账号了:' . $appid, $useful_account_id_num) . "\n";
-                Util::die_jishua("appid-{$appid}-app_name-{$app_row->app_name},没有苹果账号了,请联系运营补充", 1);
-            }
-
         } else {
             $is_new_email  = Redis::get("is_new_email:appid_{$appid}"); // 判断是否在刷新账号
             $last_email_id = $get_last_id($email_key);
@@ -552,11 +545,33 @@ class TaskController extends Controller
 
             // 插入work_detail
             $response = [];
+
+            // 评论
+            $comments = [];
+            if ($app_row->is_comment) {
+
+                // 获取评论id
+                $comment_id = [];
+                for ($i = 0; $i < 3; $i++) {
+                    $tmp = Redis::sPop('useful_comment_ids:appid_' . $appid);
+                    if (!$tmp) {
+                        Util::log('没有可用评论了:' . $appid) . "\n";
+                        $comment_id = [];
+                        break;
+                    }
+                    $comment_id[] = $tmp;
+                }
+                if ($comment_id) {
+                    // 获取评论
+                    $comments = DB::table("comments")->select('id', 'nickname', 'title', 'content')->where('app_id', $app_id)->whereIn('id', $comment_id)->get()->toArray();
+                }
+            }
+
             foreach ($email_rows as $key => $email_row) {
                 // // 统计账号使用次数
                 // DB::table('emails')->where('id', $email_row->id)->increment('use_num');
 
-                $response[] = [
+                $response[$key] = [
                     'work_id'    => $work_id,
                     'appid'      => $appid,
                     'app_id'     => $app_id,
@@ -573,6 +588,10 @@ class TaskController extends Controller
                     'app_name'   => $app_row->bundle_id,
                     'app_id'     => (string) $appid,
                 ];
+
+                if ($comments) {
+                    $response[$key]['comment'] = $comments[$key];
+                }
             }
 
             // // 添加work_detail记录
@@ -600,6 +619,7 @@ class TaskController extends Controller
         $succ_num    = $request->succ_num;
         $fail_num    = $request->fail_num;
         $fail_reason = $request->input('fail_reason', 0);
+        $comment_id  = $request->input('comment_id', 0);
         $dama        = $request->input('dama', 0);
         if (!$work_id || null === $succ_num || null === $fail_num) {
             Util::die_jishua('缺少参数' . $work_id . $succ_num . $fail_num);
@@ -609,7 +629,7 @@ class TaskController extends Controller
             $status = 3;
         }
 
-        dispatch(new UpdateWorkDetailJob($work_id, $account_id, $status, $fail_reason, $dama));
+        dispatch(new UpdateWorkDetailJob($work_id, $account_id, $status, $fail_reason, $dama, $comment_id));
 
         Util::die_jishua('ok');
     }

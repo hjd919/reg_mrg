@@ -5,7 +5,6 @@ namespace App\Console\Commands\Import;
 use App\App;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redis;
 
 class ImportDevices extends Command
 {
@@ -40,36 +39,35 @@ class ImportDevices extends Command
      */
     public function handle()
     {
-        $file = 'devices' . date('md') . '.csv';
-        $fp   = fopen($file, 'r');
-        $r    = $i    = $j    = 0;
-        while (($data = fgetcsv($fp, 1000, ';')) !== false) {
-            list($SerialNumber, $IMEI, $Bluetooth, $WIFI, $UDID) = $data;
+        $file      = './comments.txt';
+        $db        = DB::connection('mysql4');
+        $usernames = $db->table('users')->select('user_name')->where('id', '>', 10000)->limit(300)->pluck('user_name')->toArray();
+        $fp        = fopen($file, 'r');
+        $r         = $i         = $j         = 0;
+        while (($data = fgetcsv($fp)) !== false) {
+
+            list($title, $content) = $data;
             /*if (empty($SerialNumber) || empty($IMEI) || empty($Bluetooth) || empty($WIFI) || empty($UDID)) {
-                $i++;
-                continue;
+            $i++;
+            continue;
             }*/
 
             // 判断文件中是否有重复的udid
-            $exist = DB::table('devices')->where(['udid' => $UDID])->first();
-            if ($exist) {
-                $r++;
-                continue;
-            }
+            // $exist = DB::table('comments')->where(['udid' => $UDID])->first();
+            // if ($exist) {
+            //     $r++;
+            //     continue;
+            // }
 
-            DB::table('devices')->insert([
-                'imei'          => $IMEI,
-                'udid'          => $UDID,
-                'serial_number' => $SerialNumber,
-                'lanya'         => $Bluetooth,
-                'mac'           => $WIFI,
+            DB::table('comments')->insert([
+                'title'    => $title,
+                'content'  => $content,
+                'nickname' => $usernames[$j],
+                'app_id'   => 9765,
             ]);
             $j++;
         }
-        echo 'repeat:' . $r . '--bad:' . $i;
-
-        Redis::set('last_device_id', 9999999999);
-
+        echo 'good:' . $j;
         die('1');
     }
 }

@@ -41,11 +41,23 @@ class ToDeviceId extends Command
      */
     public function handle()
     {
-       $data = Redis::delete('did_to_gid');
+        $appid = '1325424608';
+        // $key = "useful_account_ids:appid_{$appid}";
+        $key = "used_account_ids:appid_{$appid}";
+        // $key = "valid_account_ids";
+        // echo $key;
+        $max_id = Redis::sSize($key);
+        var_dump($max_id);
+        die;
+
+        Redis::set('work_table', 'works2');
+
+        die;
+        $data = Redis::delete('did_to_gid');
         var_dump($data);
         die;
-       $data = Redis::sMembers('exist_brush_idfas_stat');
-       print_r($data);
+        $data = Redis::sMembers('exist_brush_idfas_stat');
+        print_r($data);
         die;
         // 邮箱
         $flag = Mail::raw('图片名为验证码结果', function ($message) {
