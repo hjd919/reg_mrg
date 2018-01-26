@@ -563,7 +563,7 @@ class TaskController extends Controller
                 }
                 if ($comment_id) {
                     // 获取评论
-                    $comments = DB::table("comments")->select('id', 'nickname', 'title', 'content')->where('app_id', $app_id)->whereIn('id', $comment_id)->get()->toArray();
+                    $comments = DB::table("comments")->select('id', 'nickname', 'title', 'content')->where('appid', $appid)->whereIn('id', $comment_id)->get()->toArray();
                 }
             }
 
