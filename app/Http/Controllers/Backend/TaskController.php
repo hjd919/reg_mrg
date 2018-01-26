@@ -179,7 +179,7 @@ EOF;
             $usable_brush_num = 0;
         }
 
-        $real_used_mobile_num = Mobile::getUsedNum(); // 获取可刷评论数
+        $useful_comment_num = Redis::sSize('useful_comment_ids:appid_' . $appid);
 
         // 获取可刷设备信息数 total-已使用设备数
         $total_device_num    = DB::table('devices')->count();
@@ -194,6 +194,7 @@ EOF;
             'usable_brush_num'     => $usable_brush_num,
             'exception_mobile_num' => $exception_mobile_num,
             'usable_brush_device'  => $usable_brush_device,
+            'useful_comment_num'   => $useful_comment_num,
         ]);
     }
 
@@ -210,6 +211,7 @@ EOF;
         $app_info    = $request->input('app_info');
         $start_time  = $request->input('start_time');
         $end_time    = $request->input('end_time');
+        $is_comment  = $request->input('is_comment', 0);
 
         // 判断日期时间
         if (!$start_time || !$end_time
@@ -325,6 +327,7 @@ EOF;
                 'mobile_group_id' => $mobile_group_id,
                 'hot'             => $hot,
                 'before_rank'     => $before_rank,
+                'is_comment'      => $is_comment ? 1 : 0,
             ]);
 
             $app_ids[] = compact('app_id', 'keyword');
