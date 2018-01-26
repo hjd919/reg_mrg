@@ -155,6 +155,7 @@ EOF;
     // 获取空闲手机数
     public function getFreeMobileNum(Request $request)
     {
+
         $free_mobile_num = Mobile::getUsableNum(); // 获取空闲手机数
 
         $real_used_mobile_num = Mobile::getUsedNum(); // 获取实际已用手机数
@@ -177,6 +178,8 @@ EOF;
         } else {
             $usable_brush_num = 0;
         }
+
+        $real_used_mobile_num = Mobile::getUsedNum(); // 获取可刷评论数
 
         // 获取可刷设备信息数 total-已使用设备数
         $total_device_num    = DB::table('devices')->count();

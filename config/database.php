@@ -84,6 +84,21 @@ return [
             'engine'      => null,
         ],
 
+        'mysql4' => [
+            'driver'      => 'mysql',
+            'host'        => '60.205.58.24',
+            'port'        => '3306',
+            'database'    => 'today_task',
+            'username'    => 'hjd',
+            'password'    => 'hjd2015',
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset'     => 'utf8mb4',
+            'collation'   => 'utf8mb4_unicode_ci',
+            'prefix'      => '',
+            'strict'      => true,
+            'engine'      => null,
+        ],
+
         'stat' => [
             'driver'      => 'mysql',
             'host'        => env('DB_HOST', '127.0.0.1'),

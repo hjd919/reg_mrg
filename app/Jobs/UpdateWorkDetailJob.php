@@ -14,19 +14,21 @@ class UpdateWorkDetailJob extends Job
     protected $status;
     protected $fail_reason;
     protected $dama;
+    protected $comment_id;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($work_id, $account_id, $status, $fail_reason, $dama)
+    public function __construct($work_id, $account_id, $status, $fail_reason, $dama, $comment_id)
     {
         $this->work_id     = $work_id;
         $this->account_id  = $account_id;
         $this->status      = $status;
         $this->fail_reason = $fail_reason;
         $this->dama        = $dama;
+        $this->comment_id  = $comment_id;
     }
 
     /**
@@ -44,9 +46,11 @@ class UpdateWorkDetailJob extends Job
         if (!$work_rows) {
             return true;
         }
-        $appid = $work_rows->appid;
+
+        $appid  = $work_rows->appid;
         $app_id = $work_rows->app_id;
-        $dama  = $this->dama;
+
+        $dama = $this->dama;
         if ($dama) {
             // 统计打码次数
             App::where('id', $app_id)->increment('dama', $dama);
@@ -58,8 +62,28 @@ class UpdateWorkDetailJob extends Job
             ]);
         }
 
+        $comment_id = $work_rows->comment_id;
+
+        // 错误原因
+        $fail_reason = $this->fail_reason;
+        if ($fail_reason) {
+            // 失败
+
+            // 标志评论未获取
+            if ($comment_id) {
+                $tmp = Redis::sAdd('useful_comment_ids:appid_' . $appid, $comment_id);
+            }
+        } else {
+            // 成功
+
+            // 标志评论已获取
+            if ($comment_id) {
+                $tmp = Redis::sAdd('used_comment_ids:appid_' . $appid, $comment_id);
+            }
+        }
+
         // * 根据任务id和账号id更新刷任务记录状态
-        WorkDetail::updateStatus($appid, $this->work_id, $this->account_id, $this->status, $this->fail_reason);
+        WorkDetail::updateStatus($appid, $this->work_id, $this->account_id, $this->status, $fail_reason);
 
     }
 }
