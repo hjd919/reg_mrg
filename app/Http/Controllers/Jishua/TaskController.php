@@ -555,14 +555,21 @@ class TaskController extends Controller
 
             // 评论
             $comments = [];
-            if ($app_id == 9523) {
-                $comment_id = rand(1, 10000);
+            if ($app_id == 9765) {
+                $comment_id = $get_last_id('comment_id');
+
                 // 获取评论
-                $comments = DB::table("comments")->select('title', 'content')->where('id', '>', $comment_id)->limit(3)->get()->toArray();
-                foreach ($comments as &$comment) {
-                    // 获取昵称
-                    $comment->nickname = '小欢d抄' . rand(1, 100000);
+                $comments = DB::table("comments")->select('nickname', 'title', 'content')->where('app_id', $app_id)->where('id', '<', $comment_id)->limit(3)->get()->toArray();
+
+                // 如果不够3条，补充够
+                $count_comments = count($comments);
+                if ($count_comments < 3) {
+                    $make_num      = 3 - $count_comments;
+                    $make_comments = DB::table("comments")->select('nickname', 'title', 'content')->where('app_id', $app_id)->inRandomOrder()->limit($make_num)->get()->toArray();
+                    $comments      = array_merge($comments, $make_comments);
                 }
+
+                $set_last_id('comment_id', end($comments)->id);
             }
             $comment_len = count($comments);
 
