@@ -40,8 +40,30 @@ class DealData extends Command
      */
     public function handle()
     {
-        
-        // // 补充db的已用账号到缓存
+        // 删除缓存和db中非13，14，15，0，的记录
+        $appid  = 1325424608;
+        $size   = 100;
+        $offset = 0;
+        $i      = 0;
+        while (1) {
+            $s    = 0;
+            $rows = DB::table('work_detail11')->select('account_id')->groupBy('account_id')->where('appid', $appid)->whereNotIn('status', [0, 13, 14, 15])->limit($size)->offset($offset)->pluck('account_id');
+            if (!$rows) {
+                break;
+            }
+            foreach ($rows as $account_id) {
+                DB::table('work_detail11')->where('account_id', $account_id)->where('appid', $appid)->delete();
+                $res = Redis::sRemove('used_account_ids:appid_' . $appid, $account_id);
+                if ($res) {
+                    $s++;
+                }
+
+            }
+            echo "offset-{$offset}:success-{$s}\n";
+
+            $offset += $size;
+        }
+        die;
         // $appids = [
         //     843666882,
         //     1144417156,
@@ -84,7 +106,7 @@ class DealData extends Command
             echo "appid:{$appid}--db_num:{$db_num}--cache_num:{$cache_num}";
             if ($db_num <= $cache_num) {
                 Redis::sAdd('account_policy_2', $appid);
-                
+
                 // 删除非账号失败的情况
 
                 // echo "--match";
