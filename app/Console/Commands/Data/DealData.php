@@ -40,37 +40,38 @@ class DealData extends Command
      */
     public function handle()
     {
-        // 补充db的已用账号到缓存
-        $appids = [
-            843666882,
-            1144417156,
-            1310151835,
-            1325424608,
-        ];
-        $size = 100;
+        
+        // // 补充db的已用账号到缓存
+        // $appids = [
+        //     843666882,
+        //     1144417156,
+        //     1310151835,
+        //     1325424608,
+        // ];
+        // $size = 100;
 
-        foreach ($appids as $appid) {
-            $table_key = Redis::hGet('work_detail_table', $appid);
-            $table     = 'work_detail' . ($table_key ? $table_key : '');
-            $offset    = 0;
-            $s         = 0;
-            while (1) {
-                $wk_rows = DB::select("select account_id from `{$table}` where `appid` = {$appid} group by `account_id` limit $offset,$size");
-                if (!$wk_rows) {
-                    break;
-                }
-                echo $wk_rows[0]->account_id . "\n";
-                $offset += $size;
-                foreach ($wk_rows as $wk_row) {
-                    $cache_num = Redis::sAdd('used_account_ids:appid_' . $appid, $wk_row->account_id);
-                    if ($cache_num) {
-                        $s++;
-                    }
-                }
-            }
-            echo "appid:{$appid}--success:{$s}\n";
-        }
-        die;
+        // foreach ($appids as $appid) {
+        //     $table_key = Redis::hGet('work_detail_table', $appid);
+        //     $table     = 'work_detail' . ($table_key ? $table_key : '');
+        //     $offset    = 0;
+        //     $s         = 0;
+        //     while (1) {
+        //         $wk_rows = DB::select("select account_id from `{$table}` where `appid` = {$appid} group by `account_id` limit $offset,$size");
+        //         if (!$wk_rows) {
+        //             break;
+        //         }
+        //         echo $wk_rows[0]->account_id . "\n";
+        //         $offset += $size;
+        //         foreach ($wk_rows as $wk_row) {
+        //             $cache_num = Redis::sAdd('used_account_ids:appid_' . $appid, $wk_row->account_id);
+        //             if ($cache_num) {
+        //                 $s++;
+        //             }
+        //         }
+        //     }
+        //     echo "appid:{$appid}--success:{$s}\n";
+        // }
+        // die;
         // 统计最近一周app的已刷量
         $appids = DB::table('tasks')->select('appid')->where('created_at', '>', date('Y-m-d', strtotime('-2 weeks')))->groupBy('appid')->pluck('appid');
         foreach ($appids as $appid) {
@@ -81,13 +82,17 @@ class DealData extends Command
             $cache_num = Redis::sSize('used_account_ids:appid_' . $appid);
 
             echo "appid:{$appid}--db_num:{$db_num}--cache_num:{$cache_num}";
-            if ($db_num == $cache_num) {
-                echo "--match";
-            } elseif ($db_num > $cache_num) {
-                echo "--db更多";
-                $appids[] = $appid;
+            if ($db_num <= $cache_num) {
+                Redis::sAdd('account_policy_2', $appid);
+                
+                // 删除非账号失败的情况
+
+                // echo "--match";
+                // } elseif ($db_num < $cache_num) {
+                //     echo "--缓存更多h";
+                //     // $appids[] = $appid;
             } else {
-                echo "--缓存更多h";
+                echo "--db更多";
             }
             echo "\n";
         }

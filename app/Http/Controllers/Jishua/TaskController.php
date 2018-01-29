@@ -346,12 +346,13 @@ class TaskController extends Controller
             for ($i = 0; $i < 3; $i++) {
                 $tmp = Redis::sPop('useful_account_ids:appid_' . $appid);
                 if (!$tmp) {
-                    Util::log('没有可用账号了:' . $appid) . "\n";
+                    Util::log('策略2-没有可用账号了:' . $appid) . "\n";
                     Util::die_jishua("appid-{$appid}-app_name-{$app_row->app_name},没有苹果账号了,请联系运营补充", 1);
                 }
                 $email_ids[$i] = $tmp;
             }
             $email_rows = DB::table('emails')->whereIn('id', $email_ids)->get();
+
         } else {
             $is_new_email  = Redis::get("is_new_email:appid_{$appid}"); // 判断是否在刷新账号
             $last_email_id = $get_last_id($email_key);
@@ -427,11 +428,12 @@ class TaskController extends Controller
                     }
                 }
             }
+            if (!$email_rows) {
+                Util::die_jishua("appid-{$appid}-app_name-{$app_row->app_name},没有苹果账号了,请联系运营补充", 1);
+            }
+
+            $set_last_id($email_key, $email_rows->last()->id);
         }
-        if (!$email_rows) {
-            Util::die_jishua("appid-{$appid}-app_name-{$app_row->app_name},没有苹果账号了,请联系运营补充", 1);
-        }
-        $set_last_id($email_key, $email_rows->last()->id);
 
         // * 判断app是否刷过此设备信息
         // foreach ($email_rows as $key => $email_row) {
@@ -454,8 +456,6 @@ class TaskController extends Controller
                     Redis::expire($notify_key, 1800);
                     // 重置跑新账号
                     $this->brushNewEmail($appid);
-// exec('curl http://jsapi.yz210.com/jishua/task/brush_new_email/appid_' . $appid);
-
                     // 邮箱通知
                     $msg    = json_encode(compact('appid'));
                     $toMail = '297538600@qq.com';
@@ -520,9 +520,9 @@ class TaskController extends Controller
         // 判断都通过后，再切换循环id
         $set_last_id($device_key, $device_rows[count($device_rows) - 1]->id);
 
-        foreach ($email_rows as $email_row) {
-            Redis::sAdd($used_account_ids_key, $email_row->id);
-        }
+        // foreach ($email_rows as $email_row) {
+        //     Redis::sAdd($used_account_ids_key, $email_row->id);
+        // }
 
         // * 增加刷任务记录   -> 任务数量减一
         $app_id = $app_row->id;
