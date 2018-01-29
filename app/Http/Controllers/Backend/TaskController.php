@@ -226,7 +226,7 @@ EOF;
         $total_success_num = 0; // 总使用账号量
 
         $total_hour = floor((strtotime($end_time) - strtotime($start_time)) / 3600); // 所需小时
-        $total_hour *= 28; // 所能打到的成功量
+        $total_hour *= 35; // 所能打到的成功量
         $app_ids = [];
 
         $app_info = explode("\n", $app_info); //行
