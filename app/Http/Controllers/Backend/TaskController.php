@@ -251,6 +251,8 @@ EOF;
 
             list($keyword, $before_rank, $hot, $success_num) = $app_info_row;
 
+            $keyword = str_replace('|', ' ', $keyword);
+
             $mobile_group_id = empty($app_info_row[4]) ? false : $app_info_row[4];
             if ($mobile_group_id) {
                 if ($mobile_group_id < 1000 || $mobile_group_id > 1300) {

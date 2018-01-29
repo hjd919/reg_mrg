@@ -49,6 +49,7 @@ class UpdateWorkDetailJob extends Job
 
         $appid  = $work_rows->appid;
         $app_id = $work_rows->app_id;
+        $status = $this->status;
 
         $dama = $this->dama;
         if ($dama) {
@@ -67,7 +68,7 @@ class UpdateWorkDetailJob extends Job
 
         // 错误原因
         $fail_reason = $this->fail_reason;
-        if ($fail_reason) {
+        if ($status != 3) {
             // 失败
 
             // 标志评论未获取
@@ -96,7 +97,7 @@ class UpdateWorkDetailJob extends Job
         }
 
         // * 根据任务id和账号id更新刷任务记录状态
-        WorkDetail::updateStatus($appid, $this->work_id, $account_id, $this->status, $fail_reason);
+        WorkDetail::updateStatus($appid, $this->work_id, $account_id, $status, $fail_reason);
 
     }
 }
