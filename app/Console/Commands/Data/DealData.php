@@ -52,12 +52,12 @@ class DealData extends Command
                 break;
             }
             foreach ($rows as $account_id) {
-                DB::table('work_detail11')->where('account_id', $account_id)->where('appid', $appid)->delete();
-                $res = Redis::sRemove('used_account_ids:appid_' . $appid, $account_id);
-                if ($res) {
+                $res1 = DB::table('work_detail11')->where('account_id', $account_id)->where('appid', $appid)->delete();
+                $res  = Redis::sRemove('used_account_ids:appid_' . $appid, $account_id);
+                if ($res && $res1) {
                     $s++;
                 }
-
+                file_put_contents('delete_account_id.txt', $account_id . "\n", FILE_APPEND);
             }
             echo "offset-{$offset}:success-{$s}\n";
 
