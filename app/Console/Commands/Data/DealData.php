@@ -47,7 +47,7 @@ class DealData extends Command
         $i      = 0;
         while (1) {
             $s    = 0;
-            $rows = DB::table('work_detail11')->select('account_id')->groupBy('account_id')->where('appid', $appid)->whereNotIn('status', [0, 13, 14, 15])->limit($size)->offset($offset)->pluck('account_id');
+            $rows = DB::table('work_detail11')->select('account_id')->groupBy('account_id')->where('appid', $appid)->whereNotIn('fail_reason', [0, 13, 14, 15])->limit($size)->offset($offset)->pluck('account_id');
             if (!$rows) {
                 break;
             }
