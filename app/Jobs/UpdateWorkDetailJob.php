@@ -63,6 +63,7 @@ class UpdateWorkDetailJob extends Job
         }
 
         $comment_id = $this->comment_id;
+        $account_id = $this->account_id;
 
         // 错误原因
         $fail_reason = $this->fail_reason;
@@ -73,6 +74,15 @@ class UpdateWorkDetailJob extends Job
             if ($comment_id) {
                 $tmp = Redis::sAdd('useful_comment_ids:appid_' . $appid, $comment_id);
             }
+
+            // 处理策略2
+            if (Redis::sIsMember('account_policy_2', $appid) && !in_array($fail_reason, [13, 14, 15])) {
+                // 删除无效账号外的记录 13，14，15
+                WorkDetail::deleteInvalid($appid, $account_id);
+
+                // 缓存中增加可用账号
+                Redis::sAdd("useful_account_ids:appid_{$appid}", $account_id);
+            }
         } else {
             // 成功
 
@@ -80,10 +90,13 @@ class UpdateWorkDetailJob extends Job
             if ($comment_id) {
                 $tmp = Redis::sAdd('used_comment_ids:appid_' . $appid, $comment_id);
             }
+
+            // 缓存中增加已使用账号
+            Redis::sAdd("used_account_ids:appid_{$appid}", $account_id);
         }
 
         // * 根据任务id和账号id更新刷任务记录状态
-        WorkDetail::updateStatus($appid, $this->work_id, $this->account_id, $this->status, $fail_reason);
+        WorkDetail::updateStatus($appid, $this->work_id, $account_id, $this->status, $fail_reason);
 
     }
 }

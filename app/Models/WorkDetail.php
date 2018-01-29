@@ -12,6 +12,11 @@ class WorkDetail extends Model
     public $timestamps = false;
     protected $guarded = [];
 
+    public static function deleteInvalid($appid, $account_id)
+    {
+        return self::getWorkDetailTable($appid)->where('account_id', $account_id)->delete();
+    }
+
     public static function countAppNum($appid)
     {
         return self::getWorkDetailTable($appid)->where('appid', $appid)->count();
@@ -50,9 +55,9 @@ class WorkDetail extends Model
         } else if ($last_id > $ios_app->min_account_id && $last_id < $ios_app->max_account_id) {
             $brush_num = 0;
             $min_num   = DB::table('emails')->where('id', '>', $ios_app->min_account_id)->where('id', '<', $last_id)->where('valid_status', 1)->count();
-	    if($is_new_email === '0'){
-		$min_num=0;
-	     }
+            if ($is_new_email === '0') {
+                $min_num = 0;
+            }
         } else {
             $brush_num = 0;
             $min_num   = DB::table('emails')->where('id', '<', (int) $last_id)->where('valid_status', 1)->count();
