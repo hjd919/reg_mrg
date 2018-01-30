@@ -228,8 +228,10 @@ EOF;
 
         $total_success_num = 0; // 总使用账号量
 
-        $total_hour = floor((strtotime($end_time) - strtotime($start_time)) / 3600); // 所需小时
-        $app_ids = [];
+        $end_time = date('Y-m-d H:00:00', strtotime($end_time)); // 取整
+
+        $total_hour = sprintf('%.2f', (strtotime($end_time) - strtotime($start_time)) / 3600); // 所需小时
+        $app_ids    = [];
 
         $app_info = explode("\n", $app_info); //行
         foreach ($app_info as $app_info_row) {
@@ -405,7 +407,7 @@ EOF;
 
         // * 添加app
         $ios_app_id = $this->addApp($appid, $app_name, $bundle_id);
-        if(!$ios_app_id){
+        if (!$ios_app_id) {
             return response()->json(['error_code' => 4]);
         }
 
@@ -482,10 +484,10 @@ EOF;
 
         // 统计下单量
         $res = Task::where('id', $task_id)->increment('total_num', $total_success_num);
-        if(!$res){
+        if (!$res) {
             return response()->json(['error_code' => 10]);
         }
-        
+
         // DB::rollBack();
         DB::commit();
 

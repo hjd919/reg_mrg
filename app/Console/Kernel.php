@@ -134,7 +134,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('check:has_new_emails')->cron('*/5 * * * * *');
 
         // 判断是否有新邮箱跑
-        $schedule->command('make_up:task')->cron('*/5 0-9 * * * *');
+        $schedule->command('make_up:task')->cron('*/10 0-9 * * * *');
 
     }
 }
