@@ -62,15 +62,9 @@ class TaskController extends BackendController
         return response()->json(compact('pagination', 'list'));
     }
 
-    public function save(Request $request)
+    // 添加app
+    private function addApp($appid, $app_name, $bundle_id)
     {
-        $user      = $this->guard()->user();
-        $user_id   = $user->id;
-        $appid     = $request->input('appid');
-        $app_name  = $request->input('app_name');
-        $bundle_id = $request->input('bundle_id');
-
-        // * 添加app
         // 判断app是否存在,不存在则添加
         $app = DB::table('ios_apps')->select('id')->where('appid', $appid)->first();
         if (!$app) {
@@ -128,6 +122,20 @@ EOF;
             $ios_app_id = $app->id;
         }
 
+        return $ios_app_id;
+    }
+
+    public function save(Request $request)
+    {
+        $user      = $this->guard()->user();
+        $user_id   = $user->id;
+        $appid     = $request->input('appid');
+        $app_name  = $request->input('app_name');
+        $bundle_id = $request->input('bundle_id');
+
+        // * 添加app
+        $ios_app_id = $this->addApp($appid, $app_name, $bundle_id);
+
         // * 查询未完成添加的下单
         $task = Task::select('id')
             ->where('step', 1)
@@ -139,12 +147,7 @@ EOF;
         }
 
         // * 添加下单
-        $task_id = DB::table('tasks')->insertGetId(compact(
-            'user_id',
-            'ios_app_id',
-            'appid',
-            'app_name'
-        ));
+        $task_id = Task::add($user_id, $ios_app_id, $appid, $app_name);
         if (!$task_id) {
             return response()->json(['error_code' => 3]);
         }
@@ -225,9 +228,10 @@ EOF;
 
         $total_success_num = 0; // 总使用账号量
 
-        $total_hour = floor((strtotime($end_time) - strtotime($start_time)) / 3600); // 所需小时
-        $total_hour *= 35; // 所能打到的成功量
-        $app_ids = [];
+        $end_time = date('Y-m-d H:00:00', strtotime($end_time)); // 取整
+
+        $total_hour = sprintf('%.2f', (strtotime($end_time) - strtotime($start_time)) / 3600); // 所需小时
+        $app_ids    = [];
 
         $app_info = explode("\n", $app_info); //行
         foreach ($app_info as $app_info_row) {
@@ -273,9 +277,10 @@ EOF;
             // * 设置手机分组
             if (empty($mobile_group_id)) { // bug 因为mobile_group_id循环时已经存在了,1重置它 2判断这种情况
 
-                // 计算手机数量 总量/30*所需小时
-                $mobile_num = round($success_num / $total_hour);
-                $mobile_num = $mobile_num <= 0 ? 1 : $mobile_num;
+                // // 计算手机数量 总量/30*所需小时
+                // $mobile_num = round($success_num / $total_hour);
+                // $mobile_num = $mobile_num <= 0 ? 1 : $mobile_num;
+                $mobile_num = Mobile::count_mobile_num($total_hour, $success_num);
 
                 // 判断是否多于空闲手机数
                 $free_mobile_num = DB::table('mobiles')->where('mobile_group_id', 0)->where('is_normal', 1)->count(); // 获取空闲手机数
@@ -286,7 +291,6 @@ EOF;
 
                 // 获取当前分组号
                 $mobile_group_id = DB::table('config')->where('keyword', 'next_mobile_group_id')->value('value');
-
                 // 设置下一个mobile_group_id
                 if ($mobile_group_id >= 999) {
                     $value = 1;
@@ -294,7 +298,6 @@ EOF;
                     $value = $mobile_group_id + 1;
                 }
                 DB::table('config')->where('keyword', 'next_mobile_group_id')->update(['value' => $value]);
-
                 // 如果不存在分组，则添加分组表
                 if (!DB::table('mobile_group')->find($mobile_group_id)) {
                     DB::table('mobile_group')->insert([
@@ -389,5 +392,105 @@ EOF;
                 'message' => "成功停止{$res}条任务数，单名为-{$task->app_name}",
             ]);
         }
+    }
+
+    // 添加空闲任务
+    public function addSpareTask(Request $request)
+    {
+        $user      = $this->guard()->user();
+        $user_id   = $user->id;
+        $appid     = $request->input('appid');
+        $app_name  = $request->input('app_name');
+        $bundle_id = $request->input('bundle_id');
+
+        DB::beginTransaction();
+
+        // * 添加app
+        $ios_app_id = $this->addApp($appid, $app_name, $bundle_id);
+        if (!$ios_app_id) {
+            return response()->json(['error_code' => 4]);
+        }
+
+        // * 添加下单
+        $task_id = Task::add($user_id, $ios_app_id, $appid, $app_name, $step = 2, $task_type = 2);
+        if (!$task_id) {
+            return response()->json(['error_code' => 3]);
+        }
+
+        // * 添加任务
+        $app_info   = $request->input('app_info');
+        $order_type = $request->input('order_type');
+        if (!$app_info) {
+            die;
+        }
+
+        $task    = Task::find($task_id);
+        $ios_app = $task->ios_app;
+
+        $total_success_num = 0; // 总使用账号量
+
+        $app_ids  = [];
+        $s        = $f        = 0;
+        $app_info = explode("\n", $app_info); //行
+        foreach ($app_info as $app_info_row) {
+
+            // 格式化分隔符
+            $app_info_row = preg_replace('#\s+#', ' ', $app_info_row);
+            $app_info_row = trim($app_info_row);
+
+            // 判断是否为空行
+            if (!$app_info_row) {
+                continue;
+            }
+
+            $app_info_row = explode(' ', $app_info_row);
+
+            // 判断app_info格式是否正确
+            if (!isset($app_info_row[4])) {
+                $this->error_message = '内容格式:关键词 排名 热度 量级 时长';
+                break;
+            }
+
+            list($keyword, $before_rank, $hot, $success_num, $brush_hour) = $app_info_row;
+
+            $keyword = str_replace('|', ' ', $keyword);
+
+            // 计算所需手机数量
+            $mobile_num = Mobile::count_mobile_num($brush_hour, $success_num);
+
+            $app_id = DB::table('spare_apps')->insertGetId([
+                'user_id'           => $user_id,
+                'task_id'           => $task_id,
+                'ios_app_id'        => $ios_app->id,
+                'keyword'           => $keyword,
+                'success_num'       => $success_num,
+                'appid'             => $ios_app->appid,
+                'app_name'          => $ios_app->app_name,
+                'bundle_id'         => $ios_app->bundle_id,
+                'brush_hour'        => $brush_hour,
+                'mobile_num'        => $mobile_num,
+                'remain_mobile_num' => $mobile_num,
+                'order_type'        => $order_type,
+                'hot'               => $hot,
+                'before_rank'       => $before_rank,
+            ]);
+            if ($app_id) {
+                $s++;
+                $total_success_num += $success_num;
+            } else {
+                $f++;
+            }
+        }
+
+        // 统计下单量
+        $res = Task::where('id', $task_id)->increment('total_num', $total_success_num);
+        if (!$res) {
+            return response()->json(['error_code' => 10]);
+        }
+
+        // DB::rollBack();
+        DB::commit();
+
+        return $this->success_response(compact('s', 'f'));
     }
 }

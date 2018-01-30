@@ -2,39 +2,39 @@
 
 namespace App\Console;
 
-use App\Console\Commands\Data\Test;
-use App\Console\Commands\DB\MobileAdd;
-use App\Console\Commands\Data\ToIosApp;
-use App\Console\Commands\Data\DealData;
-use App\Console\Commands\Data\JiaDevice;
-use App\Console\Commands\Data\ToDeviceId;
-use App\Console\Commands\sendMailCommand;
-use App\Console\Commands\Data\ToMaxMinId;
-use App\Console\Commands\Data\RevertEmail;
-use Illuminate\Console\Scheduling\Schedule;
-use App\Console\Commands\Data\VerifyCapcha;
-use App\Console\Commands\Check\isNoAppleids;
 use App\Console\Commands\Check\hasNewEmails;
-use App\Console\Commands\DB\MergeTaskKeyword;
-use App\Console\Commands\Import\ImportEmails;
-use App\Console\Commands\Import\ImportDevices;
-use App\Console\Commands\Import\ImportAppleids;
-use App\Console\Commands\Import\ImportComments;
+use App\Console\Commands\Check\isNoAppleids;
+use App\Console\Commands\CronTask\CopyAppleids;
+use App\Console\Commands\CronTask\CountUpHourlyTask;
+use App\Console\Commands\CronTask\CrondFetchKeywordRank;
+use App\Console\Commands\CronTask\FetchKeywordRank;
+use App\Console\Commands\CronTask\MakeUpAppBrushNum;
+use App\Console\Commands\CronTask\MakeUpIdfaBrushNum;
+use App\Console\Commands\CronTask\MakeUpMobileNum;
+use App\Console\Commands\CronTask\MakeUpTask;
+use App\Console\Commands\CronTask\MarkFinishedTasks;
+use App\Console\Commands\CronTask\MarkMobileValid;
+use App\Console\Commands\CronTask\ResetAppleidState;
 use App\Console\Commands\CronTask\sAddAppleids;
 use App\Console\Commands\CronTask\StatDailyApp;
-use App\Console\Commands\CronTask\CopyAppleids;
-use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 use App\Console\Commands\Data\BackupInvalidEmails;
-use App\Console\Commands\CronTask\MakeUpMobileNum;
+use App\Console\Commands\Data\DealData;
+use App\Console\Commands\Data\JiaDevice;
 use App\Console\Commands\Data\MakeupUsedAccountId;
-use App\Console\Commands\CronTask\MarkMobileValid;
-use App\Console\Commands\CronTask\FetchKeywordRank;
-use App\Console\Commands\CronTask\MarkFinishedTasks;
-use App\Console\Commands\CronTask\ResetAppleidState;
-use App\Console\Commands\CronTask\MakeUpAppBrushNum;
-use App\Console\Commands\CronTask\CountUpHourlyTask;
-use App\Console\Commands\CronTask\MakeUpIdfaBrushNum;
-use App\Console\Commands\CronTask\CrondFetchKeywordRank;
+use App\Console\Commands\Data\RevertEmail;
+use App\Console\Commands\Data\ToDeviceId;
+use App\Console\Commands\Data\ToIosApp;
+use App\Console\Commands\Data\ToMaxMinId;
+use App\Console\Commands\Data\VerifyCapcha;
+use App\Console\Commands\DB\MergeTaskKeyword;
+use App\Console\Commands\DB\MobileAdd;
+use App\Console\Commands\Import\ImportAppleids;
+use App\Console\Commands\Import\ImportComments;
+use App\Console\Commands\Import\ImportDevices;
+use App\Console\Commands\Import\ImportEmails;
+use App\Console\Commands\sendMailCommand;
+use Illuminate\Console\Scheduling\Schedule;
+use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
@@ -83,6 +83,7 @@ class Kernel extends ConsoleKernel
         CopyAppleids::class,
         isNoAppleids::class,
         hasNewEmails::class,
+        MakeUpTask::class,
     ];
 
     /**
@@ -115,7 +116,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('reset:appleid_state')->cron('*/2 * * * * *');
 
         // 复制成功账号
-        $schedule->command('copy:appleids')->cron('*/30 * * * * *');
+        // $schedule->command('copy:appleids')->cron('*/30 * * * * *');
 
         // 添加有效账号
         $schedule->command('sAdd:appleids')->cron('*/30 * * * * *');
@@ -131,5 +132,9 @@ class Kernel extends ConsoleKernel
 
         // 判断是否有新邮箱跑
         // $schedule->command('check:has_new_emails')->cron('*/5 * * * * *');
+
+        // 判断是否有新邮箱跑
+        $schedule->command('make_up:task')->cron('*/10 0-9 * * * *');
+
     }
 }

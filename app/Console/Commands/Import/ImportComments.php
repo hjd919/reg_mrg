@@ -48,7 +48,7 @@ class ImportComments extends Command
         $reader = Excel::selectSheetsByIndex(0)->load($file);
 
         $offset    = 0;
-        $s         = $r         = 0;
+        $f         = $s         = $r         = 0;
         $db        = DB::connection('mysql4');
         $step_size = 1000; // 每次处理1000条记录
 
@@ -64,7 +64,15 @@ class ImportComments extends Command
             $i           = 0;
             foreach ($results as $row) {
                 $is_continue = true; // 没有记录不会进来
-                $data        = [
+                $content     = $row->内容;
+
+                // 判断内容是否相同
+                if (DB::table('comments')->where('content', $content)->first()) {
+                    $f++;
+                    continue;
+                }
+
+                $data = [
                     'title'    => $row->标题,
                     'content'  => $row->内容,
                     'nickname' => $usernames[$i],
@@ -93,6 +101,7 @@ class ImportComments extends Command
         echo json_encode([
             'good_num' => $s,
             'fail_num' => $r,
+            'repeat_num' => $f,
         ]);
 
         return true;

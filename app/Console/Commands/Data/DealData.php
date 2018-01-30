@@ -40,6 +40,41 @@ class DealData extends Command
      */
     public function handle()
     {
+        $appid      = 1337550793;
+        $useful_key = 'useful_comment_ids:appid_' . $appid;
+        $used_key   = 'used_comment_ids:appid_' . $appid;
+
+        // 删除未评论的
+        $comment_ids = DB::table('comments')->select('id')->where('appid', $appid)->where('created_at', '>', '2018-01-29')->pluck('id');
+        // die;
+
+        // // 删除已刷的评论
+        // // 获取已刷评论，判断是否有相同的内容
+
+        // $comment_ids = Redis::sMembers('used_comment_ids:appid_' . $appid);
+        $s = 0;
+        foreach ($comment_ids as $comment_id) {
+            $used_content = DB::table('comments')->select('content')->where('id', $comment_id)->value('content');
+            $ids          = DB::table('comments')->select('id')->where('content', $used_content)->where('id', '!=', $comment_id)->pluck('id');
+            if ($ids->isEmpty()) {
+                continue;
+            }
+
+            $res = DB::table('comments')->whereIn('id', $ids)->delete();
+
+            foreach ($ids as $id) {
+                $res = Redis::sRemove($useful_key, $id);
+                if ($res) {
+                    $s++;
+                }
+            }
+            $size = Redis::sSize($useful_key);
+
+            echo "comment_id:$comment_id--还剩下{$size}--删除结果:" . var_export($res, true) . "\n";
+        }
+
+        // 如果有，则删除内容id
+        die;
         // 删除缓存和db中非13，14，15，0，的记录
         $appid  = 1325424608;
         $size   = 100;
