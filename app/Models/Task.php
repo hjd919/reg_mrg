@@ -19,4 +19,18 @@ class Task extends Model
     {
         return $this->belongsTo('App\Models\User');
     }
+
+    public static function add($user_id, $ios_app_id, $appid, $app_name, $step = 1, $task_type = 1)
+    {
+        $task_id = self::insertGetId(compact(
+            'user_id',
+            'ios_app_id',
+            'appid',
+            'app_name',
+            'task_type',
+            'step'
+        ));
+        return $task_id;
+
+    }
 }

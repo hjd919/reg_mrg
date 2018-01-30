@@ -99,4 +99,6 @@ Route::group([
     $router->post('/app/import_rank', 'AppController@importRank');
 
     $router->get('/email/get_today_num', 'EmailController@getTodayNum');
+
+    $router->post('/task/addSpareTask', 'TaskController@addSpareTask');    
 });
