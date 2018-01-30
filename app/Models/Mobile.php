@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Mobile extends Model
 {
@@ -65,7 +65,7 @@ class Mobile extends Model
 
     public static function count_mobile_num($total_hour, $success_num)
     {
-        $total_hour *= 35;
+        $total_hour = intval($total_hour * 35);
         $mobile_num = round($success_num / $total_hour);
         return $mobile_num <= 0 ? 1 : $mobile_num;
     }
