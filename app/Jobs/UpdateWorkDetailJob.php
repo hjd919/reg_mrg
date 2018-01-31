@@ -48,6 +48,9 @@ class UpdateWorkDetailJob extends Job
         }
 
         $appid  = $work_rows->appid;
+        if(!$appid){
+            return true;
+        }
         $app_id = $work_rows->app_id;
         $status = $this->status;
 
