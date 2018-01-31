@@ -325,6 +325,10 @@ class AppController extends BackendController
 
         // 获取关联
         foreach ($list as &$row) {
+            if(!$row->user_id){
+                $row->user_name = '空闲任务';
+                continue;
+            }
             $row->user_name = $row->user->name;
             unset($row->user);
         }
