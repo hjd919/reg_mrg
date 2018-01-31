@@ -536,9 +536,9 @@ class TaskController extends Controller
             // 插入works
             $work_id = DB::table($work_table)->insertGetId([
                 'app_id'    => $app_id,
-                'appid'     => $appid,
+                // 'appid'     => $appid,
                 'device_id' => $device_id,
-                'keyword'   => $app_row->keyword,
+                // 'keyword'   => $app_row->keyword,
             ]);
 
             dispatch(new CreateWorkJob($work_id, $appid, $email_rows->toArray(), $device_rows->toArray(), $app_id));
