@@ -536,7 +536,7 @@ class TaskController extends Controller
             // 插入works
             $work_id = DB::table($work_table)->insertGetId([
                 'app_id'    => $app_id,
-                // 'appid'     => $appid,
+                'appid'     => $appid,
                 'device_id' => $device_id,
                 // 'keyword'   => $app_row->keyword,
             ]);
