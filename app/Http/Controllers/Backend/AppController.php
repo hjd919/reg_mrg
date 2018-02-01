@@ -171,7 +171,7 @@ class AppController extends BackendController
                 $app_row->app_name,
                 $app_row->keyword,
                 $app_row->hot,
-                $app_row->user->name,
+                $app_row->user_id ? $app_row->user->name : '空闲任务',
                 $app_row->success_num,
                 $app_row->brush_num,
                 $app_row->brushed_num,
@@ -325,7 +325,7 @@ class AppController extends BackendController
 
         // 获取关联
         foreach ($list as &$row) {
-            if(!$row->user_id){
+            if (!$row->user_id) {
                 $row->user_name = '空闲任务';
                 continue;
             }
