@@ -64,13 +64,12 @@ class ImportComments extends Command
             $i           = 0;
             foreach ($results as $row) {
                 $is_continue = true; // 没有记录不会进来
-                $content     = $row->内容;
 
                 // 判断内容是否相同
-                if (DB::table('comments')->where('content', $content)->first()) {
-                    $f++;
-                    continue;
-                }
+                // if (DB::table('comments')->where('content', $content)->first()) {
+                //     $f++;
+                //     continue;
+                // }
 
                 $data = [
                     'title'    => $row->标题,
