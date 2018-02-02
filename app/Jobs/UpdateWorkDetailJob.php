@@ -80,13 +80,13 @@ class UpdateWorkDetailJob extends Job
             }
 
             // 处理策略2
-            if (Redis::sIsMember('account_policy_2', $appid) && !in_array($fail_reason, [13, 14, 15])) {
+            // if (Redis::sIsMember('account_policy_2', $appid) && !in_array($fail_reason, [13, 14, 15])) {
                 // 删除无效账号外的记录 13，14，15
                 // WorkDetail::deleteInvalid($appid, $account_id);
 
                 // 缓存中增加可用账号
                 // Redis::sAdd("useful_account_ids:appid_{$appid}", $account_id);
-            }
+            // }
         } else {
             // 成功
 

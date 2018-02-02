@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\DB;
 
 class BrushIdfaController extends Controller
 {
-
     public function get(
         Request $request
     ) {
@@ -17,12 +16,30 @@ class BrushIdfaController extends Controller
             return $this->fail_response(['message' => '缺少参数cb_params']);
         }
 
+        // 查询手机的手机组id
+        $data          = ['uuid' => $device_id];
+        $brush_mobiles = DB::table('brush_mobiles')->where($data)->select('mobile_group_id')->first();
+        if (!$brush_mobiles) {
+
+            // 添加手机
+            DB::table('brush_mobiles')->insert($data);
+            return $this->fail_response(['message' => 'new mobile']);
+
+        } else {
+            $mobile_group_id = $brush_mobiles->mobile_group_id;
+            if ($mobile_group_id == 0) {
+                return $this->fail_response(['message' => 'this mobile no task']);
+            }
+        }
+
+        // 根据一些条件查询任务
         $now_date = date('Y-m-d H:i:s');
         $response = DB::table('brush_idfas')
             ->where([
                 ['is_brushing', '=', 1],
                 ['start_time', '<=', $now_date],
                 ['end_time', '>=', $now_date],
+                ['mobile_group_id', '=', $mobile_group_id],
             ])
             ->whereColumn([
                 ['success_idfa_num', '<', 'order_num'],
@@ -76,7 +93,7 @@ class BrushIdfaController extends Controller
                 $idfa      = $check_token->idfa;
             }
         }
-        if(!$task_id ||!$brush_idfa_id){
+        if (!$task_id || !$brush_idfa_id) {
             return $this->fail_response(['message' => 'no task_id and brush_idfa_id']);
         }
 

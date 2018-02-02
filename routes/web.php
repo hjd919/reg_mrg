@@ -64,6 +64,7 @@ Route::group([
     $router->post('/auth/login', 'AuthController@login');
     $router->get('/auth/login2', 'AuthController@login2');
    $router->get('/email/state_import', 'EmailController@stateImport');
+   $router->get('/comment/clear', 'CommentController@clear');
 });
 
 Route::group([
@@ -90,7 +91,6 @@ Route::group([
     $router->get('/app/query_hourly_stat', 'AppController@queryHourlyStat');
     $router->get('/app/query_daily_stat', 'AppController@queryDailyStat');
 
-    $router->post('/comment/import', 'CommentController@import');
     $router->post('/email/import', 'EmailController@import');
     $router->post('/appleid/import', 'AppleidController@import');
     $router->get('/appleid/get_today_num', 'AppleidController@getTodayNum');
@@ -100,5 +100,9 @@ Route::group([
 
     $router->get('/email/get_today_num', 'EmailController@getTodayNum');
 
-    $router->post('/task/addSpareTask', 'TaskController@addSpareTask');    
+    $router->post('/task/addSpareTask', 'TaskController@addSpareTask');
+
+    $router->post('/comment/import', 'CommentController@import');
+
+    $router->post('/brush_idfa/save', 'BrushIdfaController@save');
 });
