@@ -41,6 +41,10 @@ class ToDeviceId extends Command
      */
     public function handle()
     {
+        $data = Redis::delete('did_to_gid');
+        var_dump($data);
+        die;
+
         for ($i = 1; $i < 10000; $i++) {
             // 抓取平台的验证码
             $url     = "http://www.chaojiying.cn/user/history/{$i}/1/0/";
