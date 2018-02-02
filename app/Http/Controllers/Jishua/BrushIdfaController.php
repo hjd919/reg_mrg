@@ -129,7 +129,7 @@ class BrushIdfaController extends Controller
             ->where([
                 ['is_brushing', '=', '1'],
                 ['is_ciliu', '=', '1'],
-                ['is_ciliu', '=', '1'],
+                ['mobile_group_id', '=', $mobile_group_id],
             ])
             ->whereColumn([
                 ['ciliu_returned_success', '<', 'ciliu_return_num'],
