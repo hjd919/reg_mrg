@@ -17,8 +17,8 @@ class BrushIdfaController extends Controller
         }
 
         // // 查询手机的手机组id
-        $device_id = $this->get_device_unique();
-        $data          = ['uuid' => $device_id];
+        $device_unique = $this->get_device_unique();
+        $data          = ['device_unique' => $device_unique];
         $brush_mobiles = DB::table('brush_mobiles')->where($data)->select('mobile_group_id')->first();
         if (!$brush_mobiles) {
 
@@ -108,10 +108,27 @@ class BrushIdfaController extends Controller
 
     public function ciliuGet(Request $request)
     {
+        $device_unique = $this->get_device_unique();
+        $data = ['device_unique' => $device_unique];
+        $brush_mobiles = DB::table('brush_mobiles')->where($data)->select('mobile_group_id')->first();
+        if (!$brush_mobiles) {
+
+            // 添加手机
+            DB::table('brush_mobiles')->insert($data);
+            return $this->fail_response(['message' => 'new mobile']);
+
+        } else {
+            $mobile_group_id = $brush_mobiles->mobile_group_id;
+            if ($mobile_group_id == 0) {
+                return $this->fail_response(['message' => 'this mobile no task']);
+            }
+        }
+
         // 获取有次留量的任务
         $brush_idfa_id = DB::table('brush_idfas')->select('id')
             ->where([
                 ['is_brushing', '=', '1'],
+                ['is_ciliu', '=', '1'],
                 ['is_ciliu', '=', '1'],
             ])
             ->whereColumn([
