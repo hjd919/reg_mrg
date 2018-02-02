@@ -20,7 +20,7 @@ class BrushIdfaController extends BackendController
         $start_time       = $request->input('start_time');
         $end_time         = $request->input('end_time');
         $is_ciliu         = $request->input('is_ciliu');
-        $mobile_group_id  = $request->input('mobile_group_id');
+        // $mobile_group_id  = $request->input('mobile_group_id');
         $needClean        = $request->input('needClean');
         $open_time        = $request->input('open_time');
         $order_num        = $request->input('order_num');
@@ -28,12 +28,11 @@ class BrushIdfaController extends BackendController
         $process          = $request->input('process');
         $query            = $request->input('query');
         $taskType         = $request->input('taskType');
+        $mobile_num         = $request->input('mobile_num');
 
-        // 分配手机
-        $mobile_num = DB::table('brush_mobiles')->where('mobile_group_id', $mobile_group_id)->count();
-        // if (!$mobile_num) {
-        //     return $this->fail_response(['message' => "手机组id{$mobile_group_id}没有手机可用"]);
-        // }
+        //  获取mobile_group_id
+        $mobile_group_id = DB::table('brush_mobiles')->where('mobile_group_id', $mobile_group_id)->count();
+  
         $mobile_num = 10;
 
         DB::table('brush_idfas')->insert(compact(
