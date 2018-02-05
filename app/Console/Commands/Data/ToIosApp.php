@@ -95,8 +95,8 @@ class ToIosApp extends Command
         while (1) {
             $data = WorkDetail::getWorkDetailTable($appid)->select('account_id')->where('appid', $appid)
                 ->groupBy('account_id')->orderBy('id', 'asc')
-                ->where('create_time', '>=', '2017-12-20')
-                ->where('create_time', '<', '2018-1-5')
+                ->where('create_time', '>=', '2018-1-20')
+                ->where('create_time', '<', '2018-1-25')
                 ->offset($offset)->limit(10000)->get();
             if ($data->isEmpty()) {
                 break;

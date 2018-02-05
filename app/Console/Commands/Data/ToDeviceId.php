@@ -15,7 +15,7 @@ class ToDeviceId extends Command
      *
      * @var string
      */
-    protected $signature = 'migrate:redis';
+    protected $signature = 'migrate:redis {--offset=} {--max_offset=}';
 
     /**
      * The console command description.
@@ -41,32 +41,51 @@ class ToDeviceId extends Command
      */
     public function handle()
     {
-        for ($i = 1; $i < 10000; $i++) {
+	$offset = $this->option('offset');
+	$max_offset = $this->option('max_offset');
+        $i = 0;
+        while (1) {
+	    if($offset>$max_offset) break;
+
             // 抓取平台的验证码
-            $url     = "http://www.chaojiying.cn/user/history/{$i}/1/0/";
+            $url     = "http://www.chaojiying.cn/user/history/{$offset}/1/0/";
             $content = App::curl($url);
 
             // echo($content);
-            $pattern = '#<td bgcolor="\#FFFFFF"><div align="center"><img src="(.+?)"\/><\/br>\W+图片ID.+?4005</div>.+?<div align="center">(.+?)</div></td>#ism';
+            $pattern = '#<td bgcolor="\#FFFFFF"><div align="center"><img src="(.+?)"\/><\/br>\W+图片ID.+?4005</div>.+?<div align="center">(.+?)</div></td>#sm';
             if (!preg_match_all($pattern, $content, $match)) {
                 echo 'error';
+		break;
             }
             $codes = $match[2];
-            if (!is_dir('./code_images')) {
-                mkdir('./code_images');
+
+	    $url_md5 = md5($url);
+	    $dir = '/tmp/code_images/'.substr($url_md5,0,3).'/'.substr($url_md5,3,3); 
+            if (!is_dir($dir)) {
+                mkdir($dir,0777,true);
             }
-            echo "i-{$i};codes_size-" . count($codes) . "\n";
+
+	    if(!count($codes)) break;
+	    
+            echo "offset-{$offset}\n";
             foreach ($match[1] as $key => $image_url) {
                 $code = $codes[$key];
                 if (strlen($code) !== 5) {
                     continue;
                 }
-                $filename = "./code_images/{$code}.gif";
+                $filename = "{$dir}/{$code}.gif";
                 if (!file_exists($filename)) {
-                    file_put_contents($filename, file_get_contents($image_url));
+		    try{
+                    	file_put_contents($filename, file_get_contents($image_url));
+	    		$i++;
+		    }catch(\Exception $e){
+			continue;
+		    }
                 }
             }
+	    $offset++;
         }
+	file_put_contents('./code_res_'.$offset,$i);
 
         die;
 
