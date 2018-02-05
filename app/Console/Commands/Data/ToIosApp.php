@@ -110,6 +110,7 @@ class ToIosApp extends Command
 	die;
 */
         $sort_key = "used_account_ids:appid_{$appid}";
+        $sort_key2 = "useful_account_ids:appid_{$appid}";
         //Redis::delete($sort_key) . "\n";
         $offset   = $min_offset;
         $s        = 0;
@@ -127,6 +128,7 @@ class ToIosApp extends Command
             $r = 0;
             foreach ($data as $key => $row) {
                 $res = Redis::sAdd($sort_key, $row->account_id);
+                $res = Redis::sRemove($sort_key2, $row->account_id);
                 if ($res) {
                     $s++;
                 } else {
