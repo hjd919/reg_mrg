@@ -103,7 +103,6 @@ class DealData extends Command
 
         // 如果有，则删除内容id
         die;
-<<<<<<< HEAD
         // 删除缓存和db中非13，14，15，0，的记录
         $appid  = 1318070822;
         $size   = 100;
@@ -128,9 +127,6 @@ class DealData extends Command
             $offset += $size;
         }
         die;
-=======
-        
->>>>>>> d5ef534382c3a1e979a3b9be8f1fd8d629abfe59
         // $appids = [
         //     843666882,
         //     1144417156,
