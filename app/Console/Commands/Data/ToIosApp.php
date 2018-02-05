@@ -40,7 +40,15 @@ class ToIosApp extends Command
      */
     public function handle()
     {
-        $appid = $this->option('appid');
+        $appid      = $this->option('appid');
+        $total_key  = 'valid_account_ids';
+        $sort_key   = "used_account_ids:appid_{$appid}";
+        $useful_key = "useful_account_ids:appid_{$appid}";
+        var_dump(Redis::delete($useful_key)) . "\n"; // 先清除旧集合
+        var_dump(Redis::sDiffStore($useful_key, $total_key, $sort_key)) . "\n";
+        echo 'used_account_ids--' . Redis::sSize($useful_key) . "\n";
+
+        die;
 
         // $res = Redis::sAdd('account_policy_2','1211055336');
         // $res1 = Redis::sAdd('account_policy_2','1141755797');
@@ -90,8 +98,9 @@ class ToIosApp extends Command
         $res = Redis::sAdd('account_policy_2', $appid);
         echo "添加策略2-{$res}\n";
         $sort_key = "used_account_ids:appid_{$appid}";
-        $offset   = 0;
-        $r        = $s        = 0;
+        die;
+        $offset = 0;
+        $r      = $s      = 0;
         while (1) {
             $data = WorkDetail::getWorkDetailTable($appid)->select('account_id')->where('appid', $appid)
                 ->groupBy('account_id')->orderBy('id', 'asc')

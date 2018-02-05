@@ -40,10 +40,13 @@ class DealData extends Command
      */
     public function handle()
     {
-        $appid      = 1337550793;
+        $appid      = 1318070822;
         $useful_key = 'useful_comment_ids:appid_' . $appid;
         $used_key   = 'used_comment_ids:appid_' . $appid;
-
+        $used_key   = 'used_account_ids:appid_' . $appid;
+        $a = Redis::sSize($used_key);
+        var_dump($a);
+        die;
         // 删除未评论的
         $comment_ids = DB::table('comments')->select('id')->where('appid', $appid)->where('created_at', '>', '2018-01-29')->pluck('id');
         // die;
@@ -76,7 +79,7 @@ class DealData extends Command
         // 如果有，则删除内容id
         die;
         // 删除缓存和db中非13，14，15，0，的记录
-        $appid  = 1325424608;
+        $appid  = 1318070822;
         $size   = 100;
         $offset = 0;
         $i      = 0;

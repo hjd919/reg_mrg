@@ -33,8 +33,13 @@ $router->group(['middleware' => [], 'namespace' => 'Jishua', 'prefix' => 'jishua
     $router->post('/brush_idfa/get', 'BrushIdfaController@get');
     $router->post('/brush_idfa/ciliu_report', 'BrushIdfaController@ciliuReport');
     $router->post('/brush_idfa/ciliu_get', 'BrushIdfaController@ciliuGet');
-
     $router->get('/brush_idfa/notify_success', 'BrushIdfaController@notifySuccess');
+
+    $router->post('/brush_idfa/get2', 'BrushIdfaController@get2');
+    $router->post('/brush_idfa/ciliu_report2', 'BrushIdfaController@ciliuReport2');
+    $router->post('/brush_idfa/ciliu_get2', 'BrushIdfaController@ciliuGet2');
+    $router->get('/brush_idfa/notify_success2', 'BrushIdfaController@notifySuccess2');
+
 });
 
 $router->group(['middleware' => [], 'namespace' => 'Appleid', 'prefix' => 'appleid'], function () use ($router) {
@@ -46,13 +51,14 @@ $router->group(['middleware' => [], 'namespace' => 'Appleid', 'prefix' => 'apple
 });
 
 $router->get('/backend/notify_success', 'Jishua\BrushIdfaController@notifySuccess');
+$router->get('/backend/notify_success2', 'Jishua\BrushIdfaController@notifySuccess2');
 
 $router->group(['middleware' => [], 'namespace' => 'ADM'], function () use ($router) {
     $router->get('/idfa/is_exist', 'IdfaController@isExist');
     $router->get('/idfa/import', 'IdfaController@import');
     $router->get('/idfa/set_info', 'IdfaController@set_info');
     $router->get('/idfa/active', 'IdfaController@active');
-   $router->get('/idfa/save_cache', 'IdfaController@save_cache');
+    $router->get('/idfa/save_cache', 'IdfaController@save_cache');
 });
 
 // 后台
@@ -63,8 +69,8 @@ Route::group([
 ], function ($router) {
     $router->post('/auth/login', 'AuthController@login');
     $router->get('/auth/login2', 'AuthController@login2');
-   $router->get('/email/state_import', 'EmailController@stateImport');
-   $router->get('/comment/clear', 'CommentController@clear');
+    $router->get('/email/state_import', 'EmailController@stateImport');
+    $router->get('/comment/clear', 'CommentController@clear');
 });
 
 Route::group([
