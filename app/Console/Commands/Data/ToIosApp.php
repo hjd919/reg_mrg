@@ -14,7 +14,7 @@ class ToIosApp extends Command
      *
      * @var string
      */
-    protected $signature = 'sAdd:used_account_ids {--appid=1141755797}';
+    protected $signature = 'sAdd:used_account_ids {--min_offset=} {--max_offset=} {--appid=1141755797}';
 
     /**
      * The console command description.
@@ -40,7 +40,18 @@ class ToIosApp extends Command
      */
     public function handle()
     {
+        // $appid      = $this->option('appid');
+        // $total_key  = 'valid_account_ids';
+        // $sort_key   = "used_account_ids:appid_{$appid}";
+        // $useful_key = "useful_account_ids:appid_{$appid}";
+        // var_dump(Redis::delete($useful_key)) . "\n"; // 先清除旧集合
+        // var_dump(Redis::sDiffStore($useful_key, $total_key, $sort_key)) . "\n";
+        // echo 'used_account_ids--' . Redis::sSize($useful_key) . "\n";
+
+        // die;
         $appid = $this->option('appid');
+        $max_offset = $this->option('max_offset');
+        $min_offset = $this->option('min_offset');
 
         // $res = Redis::sAdd('account_policy_2','1211055336');
         // $res1 = Redis::sAdd('account_policy_2','1141755797');
@@ -52,9 +63,10 @@ class ToIosApp extends Command
         // die;
         // $appid = '1141755797';
         // $key ="useful_account_ids:appid_{$appid}";
-        // $key   = "used_account_ids:appid_{$appid}";
+        //$key   = "used_account_ids:appid_{$appid}";
         // $total_key  = 'valid_account_ids';
-        // echo Redis::sSize($total_key) . "\n";
+        //echo Redis::sSize($key) . "\n";
+	//die;
         // $used_account_ids_key = "used_account_ids:appid_{$appid}";
 
         // var_dump(Redis::sDiffStore("useful_account_ids:appid_{$appid}", $total_key, $used_account_ids_key));
@@ -87,32 +99,38 @@ class ToIosApp extends Command
 // die;
         // TODO 停止任务
         // 添加策略2
-        $res = Redis::sAdd('account_policy_2', $appid);
+        /*$res = Redis::sAdd('account_policy_2', $appid);
         echo "添加策略2-{$res}\n";
+        $total_key  = 'valid_account_ids';
+        $sort_key   = "used_account_ids:appid_{$appid}";
+        $useful_key = "useful_account_ids:appid_{$appid}";
+        var_dump(Redis::delete($useful_key)) . "\n"; // 先清除旧集合
+        var_dump(Redis::sDiffStore($useful_key, $total_key, $sort_key)) . "\n";
+        echo 'used_account_ids--' . Redis::sSize($useful_key) . "\n";
+	die;
+*/
         $sort_key = "used_account_ids:appid_{$appid}";
-        $offset   = 0;
-        $r        = $s        = 0;
+        //Redis::delete($sort_key) . "\n";
+        $offset   = $min_offset;
+        $s        = 0;
+	$r = 0;
         while (1) {
-            $data = WorkDetail::getWorkDetailTable($appid)->select('account_id')->where('appid', $appid)
-                ->groupBy('account_id')->orderBy('id', 'asc')
-                ->where('create_time', '>=', '2018-1-20')
-                ->where('create_time', '<', '2018-1-25')
-                ->offset($offset)->limit(10000)->get();
+            $data = WorkDetail::getWorkDetailTable($appid)->select('account_id')
+		->where('appid', $appid)
+		->whereIn('fail_reason', [0,13,14,15])
+                ->offset($offset)->limit(1000)->get();
             if ($data->isEmpty()) {
                 break;
             }
-            echo 'offset-' . $offset . "\n";
-            $offset += 10000;
+            $offset += 1000;
+            echo 'offset-' . $offset . "--s==$s:r==$r\n";
+            $r = 0;
             foreach ($data as $key => $row) {
                 $res = Redis::sAdd($sort_key, $row->account_id);
                 if ($res) {
                     $s++;
                 } else {
                     $r++;
-                }
-                if ($r > 10000) {
-                    echo "account_id:{$row->account_id}";
-                    $r = 0;
                 }
             }
         }
@@ -122,11 +140,5 @@ class ToIosApp extends Command
         // die;
         // diff two sort
         // 某个时间点未用过账号
-        $total_key  = 'valid_account_ids';
-        $sort_key   = "used_account_ids:appid_{$appid}";
-        $useful_key = "useful_account_ids:appid_{$appid}";
-        var_dump(Redis::delete($useful_key)) . "\n"; // 先清除旧集合
-        var_dump(Redis::sDiffStore($useful_key, $total_key, $sort_key)) . "\n";
-        echo 'used_account_ids--' . Redis::sSize($useful_key) . "\n";
     }
 }

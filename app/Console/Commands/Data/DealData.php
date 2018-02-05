@@ -40,10 +40,38 @@ class DealData extends Command
      */
     public function handle()
     {
+	// 删除缓存和db中非13，14，15，0，的记录
+        $appid  = 1318070822;
+	$work_table = '12';
+        $size   = 1000;
+        $offset = 0;
+        $i      = 0;
+        while (1) {
+            $s    = 0;
+            $rows = DB::table('work_detail12')->select('account_id')->groupBy('account_id')->where('appid', $appid)->whereNotIn('fail_reason', [0, 13, 14, 15])->limit($size)->pluck('account_id');
+            if ($rows->isEmpty()) {
+                break;
+            }
+            foreach ($rows as $account_id) {
+                $res1 = DB::table('work_detail12')->where('account_id', $account_id)->where('appid', $appid)->delete();
+                $res  = Redis::sRemove('used_account_ids:appid_' . $appid, $account_id);
+                if ($res && $res1) {
+                    $s++;
+                }
+                //file_put_contents($appid.'_delete_account_id.txt', $account_id . "\n", FILE_APPEND);
+            }
+            echo "offset-{$offset}:success-{$s}\n";
+
+            $offset += $size;
+        }
+        die;
         $appid      = 1337550793;
         $useful_key = 'useful_comment_ids:appid_' . $appid;
         $used_key   = 'used_comment_ids:appid_' . $appid;
-
+        $used_key   = 'used_account_ids:appid_' . $appid;
+        $a = Redis::sSize($used_key);
+        var_dump($a);
+        die;
         // 删除未评论的
         $comment_ids = DB::table('comments')->select('id')->where('appid', $appid)->where('created_at', '>', '2018-01-29')->pluck('id');
         // die;
@@ -76,7 +104,7 @@ class DealData extends Command
         // 如果有，则删除内容id
         die;
         // 删除缓存和db中非13，14，15，0，的记录
-        $appid  = 1325424608;
+        $appid  = 1318070822;
         $size   = 100;
         $offset = 0;
         $i      = 0;

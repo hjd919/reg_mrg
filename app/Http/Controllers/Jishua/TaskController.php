@@ -281,7 +281,7 @@ class TaskController extends Controller
             if (!$row) {
                 $last_no = DB::table('mobiles')->max('no');
                 $last_no++;
-                $mobile_group_id = 1; //默认组id
+                $mobile_group_id = 0; //默认组id
                 $mobile_id       = DB::table('mobiles')->insertGetId([
                     'device_id'       => $device_id,
                     'alias'           => date('Y-m-d'),
@@ -327,7 +327,8 @@ class TaskController extends Controller
 
         $is_stop = Redis::get($stop_app_key . ':appid_' . $appid);
         if ('1' === $is_stop) {
-            Util::die_jishua('停止任务获取', 1);
+	    Util::log('appid-renwu',$appid); 
+            Util::die_jishua('停止任务获取,appid:'.$appid, 1);
         }
 
         // * 循环获取苹果账号记录
@@ -475,8 +476,8 @@ class TaskController extends Controller
                 Redis::sAdd($used_account_ids_key, $email_rows[0]->id);
             }
 
-            Util::log('title', 'app存在刷过此账号了{appid:' . $appid . ',account_id:' . $email_rows[0]->id);
-            Util::die_jishua('app存在刷过此账号了{appid:' . $appid . ',account_id:' . $email_rows[0]->id, 1);
+            Util::log('title', '刷过此账号了{appid:' . $appid . ',account_id:' . $email_rows[0]->id);
+            Util::die_jishua('刷过此账号了{appid:' . $appid . ',account_id:' . $email_rows[0]->id, 1);
         }
 
         // * 循环获取手机设备记录

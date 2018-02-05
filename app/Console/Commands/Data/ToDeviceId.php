@@ -41,12 +41,20 @@ class ToDeviceId extends Command
      */
     public function handle()
     {
+<<<<<<< HEAD
 	$offset = $this->option('offset');
 	$max_offset = $this->option('max_offset');
         $i = 0;
         while (1) {
 	    if($offset>$max_offset) break;
 
+=======
+        $data = Redis::delete('did_to_gid');
+        var_dump($data);
+        die;
+
+        for ($i = 1; $i < 10000; $i++) {
+>>>>>>> fc914c4da47a695a9756d3124c1804c72e6781d9
             // 抓取平台的验证码
             $url     = "http://www.chaojiying.cn/user/history/{$offset}/1/0/";
             $content = App::curl($url);
