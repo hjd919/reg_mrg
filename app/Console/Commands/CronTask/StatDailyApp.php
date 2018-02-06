@@ -39,6 +39,9 @@ class StatDailyApp extends Command
      */
     public function handle()
     {
+        // 删除无效的手机
+        DB::delete("delete FROM `mobiles` where is_normal=0 and mobile_group_id=0 and updated_at<'".date('Y-m-d',strtotime('-2 days'))."'");
+
         // 每日app刷机情况统计
         // 获取work_detail昨天每个app的数量情况
         // 1. 获取最大表索引
