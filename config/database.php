@@ -105,7 +105,7 @@ return [
             'port'        => env('DB_PORT', '3306'),
             'database'    => 'juka',
             'username'    => 'hjd',
-            'password'    => 'hjd2015',
+            'password'    => 'Hjd`1234',
             'unix_socket' => env('DB_SOCKET', ''),
             'charset'     => 'utf8mb4',
             'collation'   => 'utf8mb4_unicode_ci',
