@@ -56,13 +56,13 @@ class MarkMobileValid extends Command
                 DB::table('mobiles')->where('id', $mobile->id)->update(['is_normal' => 1]);
 
                 $mobile_group_id = $mobile->mobile_group_id;
-                $app             = App::where('mobile_group_id', $mobile_group_id)->first();
+                $app             = App::where('mobile_group_id', $mobile_group_id)->select('id')->first();
                 if ($app) {
                     // 手机异常数减少
                     App::where('id', $app->id)->decrement('fail_mobile_num');
                     
                     // 标志已恢复
-                    DB::table('error_mobile_log')->where('mobile_id',$mobile->id)->update(['is_recover'=>1]);
+                    // DB::table('error_mobile_log')->where('mobile_id',$mobile->id)->update(['is_recover'=>1]);
                 }
             }
 
