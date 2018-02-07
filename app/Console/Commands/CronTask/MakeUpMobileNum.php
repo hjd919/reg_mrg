@@ -127,25 +127,25 @@ class MakeUpMobileNum extends Command
             // 处理任务中的手机
             $mobile_group_id = $mobile->mobile_group_id;
             // 查询任务id
-            $app = App::where('mobile_group_id', $mobile_group_id)->first();
-            if ($app) {
+            // $app = App::where('mobile_group_id', $mobile_group_id)->first();
+            // if ($app) {
 
                 // 记录错误日志 error_mobile_log
-                DB::table('error_mobile_log')->insert([
-                    'appid'           => $app->appid,
-                    'app_id'          => $app->id,
-                    'mobile_group_id' => $mobile_group_id,
-                    'mobile_id'       => $mobile->id,
-                ]);
+                // DB::table('error_mobile_log')->insert([
+                //     'appid'           => $app->appid,
+                //     'app_id'          => $app->id,
+                //     'mobile_group_id' => $mobile_group_id,
+                //     'mobile_id'       => $mobile->id,
+                // ]);
 
                 // 手机异常数增加 App
-                App::where('id', $app->id)->increment('fail_mobile_num');
-            }
+                // App::where('id', $app->id)->increment('fail_mobile_num');
+            // }
 
             // 标志为不正常手机
             DB::table('mobiles')->where('id', $mobile->id)->increment('error_num', 1, ['is_normal' => 0]);
 
-            $app = DB::table('apps')->where('mobile_group_id', $mobile->mobile_group_id)->select('keyword', 'task_keyword_id')->first();
+            // $app = DB::table('apps')->where('mobile_group_id', $mobile->mobile_group_id)->select('keyword', 'task_keyword_id')->first();
 
             // // * 获取mobile_group_id=0的手机，如果没有了则退出循环，并邮件警告
             // $mgi0 = DB::table('mobiles')->select('id')->where('mobile_group_id', 0)->first();
