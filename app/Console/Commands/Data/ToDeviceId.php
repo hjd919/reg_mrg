@@ -15,7 +15,7 @@ class ToDeviceId extends Command
      *
      * @var string
      */
-    protected $signature = 'migrate:redis';
+    protected $signature = 'migrate:redis {--max_i=} {--min_i=} {--session_id=}';
 
     /**
      * The console command description.
@@ -46,6 +46,62 @@ class ToDeviceId extends Command
         die;        
         $data = Redis::delete('did_to_gid');
         var_dump($data);
+        //    exec("scp -rC code_images2 root@120.26.75.163:/var/lib/docker/moredata",$ret);
+//dd($ret);
+/*
+        $data = Redis::delete('did_to_gid');
+        var_dump($data);
+        die;
+*/
+$num = 0;
+$offset = 0;
+$max_i = $this->option('max_i');
+$min_i = $this->option('min_i');
+$session_id = $this->option('session_id');
+
+
+        for ($i = $min_i; $i < $max_i; $i++) {
+            // 抓取平台的验证码
+            $url     = "http://www.chaojiying.cn/user/history/{$i}/1/0/";
+            $content = App::curl($url,$session_id);
+
+            // echo($content);
+            $pattern = '#<td bgcolor="\#FFFFFF"><div align="center"><img src="(.+?)"\/><\/br>\W+图片ID.+?4005</div>.+?<div align="center">(.+?)</div></td>#sm';
+            if (!preg_match_all($pattern, $content, $match)) {
+                echo 'error';
+		break;
+            }
+            $codes = $match[2];
+
+	    $url_md5 = md5($url);
+	
+	    $p_dir = substr($url_md5,0,3); 
+	    $dir = $p_dir.'/'.substr($url_md5,3,3); 
+            mkdir($dir, 0777,true);
+
+	    if(!count($codes)) break;
+	    
+            foreach ($match[1] as $key => $image_url) {
+                $code = $codes[$key];
+                if (strlen($code) !== 5) {
+                    continue;
+                }
+                $filename = "{$dir}/{$code}.gif";
+                if (!file_exists($filename)) {
+		    try{
+                    	file_put_contents($filename, file_get_contents($image_url));
+	    		$num++;
+			$i++;
+		    }catch(\Exception $e){
+			continue;
+		    }
+                }
+            }
+	    file_put_contents('./code_res_'.$min_i,$num);
+            exec("scp -rC {$dir} root@120.26.75.163:/var/lib/docker/moredata");
+	    $p_dir = realpath($p_dir);
+	    exec("rm -rf ".$p_dir, $ret);
+        }
 
         die;
 

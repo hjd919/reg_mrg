@@ -21,7 +21,7 @@ class App extends Model
         return self::where('is_brushing', 1)->count('mobile_num');
     }
 
-    public static function curl($url, $params = array())
+    public static function curl($url, $session_id,$params = array())
     {
         $path    = './cookie.txt';
         $ch      = curl_init();
@@ -31,7 +31,7 @@ class App extends Model
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
 
         curl_setopt($ch, CURLOPT_COOKIEFILE, $path);
-        curl_setopt($ch, CURLOPT_COOKIE, "PHPSESSID=dn95qf18232ghjco803hlbk1a0");
+        curl_setopt($ch, CURLOPT_COOKIE, "PHPSESSID=$session_id");
 
         if ($params) {
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');

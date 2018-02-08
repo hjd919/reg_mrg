@@ -116,6 +116,10 @@ class CountUpHourlyTask extends Command
                 ['create_time', '>=', $hour_time],
                 ['create_time', '<=', date('Y-m-d H', strtotime('+1 hours', strtotime($hour_time)))],
             ])->groupBy('app_id')->get();
+	if($total_count_rows->isEmpty()){
+		echo "meiyou total_count_rows\n";
+		return true;
+	}
 
         // DB::listen(function ($query) {
         //     $sql      = $query->sql;
@@ -135,6 +139,10 @@ class CountUpHourlyTask extends Command
                 ['create_time', '<=', date('Y-m-d H', strtotime('+1 hours', strtotime($hour_time)))],
                 ['status', '=', 3],
             ])->groupBy('app_id')->get();
+	if($valid_count_rows->isEmpty()){
+		echo "meiyou total_count_rows\n";
+		return true;
+	}
 
         // 获取valid_rows app_id=>valid_count
         $app_id_valid_count = [];
