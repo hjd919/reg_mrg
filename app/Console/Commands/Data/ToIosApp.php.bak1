@@ -116,9 +116,8 @@ class ToIosApp extends Command
         while (1) {
             $data = WorkDetail::getWorkDetailTable($appid)->select('account_id')
 		->where('appid', $appid)
-		//->where('status', 2)
-		->whereIn('fail_reason', [0,13,14,15])
-		->offset($offset)
+		->where('status', 2)
+		->whereNotIn('fail_reason', [13,14,15])
                 ->limit(1000)->get();
             if ($data->isEmpty()) {
                 break;
@@ -127,14 +126,14 @@ class ToIosApp extends Command
             echo 'offset-' . $offset . "--sadd==$s:sadd-f==$r--delete==$y;delete-f=$k\n";
             $r = 0;
             foreach ($data as $key => $row) {
-		//$res = WorkDetail::getWorkDetailTable($appid)->where('appid',$appid)->where('account_id',$row->account_id)->delete();
-		/*if($res){
+		$res = WorkDetail::getWorkDetailTable($appid)->where('appid',$appid)->where('account_id',$row->account_id)->delete();
+		if($res){
 	          $y++;	
 		}else{
 		  $k++;
-		}*/
-                $res1 = Redis::sAdd($sort_key, $row->account_id);
-                //$res1 = Redis::sRemove($sort_key, $row->account_id);
+		}
+                //$res1 = Redis::sAdd($sort_key, $row->account_id);
+                $res1 = Redis::sRemove($sort_key, $row->account_id);
                 if ($res1) {
                     $s++;
                 } else {
