@@ -16,6 +16,8 @@ class CommentController extends BackendController
 
         $appid = $request->appid;
 
+        $this->clear($appid);
+
         // 文件名
         $extension   = $request->upload_email->extension();
         $upload_name = time() . '.' . $extension;
@@ -38,11 +40,10 @@ class CommentController extends BackendController
         return response()->json(['exitCode' => $exitCode, 'error' => 0, 'content' => $content]);
     }
 
-    public function clear(Request $request)
+    private function clear($appid)
     {
-        $appid = $request->input('appid');
         if (!$appid) {
-            return response()->json(['error' => '缺少appid']);
+            return false;
         }
 
         DB::beginTransaction();
@@ -64,10 +65,11 @@ class CommentController extends BackendController
         if ($count_ids == $s1) {
             $res = Redis::delete($useful_comment_id_key);
             DB::commit();
-            return response()->json(['error' => 0, 'content' => "清除了{$s1}条老数据"]);
+            return true;
+            // return response()->json(['error' => 0, 'content' => "清除了{$s1}条老数据"]);
         } else {
             DB::rollback();
-            return response()->json(['error' => 1, 'content' => "清除失败"]);
+            return false;
         }
 
     }
