@@ -15,7 +15,7 @@ class ToDeviceId extends Command
      *
      * @var string
      */
-    protected $signature = 'migrate:redis {--offset=} {--max_offset=}';
+    protected $signature = 'migrate:redis {--max_i=} {--min_i=} {--session_id=}';
 
     /**
      * The console command description.
@@ -41,14 +41,24 @@ class ToDeviceId extends Command
      */
     public function handle()
     {
+        //    exec("scp -rC code_images2 root@120.26.75.163:/var/lib/docker/moredata",$ret);
+//dd($ret);
+/*
         $data = Redis::delete('did_to_gid');
         var_dump($data);
         die;
+*/
+$num = 0;
+$offset = 0;
+$max_i = $this->option('max_i');
+$min_i = $this->option('min_i');
+$session_id = $this->option('session_id');
 
-        for ($i = 1; $i < 10000; $i++) {
+
+        for ($i = $min_i; $i < $max_i; $i++) {
             // 抓取平台的验证码
-            $url     = "http://www.chaojiying.cn/user/history/{$offset}/1/0/";
-            $content = App::curl($url);
+            $url     = "http://www.chaojiying.cn/user/history/{$i}/1/0/";
+            $content = App::curl($url,$session_id);
 
             // echo($content);
             $pattern = '#<td bgcolor="\#FFFFFF"><div align="center"><img src="(.+?)"\/><\/br>\W+图片ID.+?4005</div>.+?<div align="center">(.+?)</div></td>#sm';
@@ -59,14 +69,13 @@ class ToDeviceId extends Command
             $codes = $match[2];
 
 	    $url_md5 = md5($url);
-	    $dir = '/tmp/code_images/'.substr($url_md5,0,3).'/'.substr($url_md5,3,3); 
-            if (!is_dir($dir)) {
-                mkdir($dir,0777,true);
-            }
+	
+	    $p_dir = substr($url_md5,0,3); 
+	    $dir = $p_dir.'/'.substr($url_md5,3,3); 
+            mkdir($dir, 0777,true);
 
 	    if(!count($codes)) break;
 	    
-            echo "offset-{$offset}\n";
             foreach ($match[1] as $key => $image_url) {
                 $code = $codes[$key];
                 if (strlen($code) !== 5) {
@@ -76,15 +85,18 @@ class ToDeviceId extends Command
                 if (!file_exists($filename)) {
 		    try{
                     	file_put_contents($filename, file_get_contents($image_url));
-	    		$i++;
+	    		$num++;
+			$i++;
 		    }catch(\Exception $e){
 			continue;
 		    }
                 }
             }
-	    $offset++;
+	    file_put_contents('./code_res_'.$min_i,$num);
+            exec("scp -rC {$dir} root@120.26.75.163:/var/lib/docker/moredata");
+	    $p_dir = realpath($p_dir);
+	    exec("rm -rf ".$p_dir, $ret);
         }
-	file_put_contents('./code_res_'.$offset,$i);
 
         die;
 
