@@ -39,9 +39,11 @@ class JiaDevice extends Command
      */
     public function handle()
     {
-        for ($i = 0; $i < 15000; $i++) {
+$k = 0;
+$data = [];
+        for ($i = 0; $i < 6000000; $i++) {
             $time   = microtime(true);
-            $ranstr = md5($time);
+            $ranstr = md5($time.rand(1,10000));
 
             $mac = $lanya = [];
             for ($j = 0; $j < 6; $j++) {
@@ -53,22 +55,30 @@ class JiaDevice extends Command
                     $mac[$j] = dechex($intnum - 1);
                 }
             }
-            $data = [
+            $data[] = [
                 'imei'          => rand(100000000000000, 999999999999999),
-                'udid'          => substr($ranstr, 0, 8) . md5($time . rand(1, 100)),
+                'udid'          => substr($ranstr, 0, 8) . md5($time . rand(1, 1000)),
                 'serial_number' => strtoupper(substr($ranstr, 8, 12)),
                 'os'            => '',
                 'mac'           => join(':', $mac),
                 'lanya'         => join(':', $lanya),
                 'is_real'       => 0,
             ];
-
+		$k++;
+	    if($k%100 == 0){
+try{
             $res = DB::table('devices')->insert($data);
             if ($res) {
                 echo "{$i}\n";
             } else {
                 echo "f-{$i}\n";
             }
+}catch(\Exception $e){
+
+}
+$k = 0;
+$data= [];
+}
         }
     }
 }
