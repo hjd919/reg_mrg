@@ -17,15 +17,43 @@ class TaskController extends Controller
         ]);
     }
 
+    // 获取代理2
+    public function getproxy2()
+    {
+        // return response()->json('connect to jiande please');
+        $uniqid    = uniqid();
+        $uid       = md5($uniqid . rand(1, 1000));
+        $uuid      = $uid . substr($uniqid, 0, 4);
+        $did       = 'did';
+        $sid       = -1;
+        $pid       = -1;
+        $cid       = -1;
+        $timestamp = time();
+        $key       = "Al0MF4fizqjbM9Ql";
+
+        $str1 = "did={$did}&uid={$uid}&pid={$pid}&cid={$cid}&t={$timestamp}&key={$key}";
+        $sign = md5($str1);
+        $pwd  = "did={$did}&uid={$uid}&sid={$sid}&pid={$pid}&cid={$cid}&t={$timestamp}&sign={$sign}";
+   
+        $res = [
+            "ip"       => "47.74.174.69",
+            "port"     => "14202",
+            "user"     => "cn_xs",
+            "password" => $pwd,
+            "type"     => "sock5",
+        ];
+        return response()->json($res);
+    }
+
     // 获取代理
     public function getproxy()
     {
         // return response()->json('connect to jiande please');
-        
+
         $uid1 = Redis::get('proxy_ip_uid');
         Redis::incr('proxy_ip_uid');
         $uid1 = intval($uid1);
-        $uid  = md5($uid1 . microtime(true).rand(1,1000));
+        $uid  = md5($uid1 . microtime(true) . rand(1, 1000));
         // $uid       = 'uid';
         $did       = 'did';
         $pid       = -1;

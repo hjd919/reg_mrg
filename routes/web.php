@@ -19,6 +19,7 @@ $router->group(['middleware' => [], 'namespace' => 'Appleid', 'prefix' => 'apple
     $router->get('/task/getverifycode', 'TaskController@getverifycode');
     $router->get('/task/getproxy', 'TaskController@getproxy');
     $router->get('/task/query_success', 'TaskController@querySuccess');
+    $router->get('/task/getproxy2', 'TaskController@getproxy2');    
 });
 
 // 后台
