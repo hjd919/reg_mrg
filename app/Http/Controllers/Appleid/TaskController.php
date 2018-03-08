@@ -100,7 +100,7 @@ class TaskController extends Controller
 
         // 获取列表
         // $list = Pop3::getAppleEmail($email, $password, $content_id = '');
-        exec("php ./pop3_list.php {$email} {$password} pop3s://pop.mail.ru/ {$port} '{$pwd}'", $output);
+        exec("docker run --rm -v $(pwd):/app dc_php php ./pop3_list.php {$email} {$password} pop3s://pop.mail.ru/ {$port} '{$pwd}'", $output);
         $error_email_key = 'error_appleid:email_' . $email;
         if (empty($output[0])) {
             // 标志该邮箱不能用
@@ -150,7 +150,7 @@ class TaskController extends Controller
                     return false;
                     break;
             }
-            exec("php ./pop3_content.php {$email} {$password} {$comand_url} {$port} '{$pwd}'", $output);
+            exec("docker run --rm -v $(pwd):/app dc_php php ./pop3_content.php {$email} {$password} {$comand_url} {$port} '{$pwd}'", $output);
             // Util::log('output:' . $content_id, $output);
             return isset($output[0]) ? $output[0] : $output;
         };
