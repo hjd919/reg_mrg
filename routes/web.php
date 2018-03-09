@@ -29,6 +29,10 @@ Route::group([
 ], function ($router) {
     $router->post('/auth/login', 'AuthController@login');
     $router->get('/email/state_import', 'EmailController@stateImport');
+
+$router->post('/appleid/import', 'AppleidController@import');
+$router->get('/appleid/get_today_num', 'AppleidController@getTodayNum');
+    
 });
 
 Route::group([
@@ -40,7 +44,6 @@ Route::group([
     $router->get('/auth/refresh', 'AuthController@refresh');
     $router->get('/auth/me', 'AuthController@me');
 
-    $router->post('/appleid/import', 'AppleidController@import');
-    $router->get('/appleid/get_today_num', 'AppleidController@getTodayNum');
+
 
 });

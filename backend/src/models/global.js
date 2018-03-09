@@ -83,29 +83,29 @@ export default {
           window.ga('send', 'pageview', pathname + search);
         }
 
-        // 判断是否过期
-        const token_expire = localStorage.token_expire
-        if (token_expire) {
-          // 异常
-          if (token_expire == 'NaN') {
-            let from = history.location.pathname
-            if (from !== '/user/login') {
-              dispatch(routerRedux.push('/user/login?from=' + from))
-            }
-            return true
-          }
-          const expire_diff = token_expire - (new Date).getTime()
-          if (expire_diff <= 1800000 && expire_diff > 0) {
-            // 刷新token
-            dispatch({ type: 'refreshToken' })
-          } else if (expire_diff <= 0) {
-            // 过期了,跳到登录页
-            let from = history.location.pathname
-            if (from !== '/user/login') {
-              dispatch(routerRedux.push('/user/login?from=' + from))
-            }
-          }
-        }
+        // // 判断是否过期
+        // const token_expire = localStorage.token_expire
+        // if (token_expire) {
+        //   // 异常
+        //   if (token_expire == 'NaN') {
+        //     let from = history.location.pathname
+        //     if (from !== '/user/login') {
+        //       dispatch(routerRedux.push('/user/login?from=' + from))
+        //     }
+        //     return true
+        //   }
+        //   const expire_diff = token_expire - (new Date).getTime()
+        //   if (expire_diff <= 1800000 && expire_diff > 0) {
+        //     // 刷新token
+        //     dispatch({ type: 'refreshToken' })
+        //   } else if (expire_diff <= 0) {
+        //     // 过期了,跳到登录页
+        //     let from = history.location.pathname
+        //     if (from !== '/user/login') {
+        //       dispatch(routerRedux.push('/user/login?from=' + from))
+        //     }
+        //   }
+        // }
       });
     },
   },
