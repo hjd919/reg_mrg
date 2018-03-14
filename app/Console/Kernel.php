@@ -25,5 +25,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+       //$schedule->command('reset:appleid_state')->cron('*/2 * * * * *');
+
     }
 }

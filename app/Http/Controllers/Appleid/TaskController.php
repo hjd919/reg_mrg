@@ -41,13 +41,13 @@ class TaskController extends Controller
 
         // 新uid 还是用 旧uid
         // log
-        $id = DB::table('proxy_uids')->insertGetId([
+        /*$id = DB::table('proxy_uids')->insertGetId([
             'created_at' => date('Y-m-d H:i:s'),
             // 'pwd' => $pwd,
-        ]);
+    ]);*/
 
         $res = [
-            "id"       => $id,
+            "id"       => 1,
             "ip"       => "118.31.212.185",
             "port"     => "14202",
             "user"     => "cn_xs",
@@ -100,7 +100,7 @@ class TaskController extends Controller
 
         // 获取列表
         // $list = Pop3::getAppleEmail($email, $password, $content_id = '');
-        exec("docker run --rm -v $(pwd):/app dc_php php ./pop3_list.php {$email} {$password} pop3s://pop.mail.ru/ {$port} '{$pwd}'", $output);
+        exec("php ./pop3_list.php {$email} {$password} pop3s://pop.mail.ru/ {$port} '{$pwd}'", $output);
         $error_email_key = 'error_appleid:email_' . $email;
         if (empty($output[0])) {
             // 标志该邮箱不能用
@@ -150,7 +150,7 @@ class TaskController extends Controller
                     return false;
                     break;
             }
-            exec("docker run --rm -v $(pwd):/app dc_php php ./pop3_content.php {$email} {$password} {$comand_url} {$port} '{$pwd}'", $output);
+            exec("php ./pop3_content.php {$email} {$password} {$comand_url} {$port} '{$pwd}'", $output);
             // Util::log('output:' . $content_id, $output);
             return isset($output[0]) ? $output[0] : $output;
         };
@@ -212,6 +212,10 @@ class TaskController extends Controller
             ->limit(1)
             ->first();
         if (!$row) {
+		$count = DB::table('appleids')->where('state',3)->count();
+		if($count >1000){
+		   DB::table('appleids')->where('state',3)->update(['state'=>0]);
+		}
             // 没有
             return response()->json([
                 'regist' => [
