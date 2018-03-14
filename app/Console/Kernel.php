@@ -6,7 +6,6 @@ use App\Console\Commands\CronTask\CopyAppleids;
 use App\Console\Commands\Import\ImportAppleids;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 
-
 class Kernel extends ConsoleKernel
 {
     /**
@@ -15,7 +14,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-    
+        ImportAppleids::class,
+        CopyAppleids::class,
     ];
 
     /**
