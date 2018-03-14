@@ -24,9 +24,9 @@ class Kernel extends ConsoleKernel
      * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
      */
-    protected function schedule(Schedule $schedule)
-    {
-       //$schedule->command('reset:appleid_state')->cron('*/2 * * * * *');
+    // protected function schedule(Schedule $schedule)
+    // {
+    //    //$schedule->command('reset:appleid_state')->cron('*/2 * * * * *');
 
-    }
+    // }
 }
