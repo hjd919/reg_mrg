@@ -61,6 +61,8 @@ class TaskController extends Controller
     public function getverifycode(
         Request $request
     ) {
+        exec("docker exec reg_ru casperjs --web-security=no ../calogin_ty.js --email_name='f0f308'", $output);
+        dd($output);
         // return response()->json('connect to jiande please');
 
         $start_time = microtime(true);
