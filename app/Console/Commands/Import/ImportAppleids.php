@@ -30,6 +30,7 @@ class ImportAppleids extends Command
     protected $city         = ['北京市', '上海市', '广州市', '深圳市', '成都市', '杭州市', '武汉市', '重庆市', '南京市', '天津市', '苏州市', '西安市', '长沙市', '沈阳市', '青岛市', '郑州市', '大连市', '东莞市', '宁波市', '厦门市', '福州市', '无锡市', '合肥市', '昆明市', '哈尔滨市', '济南市', '佛山市', '长春市', '温州市', '石家庄市', '常州市', '泉州市', '南昌市', '贵阳市', '太原市', '烟台市', '嘉兴市', '南通市', '金华市', '珠海市', '惠州市', '徐州市', '海口市', '绍兴市', '中山市', '兰州市'];
     protected $road         = ['中山', '胜利', '解放', '斯大林', '列宁', '人民', '振兴', '团结', '胜利', '建设', '和平', '幸福', '光明', '平安'];
     protected $phone_prefix = ['135', '150', '185', '187'];
+    protected $rand_pwd     = ['883322', '113355', '224477', '337744', '448899', '557799', '668899', '772244', '882233', '991144', '223355', '779933', '881199'];
     protected $string       = "搞几个汉字数组里面随机取几个在加几个字符理论上是不重复的";
 
     /**
@@ -49,6 +50,29 @@ class ImportAppleids extends Command
      */
     public function handle()
     {
+        // $offset = 0;
+        // $len    = 100;
+        // while (true) {
+        //     $rows = DB::table('appleids')->whereIn('state', [0, 3])->offset($offset)->limit($len)->get();
+        //     if ($rows->isEmpty()) {
+        //         echo 'finish';
+        //         break;
+        //     }
+
+        //     foreach ($rows as $row) {
+        //         $nRandomMonth = rand(1, 12);
+        //         $strRegPwd    = 'Ki' . $this->rand_pwd[$nRandomMonth];
+        //         $res = DB::table('appleids')->where('id',$row->id)->update(['strRegPwd'=>$strRegPwd]);
+        //         if(!$res){
+        //             echo 'error';
+        //         }
+        //     }
+        //     echo "dealed:offset--{$offset}";
+        //     $offset += $len;
+        // }
+        // die;
+        DB::table('appleids')->update();
+
         $file      = $this->option('file');
         $glue      = $this->option('glue');
         $file_type = $this->option('file_type');
@@ -133,7 +157,7 @@ class ImportAppleids extends Command
         $road  = $this->road[rand(0, 13)];
 
         DB::table('appleids')->insert(array(
-            'created_at'           => date('Y-m-d H:i:s'),
+            'created_at'    => date('Y-m-d H:i:s'),
             'pwd'           => $appleid_password,
             'country'       => '0',
             'strQ1'         => 0,
@@ -142,7 +166,7 @@ class ImportAppleids extends Command
             'strAn1'        => $areas,
             'strAn2'        => $city,
             'strAn3'        => $road,
-            'strRegPwd'     => 'Td' . rand(100000, 999999),
+            'strRegPwd'     => 'Td' . $this->rand_pwd[$nRandomMonth],
             'nRandomYear'   => $nRandomYear,
             'nRandomMonth'  => $nRandomMonth,
             'nRandomDay'    => $nRandomDay,

@@ -53,7 +53,20 @@ return [
             'strict'      => false,
             'engine'      => null,
         ],
-
+        'prod_jishua'  => [
+            'driver'      => 'mysql',
+            'host'        => '39.107.53.2',
+            'port'        => 3306,
+            'database'    => 'jishua',
+            'username'    => 'super_hjd',
+            'password'    => 'Dev~!@#Hjd919',
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset'     => 'utf8mb4',
+            'collation'   => 'utf8mb4_unicode_ci',
+            'prefix'      => '',
+            'strict'      => false,
+            'engine'      => null,
+        ],
         'pgsql'  => [
             'driver'   => 'pgsql',
             'host'     => env('DB_HOST', '127.0.0.1'),

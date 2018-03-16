@@ -39,6 +39,37 @@ class CopyAppleids extends Command
      */
     public function handle()
     {
+        $prod_jishua_db = DB::connection('prod_jishua');
+        $import_date    = date('Y-m-d');
+        $len            = 100;
+        $offset         = 0;
+        while (1) {
+            $rows = DB::table('appleids')->where([
+                ['state', '=', 1],
+            ])->offset($offset)->limit($len)->get();
+            if ($rows->isEmpty()) {
+                break;
+            }
+
+            $emails = [];
+            foreach ($rows as $row) {
+                $emails[] = [
+                    'email'            => $row->strRegName,
+                    'appleid_password' => $row->strRegPwd,
+                    'import_date'      => $import_date,
+                    'source'           => 2,
+                ];
+            }
+            $res = $prod_jishua_db->table('emails')->insert($emails);
+            if (!$res) {
+                echo "error\n";
+            }
+
+            $offset += $len;
+            echo "offset:$offset\n";
+        }
+        die;
+
         $last_success_time = DB::table('config')->where('keyword', 'last_success_time')->value('value');
 
         // 获取超时未任务
