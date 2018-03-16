@@ -57,12 +57,27 @@ class TaskController extends Controller
         return response()->json($res);
     }
 
+    private function getHainanCode($username, $proxy_auth=''){
+        exec("casperjs --web-security=no ../casperjs/login_ty.js --email_name='{$username}'", $output);
+        //system("casperjs --web-security=no ../casperjs/login_ty.js --email_name='f0f308'", $output);
+	if(empty($output)){
+		return response()->json([
+		    'errno'  => 3,
+		    'errmsg' => 'nofind',
+		    'code'   => $output,
+		]);
+	}
+        return response()->json([
+            'errno'  => 0,
+            'errmsg' => 'success',
+            'code'   => $output[0],
+        ]);
+    }
+
     // * 获取苹果验证吗
     public function getverifycode(
         Request $request
     ) {
-        exec("docker exec reg_ru casperjs --web-security=no login_ty.js --email_name='f0f308'", $output);
-        dd($output);
         // return response()->json('connect to jiande please');
 
         $start_time = microtime(true);
@@ -77,6 +92,10 @@ class TaskController extends Controller
         }
         // Util::log('--start--', json_encode(compact('email')));
         list($username, $email_host) = explode('@', $email);
+
+	if($email_host == 'hainan.net'){
+		return $this->getHainanCode($username,$pwd='');
+	}
 
         // * 获取请求地址配置信息
         $port = '995';
@@ -99,6 +118,9 @@ class TaskController extends Controller
         // Redis::set('proxy_pwd', $pwd);
         // Redis::expire('proxy_pwd', 60);
         // }
+	if($email_host == 'hainan.net'){
+		return $this->getHainanCode($username,$pwd='');
+	}
 
         // 获取列表
         // $list = Pop3::getAppleEmail($email, $password, $content_id = '');
