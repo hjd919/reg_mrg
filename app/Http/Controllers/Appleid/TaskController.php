@@ -19,8 +19,8 @@ class TaskController extends Controller
             case 'mail.ru':
                 $comand_url = 'pop3s://pop.mail.ru/' . $content_id;
                 break;
-            case 'mail.ru':
-                $comand_url = 'pop3s://pop.mail.ru/' . $content_id;
+            case 'hotmail.com':
+                $comand_url = 'pop3s://pop.hotmail.com/' . $content_id;
                 break;
             default:
                 return false;
