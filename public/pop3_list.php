@@ -75,9 +75,5 @@ foreach ($line as $l) {
 if (!$content_ids) {
     $content_ids = range(1, 10);
 }
-// Util::log('列表切割后找到苹果邮件content_id', $content_ids);
-if ($email == 'mr.KonstantinSchukin1991@mail.ru') {
-    file_put_contents('./proxy2.txt', json_encode($content_ids) . "\n", FILE_APPEND);
-}
 
 echo json_encode($content_ids);
