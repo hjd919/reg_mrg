@@ -9,6 +9,26 @@ use Illuminate\Support\Facades\Redis;
 
 class TaskController extends Controller
 {
+    public function getCommandUrl($email_host, $content_id = '')
+    {
+        switch ($email_host) {
+            case 'qq.com':
+                $comand_url = 'pop3s://pop.qq.com/' . $content_id;
+                break;
+            case 'mail.ua':
+            case 'mail.ru':
+                $comand_url = 'pop3s://pop.mail.ru/' . $content_id;
+                break;
+            case 'mail.ru':
+                $comand_url = 'pop3s://pop.mail.ru/' . $content_id;
+                break;
+            default:
+                return false;
+                break;
+        }
+        return $comand_url;
+    }
+
     public function querySuccess(Request $request)
     {
         $success_num = DB::table('appleids')->where('state', 1)->count();
@@ -21,11 +41,11 @@ class TaskController extends Controller
     public function getproxy()
     {
         // return response()->json('connect to jiande please');
-        
+
         $uid1 = Redis::get('proxy_ip_uid');
         Redis::incr('proxy_ip_uid');
         $uid1 = intval($uid1);
-        $uid  = md5($uid1 . microtime(true).rand(1,1000));
+        $uid  = md5($uid1 . microtime(true) . rand(1, 1000));
         // $uid       = 'uid';
         $did       = 'did';
         $pid       = -1;
@@ -42,9 +62,9 @@ class TaskController extends Controller
         // 新uid 还是用 旧uid
         // log
         /*$id = DB::table('proxy_uids')->insertGetId([
-            'created_at' => date('Y-m-d H:i:s'),
-            // 'pwd' => $pwd,
-    ]);*/
+        'created_at' => date('Y-m-d H:i:s'),
+        // 'pwd' => $pwd,
+        ]);*/
 
         $res = [
             "id"       => 1,
@@ -102,7 +122,9 @@ class TaskController extends Controller
 
         // 获取列表
         // $list = Pop3::getAppleEmail($email, $password, $content_id = '');
-        exec("php ./pop3_list.php {$email} {$password} pop3s://pop.mail.ru/ {$port} '{$pwd}'", $output);
+        $comand_url = $this->getCommandUrl($email_host);
+
+        exec("php ./pop3_list.php {$email} {$password} {$comand_url} {$port} '{$pwd}'", $output);
         $error_email_key = 'error_appleid:email_' . $email;
         if (empty($output[0])) {
             // 标志该邮箱不能用
@@ -127,7 +149,7 @@ class TaskController extends Controller
 
             return response()->json([
                 'errno'  => 2,
-                'errmsg' => "php ./pop3_list.php {$email} {$password} pop3s://pop.mail.ru/ {$port} '{$pwd}'",
+                'errmsg' => "php ./pop3_list.php {$email} {$password} {$comand_url} {$port} '{$pwd}'",
                 'code'   => '',
             ]);
         }
@@ -140,18 +162,7 @@ class TaskController extends Controller
         // ]));
 
         $get_email_content = function ($email, $password, $content_id) use ($email_host, $port, $pwd) {
-            switch ($email_host) {
-                case 'qq.com':
-                    $comand_url = 'pop3s://pop.qq.com/' . $content_id;
-                    break;
-                case 'mail.ua':
-                case 'mail.ru':
-                    $comand_url = 'pop3s://pop.mail.ru/' . $content_id;
-                    break;
-                default:
-                    return false;
-                    break;
-            }
+            $comand_url = $this->getCommandUrl($email_host);
             exec("php ./pop3_content.php {$email} {$password} {$comand_url} {$port} '{$pwd}'", $output);
             // Util::log('output:' . $content_id, $output);
             return isset($output[0]) ? $output[0] : $output;
@@ -214,10 +225,10 @@ class TaskController extends Controller
             ->limit(1)
             ->first();
         if (!$row) {
-		$count = DB::table('appleids')->where('state',3)->count();
-		if($count >1000){
-		   DB::table('appleids')->where('state',3)->update(['state'=>0]);
-		}
+            $count = DB::table('appleids')->where('state', 3)->count();
+            if ($count > 1000) {
+                DB::table('appleids')->where('state', 3)->update(['state' => 0]);
+            }
             // 没有
             return response()->json([
                 'regist' => [
