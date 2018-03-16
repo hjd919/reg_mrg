@@ -71,7 +71,6 @@ class ImportAppleids extends Command
         //     $offset += $len;
         // }
         // die;
-        DB::table('appleids')->update();
 
         $file      = $this->option('file');
         $glue      = $this->option('glue');
