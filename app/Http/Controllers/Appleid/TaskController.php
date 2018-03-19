@@ -87,16 +87,29 @@ class TaskController extends Controller
     {
         // return response()->json('connect to jiande please');
 
-        $uid       = md5(uniqid() . microtime(true) . rand(1, 1000));
+        // $uid       = md5(uniqid() . microtime(true) . rand(1, 1000));
+        // $did       = 'did';
+        // $pid       = -1;
+        // $cid       = -1;
+        // $timestamp = time();
+        // $key       = "Al0MF4fizqjbM9Ql";
+
+        // $str1 = "did={$did}&uid={$uid}&pid={$pid}&cid={$cid}&t={$timestamp}&key={$key}";
+        // $sign = md5($str1);
+        // $pwd  = "did={$did}&uid={$uid}&pid={$pid}&cid={$cid}&t={$timestamp}&sign={$sign}";
+
+        $username  = "cn_xs";
         $did       = 'did';
-        $pid       = -1;
-        $cid       = -1;
+        $uid       = md5(microtime(true) . rand(1, 1000));
+        $pid       = 0;
+        $cid       = 0;
         $timestamp = time();
         $key       = "Al0MF4fizqjbM9Ql";
 
         $str1 = "did={$did}&uid={$uid}&pid={$pid}&cid={$cid}&t={$timestamp}&key={$key}";
         $sign = md5($str1);
         $pwd  = "did={$did}&uid={$uid}&pid={$pid}&cid={$cid}&t={$timestamp}&sign={$sign}";
+
 // $pwd2 = "{$username}:{$pwd}";
         // $auth = base64_encode($pwd2);
 
@@ -179,17 +192,7 @@ class TaskController extends Controller
         // 代理 一分钟才切换ip
         // $pwd = Redis::get('proxy_pwd');
         // if (!$pwd) {
-        // $username  = "cn_xs";
-        // $did       = 'did';
-        // $uid       = md5(time());
-        // $pid       = 0;
-        // $cid       = 0;
-        // $timestamp = time();
-        // $key       = "Al0MF4fizqjbM9Ql";
 
-        // $str1 = "did={$did}&uid={$uid}&pid={$pid}&cid={$cid}&t={$timestamp}&key={$key}";
-        // $sign = md5($str1);
-        // $pwd  = "did={$did}&uid={$uid}&pid={$pid}&cid={$cid}&t={$timestamp}&sign={$sign}";
         $pwd = $this->count_proxy();
 
         // Redis::set('proxy_pwd', $pwd);
