@@ -21,14 +21,12 @@ if ($curl) {
     curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 20);
     curl_setopt($curl, CURLOPT_TIMEOUT, 20);
 
-    curl_setopt($curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
-    curl_setopt($curl, CURLOPT_PROXY, "118.31.212.185:14202");
+    // curl_setopt($curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
+    // curl_setopt($curl, CURLOPT_PROXY, "118.31.212.185:14202");
+    // $username = "cn_xs";
+    // curl_setopt($curl, CURLOPT_PROXYUSERPWD, "{$username}:{$pwd}");
 
-    $username = "cn_xs";
-
-    curl_setopt($curl, CURLOPT_PROXYUSERPWD, "{$username}:{$pwd}");
-
-//file_put_contents('./proxy.txt',$username."--".$pwd."\n",FILE_APPEND);
+    //file_put_contents('./proxy.txt',$username."--".$pwd."\n",FILE_APPEND);
 
     //curl_setopt($curl, CURLOPT_URL, "pop3s://pop.qq.com/1");
     //curl_setopt($curl, CURLOPT_URL, "pop3://pop.mail.ua/");
@@ -37,11 +35,14 @@ if ($curl) {
     curl_setopt($curl, CURLOPT_URL, $command_url);
     curl_setopt($curl, CURLOPT_PORT, $port);
 
-    curl_setopt($curl, CURLOPT_USE_SSL, CURLUSESSL_ALL);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+
+    // curl_setopt($curl, CURLOPT_USE_SSL, CURLUSESSL_ALL);
 
     //curl_setopt($curl, CURLOPT_CAINFO, "./certificate.pem");
 
-    //curl_setopt($curl, CURLOPT_VERBOSE, true);
+    curl_setopt($curl, CURLOPT_VERBOSE, true);
 
     //return the transfer as a string
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);

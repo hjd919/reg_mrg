@@ -74,19 +74,21 @@ class TaskController extends Controller
             "password" => $pwd,
             "type"     => "sock5",
         ];
+
         return response()->json($res);
     }
 
-    private function getHainanCode($username, $proxy_auth=''){
+    private function getHainanCode($username, $proxy_auth = '')
+    {
         exec("casperjs --web-security=no ../casperjs/login_ty.js --email_name='{$username}'", $output);
         //system("casperjs --web-security=no ../casperjs/login_ty.js --email_name='f0f308'", $output);
-	if(empty($output)){
-		return response()->json([
-		    'errno'  => 3,
-		    'errmsg' => 'nofind',
-		    'code'   => $output,
-		]);
-	}
+        if (empty($output)) {
+            return response()->json([
+                'errno'  => 3,
+                'errmsg' => 'nofind',
+                'code'   => $output,
+            ]);
+        }
         return response()->json([
             'errno'  => 0,
             'errmsg' => 'success',
@@ -98,7 +100,6 @@ class TaskController extends Controller
     public function getverifycode(
         Request $request
     ) {
-        // return response()->json('connect to jiande please');
 
         $start_time = microtime(true);
         $email      = $request->email;
@@ -112,10 +113,6 @@ class TaskController extends Controller
         }
         // Util::log('--start--', json_encode(compact('email')));
         list($username, $email_host) = explode('@', $email);
-
-	if($email_host == 'hainan.net'){
-		return $this->getHainanCode($username,$pwd='');
-	}
 
         // * 获取请求地址配置信息
         $port = '995';
@@ -138,9 +135,6 @@ class TaskController extends Controller
         // Redis::set('proxy_pwd', $pwd);
         // Redis::expire('proxy_pwd', 60);
         // }
-	if($email_host == 'hainan.net'){
-		return $this->getHainanCode($username,$pwd='');
-	}
 
         // 获取列表
         // $list = Pop3::getAppleEmail($email, $password, $content_id = '');
@@ -176,7 +170,6 @@ class TaskController extends Controller
             ]);
         }
         $content_ids = json_decode($output[0]);
-
         // $end_time1 = microtime(true);
         // Util::log('--end1--', json_encode([
         //     'email'      => $email,
@@ -184,7 +177,7 @@ class TaskController extends Controller
         // ]));
 
         $get_email_content = function ($email, $password, $content_id) use ($email_host, $port, $pwd) {
-            $comand_url = $this->getCommandUrl($email_host);
+            $comand_url = $this->getCommandUrl($email_host, $content_id);
             exec("php ./pop3_content.php {$email} {$password} {$comand_url} {$port} '{$pwd}'", $output);
             // Util::log('output:' . $content_id, $output);
             return isset($output[0]) ? $output[0] : $output;
