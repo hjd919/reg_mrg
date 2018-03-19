@@ -83,16 +83,11 @@ class TaskController extends Controller
         return response()->json($res);
     }
 
-    // 获取代理
-    public function getproxy()
+    private function count_proxy()
     {
         // return response()->json('connect to jiande please');
 
-        $uid1 = Redis::get('proxy_ip_uid');
-        Redis::incr('proxy_ip_uid');
-        $uid1 = intval($uid1);
-        $uid  = md5($uid1 . microtime(true) . rand(1, 1000));
-        // $uid       = 'uid';
+        $uid       = md5(uniqid() . microtime(true) . rand(1, 1000));
         $did       = 'did';
         $pid       = -1;
         $cid       = -1;
@@ -102,16 +97,23 @@ class TaskController extends Controller
         $str1 = "did={$did}&uid={$uid}&pid={$pid}&cid={$cid}&t={$timestamp}&key={$key}";
         $sign = md5($str1);
         $pwd  = "did={$did}&uid={$uid}&pid={$pid}&cid={$cid}&t={$timestamp}&sign={$sign}";
-        // $pwd2 = "{$username}:{$pwd}";
+// $pwd2 = "{$username}:{$pwd}";
         // $auth = base64_encode($pwd2);
 
-        // 新uid 还是用 旧uid
+// 新uid 还是用 旧uid
         // log
         /*$id = DB::table('proxy_uids')->insertGetId([
         'created_at' => date('Y-m-d H:i:s'),
         // 'pwd' => $pwd,
         ]);*/
 
+        return $pwd;
+    }
+
+    // 获取代理
+    public function getproxy()
+    {
+        $pwd = $this->count_proxy();
         $res = [
             "id"       => 1,
             "ip"       => "118.31.212.185",
@@ -177,17 +179,18 @@ class TaskController extends Controller
         // 代理 一分钟才切换ip
         // $pwd = Redis::get('proxy_pwd');
         // if (!$pwd) {
-        $username  = "cn_xs";
-        $did       = 'did';
-        $uid       = md5(time());
-        $pid       = 0;
-        $cid       = 0;
-        $timestamp = time();
-        $key       = "Al0MF4fizqjbM9Ql";
+        // $username  = "cn_xs";
+        // $did       = 'did';
+        // $uid       = md5(time());
+        // $pid       = 0;
+        // $cid       = 0;
+        // $timestamp = time();
+        // $key       = "Al0MF4fizqjbM9Ql";
 
-        $str1 = "did={$did}&uid={$uid}&pid={$pid}&cid={$cid}&t={$timestamp}&key={$key}";
-        $sign = md5($str1);
-        $pwd  = "did={$did}&uid={$uid}&pid={$pid}&cid={$cid}&t={$timestamp}&sign={$sign}";
+        // $str1 = "did={$did}&uid={$uid}&pid={$pid}&cid={$cid}&t={$timestamp}&key={$key}";
+        // $sign = md5($str1);
+        // $pwd  = "did={$did}&uid={$uid}&pid={$pid}&cid={$cid}&t={$timestamp}&sign={$sign}";
+        $pwd = $this->count_proxy();
 
         // Redis::set('proxy_pwd', $pwd);
         // Redis::expire('proxy_pwd', 60);
