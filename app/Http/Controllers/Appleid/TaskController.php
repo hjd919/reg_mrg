@@ -38,6 +38,52 @@ class TaskController extends Controller
     }
 
     // 获取代理
+    public function getproxy2()
+    {
+        $uid1 = uniqid();
+
+        $uid       = md5($uid1 . microtime(true) . rand(1, 1000));
+        $did       = 'did';
+        $pid       = -1;
+        $cid       = -1;
+        $uuid      = $uid . rand(1000, 9999);
+        $timestamp = time();
+        $key       = "Al0MF4fizqjbM9Ql";
+
+        $sign = md5("did={$did}&uid={$uid}&sid=-1&pid={$pid}&cid={$cid}&uuid={$uuid}&&t={$timestamp}&key={$key}");
+        $pwd  = "did={$did}&uid={$uid}&sid=-1&pid={$pid}&cid={$cid}&uuid={$uuid}&t={$timestamp}&sign={$sign}";
+        // $pwd2 = "{$username}:{$pwd}";
+        // $auth = base64_encode($pwd2);
+
+        // 新uid 还是用 旧uid
+        // log
+        /*$id = DB::table('proxy_uids')->insertGetId([
+        'created_at' => date('Y-m-d H:i:s'),
+        // 'pwd' => $pwd,
+        ]);*/
+
+        $res = [
+            "id"       => 1,
+            "ip"       => "47.74.174.69",
+            "port"     => "14202",
+            "user"     => "cn_xs",
+            "password" => $pwd,
+            "type"     => "sock5",
+        ];
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
+        curl_setopt($curl, CURLOPT_PROXY, "47.74.174.69:14202");
+        curl_setopt($curl, CURLOPT_PROXYUSERPWD, "cn_xs:{$pwd}");
+        curl_setopt($curl, CURLOPT_URL, 'http://2017.ip138.com/ic.asp');
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $output = curl_exec($curl);
+        curl_close($curl);
+        dd($output);
+        return response()->json($res);
+    }
+
+    // 获取代理
     public function getproxy()
     {
         // return response()->json('connect to jiande please');
@@ -74,6 +120,17 @@ class TaskController extends Controller
             "password" => $pwd,
             "type"     => "sock5",
         ];
+        // $pwd = 'did=did&uid=a2b076142b75f62d274eebc71e98e5aa&pid=-1&cid=-1&t=1521452013&sign=aa77c1741a3da08494805da881fc6f6a';
+        // $curl = curl_init();
+        // curl_setopt($curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
+        // curl_setopt($curl, CURLOPT_PROXY, "118.31.212.185:14202");
+        // curl_setopt($curl, CURLOPT_PROXYUSERPWD, "cn_xs:{$pwd}");
+        // curl_setopt($curl, CURLOPT_URL, 'http://2017.ip138.com/ic.asp');
+        // curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        // $output = curl_exec($curl);
+        // curl_close($curl);
+        // // print_r($res);
+        // dd($output);
 
         return response()->json($res);
     }

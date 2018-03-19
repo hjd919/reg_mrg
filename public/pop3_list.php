@@ -54,8 +54,10 @@ if ($curl) {
 }
 curl_close($curl);
 if (!$output) {
-    //file_put_contents('./empty_pop_list.txt',$email."--".$password."\n",FILE_APPEND);
+    file_put_contents('./empty_pop_list.txt', $email . "--" . $password . "\n", FILE_APPEND);
     die('');
+} else {
+    file_put_contents('./pop_list.txt', date('Y-m-d H:i:s') . '--' . $output . "\n", FILE_APPEND);
 }
 
 // 查找出在区间(21164-24000)内的邮件id

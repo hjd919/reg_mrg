@@ -22,10 +22,9 @@ if ($curl) {
     curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 20);
     curl_setopt($curl, CURLOPT_TIMEOUT, 20);
 
-    // curl_setopt($curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
-    // curl_setopt($curl, CURLOPT_PROXY, "118.31.212.185:14202");
-    $username = "cn_xs";
-    // curl_setopt($curl, CURLOPT_PROXYUSERPWD, "{$username}:{$pwd}");
+    curl_setopt($curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
+    curl_setopt($curl, CURLOPT_PROXY, "118.31.212.185:14202");
+    curl_setopt($curl, CURLOPT_PROXYUSERPWD, "cn_xs:{$pwd}");
 
     //curl_setopt($curl, CURLOPT_URL, "pop3s://pop.qq.com/1");
     //curl_setopt($curl, CURLOPT_URL, "pop3://pop.mail.ua/");
@@ -47,18 +46,32 @@ if ($curl) {
 
     // $output contains the output string
     $content = curl_exec($curl);
+    curl_close($curl);
+//     print_r($content);
     if (!$content) {
+        file_put_contents('./pop_content.txt', date('Y-m-d H:i:s') . '--pwd:' . $pwd . "--email:{$email}--password:{$password}\n", FILE_APPEND);
         die('');
+    } else {
+        file_put_contents('./pop_content.txt', date('Y-m-d H:i:s') . '--' . $content . "\n", FILE_APPEND);
     }
+//     echo "--------\n";
+    //     $curl = curl_init();
+    //     curl_setopt($curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
+    //     curl_setopt($curl, CURLOPT_PROXY, "118.31.212.185:14202");
+    //     curl_setopt($curl, CURLOPT_PROXYUSERPWD, "cn_xs:{$pwd}");
+    //     curl_setopt($curl, CURLOPT_URL, 'http://2017.ip138.com/ic.asp');
+    //     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    //     $output = curl_exec($curl);
+    //     curl_close($curl);
+    // // print_r($res);
+    //     die($output);
 
 }
-
-curl_close($curl);
 
 // 从苹果邮件匹配获取code
 if (preg_match('#x-ds-vetting-token: (.*?)\r\n#', $content, $match)) {
     echo $match[1];
 } else {
-//    file_put_contents('content.txt', json_encode(compact('content'))."\n", FILE_APPEND);
+    file_put_contents('content.txt', $content . "\n", FILE_APPEND);
     echo '';
 }
