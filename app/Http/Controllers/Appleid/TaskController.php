@@ -170,7 +170,6 @@ class TaskController extends Controller
     private function mailList($email, $password, $pwd, $comand_url)
     {
         exec("php ./pop3_list.php {$email} {$password} {$comand_url} 995 '{$pwd}'", $output);
-
         if (empty($output[0])) {
             return false;
         }
@@ -195,7 +194,7 @@ class TaskController extends Controller
 
     private function hotmailcom()
     {
-        return [58000, 63000];
+        return [50000, 63000];
     }
 
     // * 获取苹果验证吗
@@ -227,6 +226,14 @@ class TaskController extends Controller
 
         // 获取邮箱列表内容
         $mailList = $this->mailList($email, $password, $pwd, $comand_url);
+        if (!$mailList) {
+            // 没找到邮件列表
+            return response()->json([
+                'errno'  => 1,
+                'errmsg' => 'not find email list:' . json_encode(compact('email', 'password', 'comand_url')),
+                'code'   => '',
+            ]);
+        }
         // 处理邮箱列表内容
         // $line        = explode("\r\n", $mailList);
         $content_ids = [];
