@@ -5,7 +5,6 @@ use App\Http\Controllers\Controller;
 use App\Support\Util;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redis;
 
 class TaskController extends Controller
 {
@@ -168,14 +167,43 @@ class TaskController extends Controller
         ]);
     }
 
+    private function mailList($email, $password, $pwd, $comand_url)
+    {
+        exec("php ./pop3_list.php {$email} {$password} {$comand_url} 995 '{$pwd}'", $output);
+
+        if (empty($output[0])) {
+            return false;
+        }
+        return $output;
+    }
+
+    private function mailContent($email, $password, $pwd, $comand_url)
+    {
+        exec("php ./pop3_content.php {$email} {$password} {$comand_url} 995 '{$pwd}'", $output);
+
+        if (empty($output[0])) {
+            return false;
+        }
+        return $output[0];
+    }
+
+    // ru列表内容
+    private function mailru()
+    {
+        return [20000, 22000];
+    }
+
+    private function hotmailcom()
+    {
+        return [60000, 63000];
+    }
+
     // * 获取苹果验证吗
     public function getverifycode(
         Request $request
     ) {
-
-        $start_time = microtime(true);
-        $email      = $request->email;
-        $password   = $request->pas;
+        $email    = $request->email;
+        $password = $request->pas;
         if (!$email || !$password) {
             return response()->json([
                 'errno'  => 1,
@@ -183,110 +211,66 @@ class TaskController extends Controller
                 'code'   => '',
             ]);
         }
-        // Util::log('--start--', json_encode(compact('email')));
         list($username, $email_host) = explode('@', $email);
 
-        // * 获取请求地址配置信息
-        $port = '995';
+        $filter = str_replace('.', '', $email_host);
+        if (!method_exists($this, $filter)) {
+            dd('没有这个邮箱列表获取规则');
+        }
+        list($min_len, $max_len) = call_user_func([$this, $filter]);
 
-        // 代理 一分钟才切换ip
-        // $pwd = Redis::get('proxy_pwd');
-        // if (!$pwd) {
-
+        // 获取代理pwd
         $pwd = $this->count_proxy();
 
-        // Redis::set('proxy_pwd', $pwd);
-        // Redis::expire('proxy_pwd', 60);
-        // }
-
-        // 获取列表
-        // $list = Pop3::getAppleEmail($email, $password, $content_id = '');
+        // 获取邮箱的pop地址
         $comand_url = $this->getCommandUrl($email_host);
 
-        exec("php ./pop3_list.php {$email} {$password} {$comand_url} {$port} '{$pwd}'", $output);
-        $error_email_key = 'error_appleid:email_' . $email;
-        if (empty($output[0])) {
-            // 标志该邮箱不能用
-            $end_time1 = microtime(true);
-            /*Util::log('--fail_list--', json_encode([
-            'email'      => $email,
-            'password'   => $password,
-            'spend_time' => $end_time1 - $start_time,
-            ]));
-             */
-            $error_num = Redis::get($error_email_key);
-            if ($error_num < 10) {
-                Redis::incr($error_email_key);
-
-                if (!$error_num) {
-                    Redis::expire($error_email_key, 300);
-                }
-
-            } else {
-                DB::table('appleids')->where('strRegName', $email)->update(['state' => 98]);
+        // 获取邮箱列表内容
+        $mailList = $this->mailList($email, $password, $pwd, $comand_url);
+        // 处理邮箱列表内容
+        // $line        = explode("\r\n", $mailList);
+        $content_ids = [];
+        foreach ($mailList as $l) {
+            if (!trim($l)) {
+                continue;
             }
+            list($content_id, $content_length) = explode(" ", $l);
 
+            if ($content_length >= $min_len && $content_length <= $max_len) {
+                $content_ids[] = $content_id;
+            }
+        }
+        if (!$content_ids) {
+            // 没找到苹果邮件
             return response()->json([
-                'errno'  => 2,
-                'errmsg' => "php ./pop3_list.php {$email} {$password} {$comand_url} {$port} '{$pwd}'",
+                'errno'  => 1,
+                'errmsg' => 'not find apple email:' . json_encode(compact('email', 'password', 'comand_url')),
                 'code'   => '',
             ]);
         }
-        $content_ids = json_decode($output[0]);
-        // $end_time1 = microtime(true);
-        // Util::log('--end1--', json_encode([
-        //     'email'      => $email,
-        //     'spend_time' => $end_time1 - $start_time,
-        // ]));
 
+        //取最新的邮件id
+        $content_ids = array_reverse($content_ids);
 
-        // 循环获取邮件内容
-        $verify_code = '';
-        $content_ids = array_reverse($content_ids); //取最新的邮箱
-
-        $get_email_content = function ($email, $password, $content_id) use ($email_host, $port, $pwd) {
-            $comand_url = $this->getCommandUrl($email_host, $content_id);
-            exec("php ./pop3_content.php {$email} {$password} {$comand_url} {$port} '{$pwd}'", $output);
-            // Util::log('output:' . $content_id, $output);
-            return isset($output[0]) ? $output[0] : $output;
-        };
-	$content_ids = range(1,3);
+        // 根据content_id获取邮箱内容
         foreach ($content_ids as $content_id) {
-            $verify_code = $get_email_content($email, $password, $content_id);
+
+            $comand_url = $this->getCommandUrl($email_host, $content_id);
+
+            $verify_code = $this->mailContent($email, $password, $pwd, $comand_url);
             if ($verify_code) {
                 break;
             }
-            // $content = POP3::getAppleEmail($email, $password, $content_id);
         }
+
         if (!$verify_code) {
-            $end_time2 = microtime(true);
-            // Util::log('--fail_content--', json_encode([
-            //     'email'      => $email,
-            //     'password'   => $password,
-            //     'spend_time' => $end_time2 - $start_time,
-            // ]));
-
-            if (ceil($end_time2 - $start_time) > 30) {
-                DB::table('appleids')->where('strRegName', $email)->update(['state' => 99]);
-            }
-
+            // 没找到苹果邮件中的code
             return response()->json([
                 'errno'  => 1,
-                'errmsg' => 'not find code' . json_encode(['email_pwd' => $password]),
+                'errmsg' => 'not find apple code' . json_encode(compact('email', 'password', 'comand_url', 'content_ids')),
                 'code'   => '',
             ]);
         }
-        // $end_time2 = microtime(true);
-        // Util::log('--end2--', json_encode([
-        //     'email'      => $email,
-        //     'spend_time' => $end_time2 - $end_time1,
-        // ]));
-
-        $end_time = microtime(true);
-        // Util::log('--end--', json_encode([
-        //     'email'      => $email,
-        //     'spend_time' => $end_time - $start_time,
-        // ]));
 
         return response()->json([
             'errno'  => 0,

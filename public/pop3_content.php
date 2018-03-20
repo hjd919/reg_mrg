@@ -5,11 +5,17 @@ $password = $_GET['password'];
 $command_url = $_GET['comand_url'];
 $port = $_GET['port'];
 
-$email = 'AurikaFomina1997@mail.ua';
-$password = '7bwlHGHxh';
-$command_url = 'pop3s://pop.mail.ru/5';
-$port = '995';
+
  */
+// $email       = 'gphgkornrbtl@hotmail.com';
+// $password    = 'eYw5MNRDGF2u';
+// $command_url = 'pop3s://pop-mail.outlook.com/1';
+
+// $email    = 'maksimovasaf1991@mail.ru';
+// $password = '56aPbfnk';
+// $command_url = 'pop3s://pop.mail.ru/20';
+// $port        = '995';
+
 list($script, $email, $password, $command_url, $port, $pwd) = $argv;
 // create curl resource
 $curl = curl_init();
@@ -22,9 +28,9 @@ if ($curl) {
     curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 20);
     curl_setopt($curl, CURLOPT_TIMEOUT, 20);
 
-    curl_setopt($curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
-    curl_setopt($curl, CURLOPT_PROXY, "118.31.212.185:14202");
-    curl_setopt($curl, CURLOPT_PROXYUSERPWD, "cn_xs:{$pwd}");
+    // curl_setopt($curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
+    // curl_setopt($curl, CURLOPT_PROXY, "118.31.212.185:14202");
+    // curl_setopt($curl, CURLOPT_PROXYUSERPWD, "cn_xs:{$pwd}");
 
     //curl_setopt($curl, CURLOPT_URL, "pop3s://pop.qq.com/1");
     //curl_setopt($curl, CURLOPT_URL, "pop3://pop.mail.ua/");
