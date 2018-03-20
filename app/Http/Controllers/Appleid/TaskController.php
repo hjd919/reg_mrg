@@ -195,7 +195,7 @@ class TaskController extends Controller
 
     private function hotmailcom()
     {
-        return [60000, 63000];
+        return [58000, 63000];
     }
 
     // * 获取苹果验证吗
