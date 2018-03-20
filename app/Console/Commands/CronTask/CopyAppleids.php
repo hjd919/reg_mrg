@@ -39,12 +39,17 @@ class CopyAppleids extends Command
      */
     public function handle()
     {
+        $rows = DB::table('appleids')->where('state', 333)->update(['state' => 1]);
+
         $prod_jishua_db = DB::connection('prod_jishua');
         $import_date    = date('Y-m-d');
         $len            = 100;
         $offset         = 0;
+        // $date           = date('Y-m-d');
+        $date = '2018-03-18';
         while (1) {
             $rows = DB::table('appleids')->where([
+                ['updated_at', '>=', $date],
                 ['state', '=', 1],
             ])->offset($offset)->limit($len)->get();
             if ($rows->isEmpty()) {

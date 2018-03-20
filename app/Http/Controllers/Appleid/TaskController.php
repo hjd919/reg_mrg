@@ -232,7 +232,7 @@ class TaskController extends Controller
                 'errno'  => 1,
                 'errmsg' => 'not find email list:' . json_encode(compact('email', 'password', 'comand_url')),
                 'code'   => '',
-            ]);
+            ], 555);
         }
         // 处理邮箱列表内容
         // $line        = explode("\r\n", $mailList);
@@ -253,7 +253,7 @@ class TaskController extends Controller
                 'errno'  => 1,
                 'errmsg' => 'not find apple email:' . json_encode(compact('email', 'password', 'comand_url')),
                 'code'   => '',
-            ]);
+            ], 556);
         }
 
         //取最新的邮件id
@@ -276,7 +276,7 @@ class TaskController extends Controller
                 'errno'  => 1,
                 'errmsg' => 'not find apple code' . json_encode(compact('email', 'password', 'comand_url', 'content_ids')),
                 'code'   => '',
-            ]);
+            ], 557);
         }
 
         return response()->json([
