@@ -44,7 +44,7 @@ class CopyAppleids extends Command
         $prod_jishua_db = DB::connection('prod_jishua');
         $import_date    = date('Y-m-d');
         $len            = 100;
-        $offset         = 0;
+        $s              = $r              = $offset              = 0;
         $date           = date('Y-m-d H');
         while (1) {
             $rows = DB::table('appleids')->where([
@@ -59,7 +59,6 @@ class CopyAppleids extends Command
                 break;
             }
 
-            $emails = [];
             foreach ($rows as $row) {
                 $emails = [
                     'email'            => $row->strRegName,
@@ -67,16 +66,24 @@ class CopyAppleids extends Command
                     'import_date'      => $import_date,
                     'source'           => 2,
                 ];
-                $res = $prod_jishua_db->table('emails')->insert($email);
-                if (!$res) {
-                    echo "error\n";
-                } else {
-                    DB::table('appleids')->where('id', $row->id)->update(['state' => 200]);
+                try {
+                    $res = $prod_jishua_db->table('emails')->insert($emails);
+                    if (!$res) {
+                        echo "error\n";
+                        $r++;
+                    } else {
+                        $res = DB::table('appleids')->where('id', $row->id)->update(['state' => 200]);
+                        if ($res) {
+                            $s++;
+                        }
+                    }
+                } catch (\Exception $e) {
+                    $r++;
                 }
             }
 
             $offset += $len;
-            echo "offset:$offset\n";
+            echo "offset:$offset--s:$s--r:$r\n";
         }
     }
 }
