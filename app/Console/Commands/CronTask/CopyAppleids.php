@@ -45,66 +45,38 @@ class CopyAppleids extends Command
         $import_date    = date('Y-m-d');
         $len            = 100;
         $offset         = 0;
-        // $date           = date('Y-m-d');
-        $date = '2018-03-18';
+        $date           = date('Y-m-d H');
         while (1) {
             $rows = DB::table('appleids')->where([
                 ['updated_at', '>=', $date],
                 ['state', '=', 1],
-            ])->offset($offset)->limit($len)->get();
+            ])
+                ->offset($offset)
+                ->limit($len)
+                ->select('strRegName', 'strRegPwd', 'id')
+                ->get();
             if ($rows->isEmpty()) {
                 break;
             }
 
             $emails = [];
             foreach ($rows as $row) {
-                $emails[] = [
+                $emails = [
                     'email'            => $row->strRegName,
                     'appleid_password' => $row->strRegPwd,
                     'import_date'      => $import_date,
                     'source'           => 2,
                 ];
-            }
-            $res = $prod_jishua_db->table('emails')->insert($emails);
-            if (!$res) {
-                echo "error\n";
+                $res = $prod_jishua_db->table('emails')->insert($email);
+                if (!$res) {
+                    echo "error\n";
+                } else {
+                    DB::table('appleids')->where('id', $row->id)->update(['state' => 200]);
+                }
             }
 
             $offset += $len;
             echo "offset:$offset\n";
         }
-        die;
-
-        $last_success_time = DB::table('config')->where('keyword', 'last_success_time')->value('value');
-
-        // 获取超时未任务
-        $appleids = DB::table('appleids')->where([
-            ['state', '=', 1],
-            ['updated_at', '>=', $last_success_time],
-        ])->get();
-        if ($appleids->isEmpty()) {
-            // 获取不到，退出
-            return true;
-        }
-        $now_date = date('Y-m-d');
-        // DB::statement("
-        //     insert into emails (email,appleid_password,import_date,source)
-        //     select strRegName,strRegPwd,'{$now_date}',2 from appleids where state=1 and updated_at >= '{$last_success_time}'
-        // ");
-        foreach ($appleids as $appleid_row) {
-            try {
-                DB::table('emails')->insert([
-                    'email'            => $appleid_row->strRegName,
-                    'appleid_password' => $appleid_row->strRegPwd,
-                    'import_date'      => $now_date,
-                    'source'           => 2,
-                ]);
-            } catch (\Exception $e) {
-
-            }
-        }
-
-        $now = date('Y-m-d H:i:s');
-        DB::table('config')->where('keyword', 'last_success_time')->update(['value' => $now]);
     }
 }

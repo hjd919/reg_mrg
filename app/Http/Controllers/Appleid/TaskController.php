@@ -337,10 +337,15 @@ class TaskController extends Controller
             Util::die_jishua('缺少参数' . $email . $state);
         }
 
-        // * 根据任务id和账号id更新刷任务记录状态
-        DB::table('appleids')->where('strRegName', $email)->update([
+        $update_data = [
             'state' => $state,
-        ]);
+        ];
+        if ($state == 1) {
+            $update_data['successed_at'] = date('Y-m-d H:i:s');
+        }
+
+        // * 根据任务id和账号id更新刷任务记录状态
+        DB::table('appleids')->where('strRegName', $email)->update($update_data);
 
         return response()->json([
             "errno"  => 0,
