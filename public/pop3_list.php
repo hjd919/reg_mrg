@@ -11,6 +11,7 @@ $command_url = 'pop3s://pop.mail.ru/5';
 $port = '995';
  */
 list($script, $email, $password, $command_url, $port, $pwd) = $argv;
+
 // create curl resource
 $curl = curl_init();
 
@@ -50,7 +51,7 @@ if (!$output) {
     file_put_contents('./empty_pop_list.txt', $email . "--" . $password . "\n", FILE_APPEND);
     die('');
 } else {
-    file_put_contents('./pop_list.txt', date('Y-m-d H:i:s') . '--' . $output . "\n", FILE_APPEND);
+    //file_put_contents('./pop_list.txt', date('Y-m-d H:i:s') . '--' . $output . "\n", FILE_APPEND);
 }
 
 // 查找出在区间(21164-24000)内的邮件id
@@ -63,8 +64,10 @@ foreach ($line as $l) {
     }
     // id => contentlength
     list($content_id, $content_length) = explode(" ", $l);
+    //file_put_contents('./pop_list_len.txt', date('Y-m-d H:i:s') . '--' . $l. "--$content_length\n", FILE_APPEND);
 
     if ($content_length >= 20000 && $content_length <= 24000) {
+    //file_put_contents('./pop_list_len.txt', date('Y-m-d H:i:s') . '-1111-' . $l. "\n", FILE_APPEND);
         $content_ids[] = $content_id;
     }
 }

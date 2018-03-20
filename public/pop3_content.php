@@ -49,10 +49,10 @@ if ($curl) {
     curl_close($curl);
 //     print_r($content);
     if (!$content) {
-        file_put_contents('./pop_content.txt', date('Y-m-d H:i:s') . '--pwd:' . $pwd . "--email:{$email}--password:{$password}\n", FILE_APPEND);
+        file_put_contents('empty_content.txt', "\n---url:{$command_url};email:$email;password:$password---\n".$content . "\n", FILE_APPEND);
         die('');
     } else {
-        file_put_contents('./pop_content.txt', date('Y-m-d H:i:s') . '--' . $content . "\n", FILE_APPEND);
+        //file_put_contents('./pop_content.txt', date('Y-m-d H:i:s') . '--' . $content . "\n", FILE_APPEND);
     }
 //     echo "--------\n";
     //     $curl = curl_init();
@@ -68,10 +68,12 @@ if ($curl) {
 
 }
 
+    //file_put_contents('url.txt', "\n---url:{$command_url}". "\n", FILE_APPEND);
 // 从苹果邮件匹配获取code
 if (preg_match('#x-ds-vetting-token: (.*?)\r\n#', $content, $match)) {
+    //file_put_contents('has_token.txt', "\n---url:{$command_url}".$content . "\n", FILE_APPEND);
     echo $match[1];
 } else {
-    file_put_contents('content.txt', $content . "\n", FILE_APPEND);
+    //file_put_contents('no_token.txt', "\n---url:{$command_url}".$content . "\n", FILE_APPEND);
     echo '';
 }

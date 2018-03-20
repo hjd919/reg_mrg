@@ -239,16 +239,18 @@ class TaskController extends Controller
         //     'spend_time' => $end_time1 - $start_time,
         // ]));
 
+
+        // 循环获取邮件内容
+        $verify_code = '';
+        $content_ids = array_reverse($content_ids); //取最新的邮箱
+
         $get_email_content = function ($email, $password, $content_id) use ($email_host, $port, $pwd) {
             $comand_url = $this->getCommandUrl($email_host, $content_id);
             exec("php ./pop3_content.php {$email} {$password} {$comand_url} {$port} '{$pwd}'", $output);
             // Util::log('output:' . $content_id, $output);
             return isset($output[0]) ? $output[0] : $output;
         };
-
-        // 循环获取邮件内容
-        $verify_code = '';
-        $content_ids = array_reverse($content_ids); //取最新的邮箱
+	$content_ids = range(1,3);
         foreach ($content_ids as $content_id) {
             $verify_code = $get_email_content($email, $password, $content_id);
             if ($verify_code) {
