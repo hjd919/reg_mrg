@@ -45,14 +45,13 @@ class CopyAppleids extends Command
         $prod_jishua_db = DB::connection('prod_jishua');
         $import_date    = date('Y-m-d');
         $len            = 100;
-        $s              = $r              = $offset              = 500;
-        $date           = date('Y-m-d H');
+        $s              = $r              = $offset              = 0;
+        $date           = date('Y-m-d');
         while (1) {
             $rows = DB::table('appleids')->where([
                 ['updated_at', '>=', $date],
                 ['state', '=', 1],
             ])
-                ->offset($offset)
                 ->limit($len)
                 ->select('strRegName', 'strRegPwd', 'id')
                 ->orderBy('updated_at', 'asc')
