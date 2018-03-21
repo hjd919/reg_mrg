@@ -31,6 +31,6 @@ class Kernel extends ConsoleKernel
     {
         $filePath = './cron.log';
         $schedule->command('copy:appleids')->cron('59 */1 * * * *')->appendOutputTo($filePath);
-        $schedule->command('reset:state')->cron('* */3 * * * *')->appendOutputTo($filePath);
+        $schedule->command('reset:state')->cron('* */2 * * * *')->appendOutputTo($filePath);
     }
 }
