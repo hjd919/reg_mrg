@@ -87,6 +87,6 @@ class CopyAppleids extends Command
             $offset += $len;
             echo "offset:$offset--s:$s--r:$r\n";
         }
-        echo "finish\n";
+        echo "copy:appleids--date:" . date('Y-m-d H:i:s') . "--finish\n";
     }
 }
