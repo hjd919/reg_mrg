@@ -4,6 +4,7 @@ namespace App\Console\Commands\CronTask;
 
 use App\App;
 use Illuminate\Console\Command;
+use Illuminate\Database\Connection;
 use Illuminate\Support\Facades\DB;
 
 class CopyAppleids extends Command
@@ -44,7 +45,7 @@ class CopyAppleids extends Command
         $prod_jishua_db = DB::connection('prod_jishua');
         $import_date    = date('Y-m-d');
         $len            = 100;
-        $s              = $r              = $offset              = 0;
+        $s              = $r              = $offset              = 500;
         $date           = date('Y-m-d H');
         while (1) {
             $rows = DB::table('appleids')->where([
@@ -54,6 +55,7 @@ class CopyAppleids extends Command
                 ->offset($offset)
                 ->limit($len)
                 ->select('strRegName', 'strRegPwd', 'id')
+                ->orderBy('updated_at', 'asc')
                 ->get();
             if ($rows->isEmpty()) {
                 break;
@@ -85,5 +87,6 @@ class CopyAppleids extends Command
             $offset += $len;
             echo "offset:$offset--s:$s--r:$r\n";
         }
+        echo "finish\n";
     }
 }
