@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\CronTask\CopyAppleids;
+use App\Console\Commands\CronTask\ResetState;
 use App\Console\Commands\Import\ImportAppleids;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
@@ -17,6 +18,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         ImportAppleids::class,
         CopyAppleids::class,
+        ResetState::class,
     ];
 
     /**
@@ -27,6 +29,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $filePath = './cron.log';
         $schedule->command('copy:appleids')->cron('59 */1 * * * *')->appendOutputTo($filePath);
+        $schedule->command('reset:state')->cron('0 */1 * * * *')->appendOutputTo($filePath);
     }
 }
