@@ -297,7 +297,7 @@ class TaskController extends Controller
             ->first();
         if (!$row) {
             $count = DB::table('appleids')->where('state', 3)->count();
-            if ($count > 7000) {
+            if ($count > 10000) {
                 DB::table('appleids')->where('state', 3)->update(['state' => 0]);
             }
             // 没有

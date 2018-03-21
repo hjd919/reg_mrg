@@ -41,7 +41,7 @@ class ResetState extends Command
     {
         $count  = DB::table('appleids')->where('state', 3)->count();
         $count2 = DB::table('appleids')->where('state', 0)->count();
-        if ($count <= 2000 && !$count2) {
+        if ($count <= 10000 && !$count2) {
             $res = DB::table('appleids')->where('state', 3)->update(['state' => 0]);
             echo "结果是:" . $res;
         }
