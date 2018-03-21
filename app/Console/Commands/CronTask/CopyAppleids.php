@@ -49,7 +49,7 @@ class CopyAppleids extends Command
         $date           = date('Y-m-d H:00:00');
         while (1) {
             $rows = DB::table('appleids')->where([
-                // ['updated_at', '>=', $date],
+                ['updated_at', '>=', $date],
                 ['state', '=', 1],
             ])
                 ->limit($len)
@@ -79,6 +79,7 @@ class CopyAppleids extends Command
                         }
                     }
                 } catch (\Exception $e) {
+                    $res = DB::table('appleids')->where('id', $row->id)->update(['state' => 400]); //重复了
                     $r++;
                 }
             }
