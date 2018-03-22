@@ -21,6 +21,9 @@ class TaskController extends Controller
             case 'hotmail.com':
                 $comand_url = 'pop3s://pop-mail.outlook.com/' . $content_id;
                 break;
+            case 'tom.com':
+                $comand_url = 'pop3s://pop.163.net/' . $content_id;
+                break;
             default:
                 return false;
                 break;
@@ -192,6 +195,11 @@ class TaskController extends Controller
         return [20000, 22000];
     }
 
+    private function tomcom()
+    {
+        return [0, 102000];
+    }
+
     private function hotmailcom()
     {
         return [50000, 63000];
@@ -210,6 +218,7 @@ class TaskController extends Controller
                 'code'   => '',
             ]);
         }
+        //file_get_contents('aaa',json_encode(compact('email','password')),FILE_APPEND);
         list($username, $email_host) = explode('@', $email);
 
         $filter = str_replace('.', '', $email_host);
@@ -290,6 +299,15 @@ class TaskController extends Controller
     public function get(
         Request $request
     ) {
+	    /*
+            return response()->json([
+                'regist' => [
+                    'errno'  => 1,
+                    'errmsg' => 'no email',
+                    'data'   => (object) [],
+                ],
+            ]);
+	     */
         // * 查询未获取的任务
         $row = DB::table('appleids')->where('state', 0)
             ->orderBy('updated_at', 'asc')
