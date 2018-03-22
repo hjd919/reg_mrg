@@ -22,7 +22,7 @@ class TaskController extends Controller
                 $comand_url = 'pop3s://pop-mail.outlook.com/' . $content_id;
                 break;
             case 'tom.com':
-                $comand_url = 'pop3s://pop.163.net/' . $content_id;
+                $comand_url = 'pop3s://pop.tom.com/' . $content_id;
                 break;
             default:
                 return false;
@@ -192,12 +192,12 @@ class TaskController extends Controller
     // ru列表内容
     private function mailru()
     {
-        return [20000, 22000];
+        return [20000, 23000];
     }
 
     private function tomcom()
     {
-        return [0, 102000];
+        return [20000, 30000];
     }
 
     private function hotmailcom()
