@@ -299,15 +299,15 @@ class TaskController extends Controller
     public function get(
         Request $request
     ) {
-	    /*
-            return response()->json([
-                'regist' => [
-                    'errno'  => 1,
-                    'errmsg' => 'no email',
-                    'data'   => (object) [],
-                ],
-            ]);
-	     */
+        /*
+        return response()->json([
+        'regist' => [
+        'errno'  => 1,
+        'errmsg' => 'no email',
+        'data'   => (object) [],
+        ],
+        ]);
+         */
         // * 查询未获取的任务
         $row = DB::table('appleids')->where('state', 0)
             ->orderBy('updated_at', 'asc')
@@ -329,7 +329,7 @@ class TaskController extends Controller
         }
 
         // * 更新状态
-        DB::table('appleids')->where('id', $row->id)->update(['state' => 3]);
+        DB::table('appleids')->where('id', $row->id)->increment('get_num', 1, ['state' => 3]);
 
         // * 返回所需格式的结果
         return response()->json([
