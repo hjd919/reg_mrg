@@ -30,7 +30,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $filePath = './cron.log';
-        $schedule->command('copy:appleids')->cron('59 */1 * * * *')->appendOutputTo($filePath);
+        $schedule->command('copy:appleids')->cron('0 */1 * * * *')->appendOutputTo($filePath);
         $schedule->command('reset:state')->cron('* */2 * * * *')->appendOutputTo($filePath);
     }
 }
