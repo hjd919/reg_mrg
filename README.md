@@ -11,4 +11,4 @@ docker run -d --name reg_ru -v $(pwd):/home/casperjs-tests --restart always reg_
 docker exec reg_ru casperjs --web-security=no login_ty.js --email_name='f0f308'
 
 # 统计每小时数据
-SELECT date_format(successed_at,'%Y-%m-%d %H'),count(*) FROM `appleids` WHERE `state` = 200 and successed_at>'2018-03-23' group by date_format(successed_at,'%Y-%m-%d %H')
+SELECT date_format(successed_at,'%Y-%m-%d %H'),count(*) FROM `appleids` WHERE successed_at>'2018-03-23' group by date_format(successed_at,'%Y-%m-%d %H')
