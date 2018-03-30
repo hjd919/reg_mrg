@@ -344,12 +344,12 @@ class TaskController extends Controller
         }
         $email_key = Cache::get('email_key', 'mail.ru');
         if ($email_key == 'tom.com') {
-            Cache::forever('email_key', 'tom.com');
+            Cache::forever('email_key', 'mail.ru');
             $where = [
                 ['strRegName', 'like', '%' . $email_key],
             ];
         } else {
-            Cache::forever('email_key', 'mail.ru');
+            Cache::forever('email_key', 'tom.com');
             $where = [
                 ['strRegName', 'not like', '%' . $email_key],
             ];
