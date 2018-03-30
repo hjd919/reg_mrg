@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Appleid;
 use App\Http\Controllers\Controller;
 use App\Support\Util;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class TaskController extends Controller
 {
@@ -106,7 +106,7 @@ class TaskController extends Controller
 
         $username  = "cn_xs";
         $did       = 'did';
-        $uid       = md5(microtime(true) . uniqid(). rand(1,9999));
+        $uid       = md5(microtime(true) . uniqid() . rand(1, 9999));
         $pid       = 0;
         $cid       = 0;
         $timestamp = time();
@@ -140,18 +140,18 @@ class TaskController extends Controller
             "user"     => "cn_xs",
             "password" => $pwd,
             "type"     => "sock5",
-    ];
-	/*
-	$port = rand(10000,20000);
-	$res = [
-            "id"       => 1,
-            "ip"       => "61.160.234.16",
-            "port"     => $port,
-            "user"     => "",
-            "password" => "",
-            "type"     => "sock5",
-    ];
-	 */
+        ];
+        /*
+        $port = rand(10000,20000);
+        $res = [
+        "id"       => 1,
+        "ip"       => "61.160.234.16",
+        "port"     => $port,
+        "user"     => "",
+        "password" => "",
+        "type"     => "sock5",
+        ];
+         */
         // $pwd = 'did=did&uid=a2b076142b75f62d274eebc71e98e5aa&pid=-1&cid=-1&t=1521452013&sign=aa77c1741a3da08494805da881fc6f6a';
         // $curl = curl_init();
         // curl_setopt($curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
@@ -163,7 +163,7 @@ class TaskController extends Controller
         // curl_close($curl);
         // // print_r($res);
         // dd($output);
-	
+
         //Util::log('proxy',$res);
 
         return response()->json($res);
@@ -227,10 +227,6 @@ class TaskController extends Controller
     {
         return [20000, 23000];
     }
-
-
-
-
 
     private function tomcom()
     {
@@ -337,27 +333,35 @@ class TaskController extends Controller
     public function get(
         Request $request
     ) {
-	if(env('IS_STOP',0)){
-		return response()->json([
-		'regist' => [
-		'errno'  => 1,
-		'errmsg' => 'no email',
-		'data'   => (object) [],
-		],
-		]);
-	}
-	$email_key = Cache::get('email_key','mail.ru');
-	if($email_key == 'mail.ru'){
-		Cache::forever('email_key','tom.com');
-	}else{
-		Cache::forever('email_key','mail.ru');
-	}
+        if (env('IS_STOP', 0)) {
+            return response()->json([
+                'regist' => [
+                    'errno'  => 1,
+                    'errmsg' => 'no email',
+                    'data'   => (object) [],
+                ],
+            ]);
+        }
+        $email_key = Cache::get('email_key', 'mail.ru');
+        if ($email_key == 'tom.com') {
+            Cache::forever('email_key', 'tom.com');
+            $where = [
+                ['strRegName', 'like', '%' . $email_key],
+            ];
+        } else {
+            Cache::forever('email_key', 'mail.ru');
+            $where = [
+                ['strRegName', 'not like', '%' . $email_key],
+            ];
+
+        }
         // * 查询未获取的任务
         $row = DB::table('appleids')->where('state', 0)
-	    ->where('strRegName','like','%'.$email_key)
+            ->where($where)
             ->orderBy('get_num', 'asc')
             ->limit(1)
             ->first();
+        file_put_contents('aaa', var_export($row, true), FILE_APPEND);
         if (!$row) {
             $count = DB::table('appleids')->where('state', 3)->count();
             if ($count > 10000) {
@@ -375,7 +379,6 @@ class TaskController extends Controller
 
         // * 更新状态
         DB::table('appleids')->where('id', $row->id)->increment('get_num', 1, ['state' => 3]);
-	//file_put_contents('aaa',var_export($row,true),FILE_APPEND);
         // * 返回所需格式的结果
         return response()->json([
             'regist' => [
