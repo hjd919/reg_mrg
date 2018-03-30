@@ -361,20 +361,26 @@ class TaskController extends Controller
             ->orderBy('get_num', 'asc')
             ->limit(1)
             ->first();
-        file_put_contents('aaa', var_export($row, true), FILE_APPEND);
+        // file_put_contents('aaa', var_export($row, true), FILE_APPEND);
         if (!$row) {
-            $count = DB::table('appleids')->where('state', 3)->count();
-            if ($count > 10000) {
-                DB::table('appleids')->where('state', 3)->update(['state' => 0]);
+            $row = DB::table('appleids')->where('state', 0)
+                ->orderBy('get_num', 'asc')
+                ->limit(1)
+                ->first();
+            if (!$row) {
+                // 没有
+                return response()->json([
+                    'regist' => [
+                        'errno'  => 1,
+                        'errmsg' => 'no email',
+                        'data'   => (object) [],
+                    ],
+                ]);
             }
-            // 没有
-            return response()->json([
-                'regist' => [
-                    'errno'  => 1,
-                    'errmsg' => 'no email',
-                    'data'   => (object) [],
-                ],
-            ]);
+            // $count = DB::table('appleids')->where('state', 3)->count();
+            // if ($count > 10000) {
+            //     DB::table('appleids')->where('state', 3)->update(['state' => 0]);
+            // }
         }
 
         // * 更新状态
