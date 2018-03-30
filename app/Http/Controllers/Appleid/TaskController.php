@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Support\Util;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class TaskController extends Controller
 {
@@ -15,6 +16,9 @@ class TaskController extends Controller
                 $comand_url = 'pop3s://pop.qq.com/' . $content_id;
                 break;
             case 'mail.ua':
+            case 'list.ru':
+            case 'bk.ru':
+            case 'inbox.ru':
             case 'mail.ru':
                 $comand_url = 'pop3s://pop.mail.ru/' . $content_id;
                 break;
@@ -102,7 +106,7 @@ class TaskController extends Controller
 
         $username  = "cn_xs";
         $did       = 'did';
-        $uid       = md5(microtime(true) . rand(1, 1000));
+        $uid       = md5(microtime(true) . uniqid(). rand(1,9999));
         $pid       = 0;
         $cid       = 0;
         $timestamp = time();
@@ -136,7 +140,18 @@ class TaskController extends Controller
             "user"     => "cn_xs",
             "password" => $pwd,
             "type"     => "sock5",
-        ];
+    ];
+	/*
+	$port = rand(10000,20000);
+	$res = [
+            "id"       => 1,
+            "ip"       => "61.160.234.16",
+            "port"     => $port,
+            "user"     => "",
+            "password" => "",
+            "type"     => "sock5",
+    ];
+	 */
         // $pwd = 'did=did&uid=a2b076142b75f62d274eebc71e98e5aa&pid=-1&cid=-1&t=1521452013&sign=aa77c1741a3da08494805da881fc6f6a';
         // $curl = curl_init();
         // curl_setopt($curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
@@ -148,6 +163,8 @@ class TaskController extends Controller
         // curl_close($curl);
         // // print_r($res);
         // dd($output);
+	
+        //Util::log('proxy',$res);
 
         return response()->json($res);
     }
@@ -194,6 +211,26 @@ class TaskController extends Controller
     {
         return [20000, 23000];
     }
+    private function inboxru()
+    {
+        return [20000, 23000];
+    }
+    private function bkru()
+    {
+        return [20000, 23000];
+    }
+    private function listru()
+    {
+        return [20000, 23000];
+    }
+    private function mailua()
+    {
+        return [20000, 23000];
+    }
+
+
+
+
 
     private function tomcom()
     {
@@ -228,7 +265,8 @@ class TaskController extends Controller
         list($min_len, $max_len) = call_user_func([$this, $filter]);
 
         // 获取代理pwd
-        $pwd = $this->count_proxy();
+        //$pwd = $this->count_proxy();
+        $pwd = '111';
 
         // 获取邮箱的pop地址
         $comand_url = $this->getCommandUrl($email_host);
@@ -299,18 +337,25 @@ class TaskController extends Controller
     public function get(
         Request $request
     ) {
-        /*
-        return response()->json([
-        'regist' => [
-        'errno'  => 1,
-        'errmsg' => 'no email',
-        'data'   => (object) [],
-        ],
-        ]);
-         */
+	if(env('IS_STOP',0)){
+		return response()->json([
+		'regist' => [
+		'errno'  => 1,
+		'errmsg' => 'no email',
+		'data'   => (object) [],
+		],
+		]);
+	}
+	$email_key = Cache::get('email_key','mail.ru');
+	if($email_key == 'mail.ru'){
+		Cache::forever('email_key','tom.com');
+	}else{
+		Cache::forever('email_key','mail.ru');
+	}
         // * 查询未获取的任务
         $row = DB::table('appleids')->where('state', 0)
-            ->orderBy('updated_at', 'asc')
+	    ->where('strRegName','like','%'.$email_key)
+            ->orderBy('get_num', 'asc')
             ->limit(1)
             ->first();
         if (!$row) {
@@ -330,7 +375,7 @@ class TaskController extends Controller
 
         // * 更新状态
         DB::table('appleids')->where('id', $row->id)->increment('get_num', 1, ['state' => 3]);
-
+	//file_put_contents('aaa',var_export($row,true),FILE_APPEND);
         // * 返回所需格式的结果
         return response()->json([
             'regist' => [

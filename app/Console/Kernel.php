@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\CronTask\CopyAppleids;
+use App\Console\Commands\CronTask\CopyAppleidsTest;
 use App\Console\Commands\CronTask\ResetState;
 use App\Console\Commands\Import\ImportAppleids;
 use Illuminate\Console\Scheduling\Schedule;
@@ -18,6 +19,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         ImportAppleids::class,
         CopyAppleids::class,
+        CopyAppleidsTest::class,
         ResetState::class,
     ];
 
@@ -32,5 +34,6 @@ class Kernel extends ConsoleKernel
         $filePath = './cron.log';
         $schedule->command('copy:appleids')->cron('0 */1 * * * *')->appendOutputTo($filePath);
         $schedule->command('reset:state')->cron('* */1 * * * *')->appendOutputTo($filePath);
+	//$schedule->command('copy:appleids_test')->cron('1 */1 * * * *')->appendOutputTo($filePath);
     }
 }
