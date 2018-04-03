@@ -119,7 +119,7 @@ class TaskController extends Controller
         $res = [
             "id"       => 1,
             "ip"       => "118.31.212.185",
-            "port"     => $ports[$n],
+            "port"     => (string)$ports[$n],
             "user"     => "cn_xs",
             "password" => $pwd,
             "type"     => "sock5",
