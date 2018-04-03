@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 
 class TaskController extends Controller
 {
+    protected $ports = [14202, 14203, 14204];
+
     public function getCommandUrl($email_host, $content_id = '')
     {
         switch ($email_host) {
@@ -91,40 +93,17 @@ class TaskController extends Controller
 
     private function count_proxy()
     {
-        // return response()->json('connect to jiande please');
-
-        // $uid       = md5(uniqid() . microtime(true) . rand(1, 1000));
-        // $did       = 'did';
-        // $pid       = -1;
-        // $cid       = -1;
-        // $timestamp = time();
-        // $key       = "Al0MF4fizqjbM9Ql";
-
-        // $str1 = "did={$did}&uid={$uid}&pid={$pid}&cid={$cid}&t={$timestamp}&key={$key}";
-        // $sign = md5($str1);
-        // $pwd  = "did={$did}&uid={$uid}&pid={$pid}&cid={$cid}&t={$timestamp}&sign={$sign}";
-
         $username  = "cn_xs";
         $did       = 'did';
         $uid       = md5(microtime(true) . uniqid() . rand(1, 9999));
-        $pid       = 0;
-        $cid       = 0;
+        $pid       = -1;
+        $cid       = -1;
         $timestamp = time();
         $key       = "Al0MF4fizqjbM9Ql";
 
         $str1 = "did={$did}&uid={$uid}&pid={$pid}&cid={$cid}&t={$timestamp}&key={$key}";
         $sign = md5($str1);
         $pwd  = "did={$did}&uid={$uid}&pid={$pid}&cid={$cid}&t={$timestamp}&sign={$sign}";
-
-// $pwd2 = "{$username}:{$pwd}";
-        // $auth = base64_encode($pwd2);
-
-// 新uid 还是用 旧uid
-        // log
-        /*$id = DB::table('proxy_uids')->insertGetId([
-        'created_at' => date('Y-m-d H:i:s'),
-        // 'pwd' => $pwd,
-        ]);*/
 
         return $pwd;
     }
@@ -133,10 +112,14 @@ class TaskController extends Controller
     public function getproxy()
     {
         $pwd = $this->count_proxy();
+
+        $n     = time() % 3;
+        $ports = $this->ports;
+
         $res = [
             "id"       => 1,
             "ip"       => "118.31.212.185",
-            "port"     => "14202",
+            "port"     => $ports[$n],
             "user"     => "cn_xs",
             "password" => $pwd,
             "type"     => "sock5",

@@ -3,11 +3,11 @@
 namespace App\Console;
 
 use App\Console\Commands\CronTask\CopyAppleids;
-use App\Console\Commands\CronTask\CopyAppleidsTest;
 use App\Console\Commands\CronTask\ResetState;
 use App\Console\Commands\Import\ImportAppleids;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
+use App\Console\Commands\TestCommand;
 
 class Kernel extends ConsoleKernel
 {
@@ -19,8 +19,8 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         ImportAppleids::class,
         CopyAppleids::class,
-        CopyAppleidsTest::class,
         ResetState::class,
+        TestCommand::class,
     ];
 
     /**
