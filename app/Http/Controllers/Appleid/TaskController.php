@@ -113,14 +113,14 @@ class TaskController extends Controller
     {
         $pwd = $this->count_proxy();
 
-        // $n     = time() % 3;
-        // $ports = $this->ports;
+        $n     = time() % 3;
+        $ports = $this->ports;
 
         $res = [
             "id"       => 1,
             "ip"       => "118.31.212.185",
-            "port"     => "14204",
-            // "port"     => (string) $ports[$n],
+            // "port"     => "14204",
+            "port"     => (string) $ports[$n],
             "user"     => "cn_xs",
             "password" => $pwd,
             "type"     => "sock5",
