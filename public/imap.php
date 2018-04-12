@@ -1,4 +1,6 @@
 <?php
+// $email = 'Om6c53YR2@yandex.ru';
+// $password = 'bjeCBZ.';
 list($script, $email, $password) = $argv;
 class R
 {
@@ -50,13 +52,14 @@ $r->password = $password;
 $r->port     = '993';
 // echo $result = $r->write('STATUS "INBOX" (MESSAGES)');
 // die;
-$result = $r->write('', 3);
-if (!preg_match('#base64[\r\n]+(.*?)[\r\n]+--==#s', $result, $match)) {
-    file_put_contents('log.txt', date('Y-m-d') . "---result:{$result}" . "\n", FILE_APPEND);
-    return false;
-}
-$content = base64_decode($match[1]);
-
+$content = $r->write('', 3);
+// echo $result."\n";
+// if (!preg_match('#base64[\r\n]+(.*?)[\r\n]+--==#s', $result, $match)) {
+//     file_put_contents('log.txt', date('Y-m-d') . "---result:{$result}" . "\n", FILE_APPEND);
+//     return false;
+// }
+// $content = base64_decode($match[1]);
+// echo $content."\n";
 if (preg_match('#x-ds-vetting-token: (.*?)\r\n#', $content, $match)) {
     //file_put_contents('has_token.txt', "\n---url:{$command_url}".$content . "\n", FILE_APPEND);
     echo $match[1];
