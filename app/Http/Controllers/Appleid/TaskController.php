@@ -238,15 +238,28 @@ class TaskController extends Controller
         //file_get_contents('aaa',json_encode(compact('email','password')),FILE_APPEND);
         list($username, $email_host) = explode('@', $email);
 
-        $filter = str_replace('.', '', $email_host);
-        if (!method_exists($this, $filter)) {
-            dd('没有这个邮箱列表获取规则');
-        }
-        list($min_len, $max_len) = call_user_func([$this, $filter]);
-
         // 获取代理pwd
         //$pwd = $this->count_proxy();
-        $pwd = '111';
+        $pwd = '';
+
+        // 获取yanbox的imap验证码
+        if ($email_host == 'yandex.ru') {
+            exec("php ./imap.php {$email} {$password}", $output);
+            if (empty($output[0])) {
+                // 没找到邮件列表
+                return response()->json([
+                    'errno'  => 1,
+                    'errmsg' => 'no',
+                    'code'   => '',
+                ], 555);
+            }
+
+            return response()->json([
+                'errno'  => 0,
+                'errmsg' => 'success',
+                'code'   => $output[0],
+            ]);
+        }
 
         // 获取邮箱的pop地址
         $comand_url = $this->getCommandUrl($email_host);
@@ -254,6 +267,10 @@ class TaskController extends Controller
         // 获取邮箱列表内容
         $mailList = $this->mailList($email, $password, $pwd, $comand_url);
         if (!$mailList) {
+            $email_row = DB::table('appleids')->select('id', 'get_num')->where('strRegName', $email)->first();
+            if ($email_row->get_num > 5) {
+                DB::table('appleids')->where('id', $email_row->id)->update(['state' => 401]);
+            }
             // 没找到邮件列表
             return response()->json([
                 'errno'  => 1,
@@ -261,9 +278,15 @@ class TaskController extends Controller
                 'code'   => '',
             ], 555);
         }
+
         // 处理邮箱列表内容
         // $line        = explode("\r\n", $mailList);
-        $content_ids = [];
+        $filter = str_replace('.', '', $email_host);
+        if (!method_exists($this, $filter)) {
+            dd('没有这个邮箱列表获取规则');
+        }
+        list($min_len, $max_len) = call_user_func([$this, $filter]);
+        $content_ids             = [];
         foreach ($mailList as $l) {
             if (!trim($l)) {
                 continue;
