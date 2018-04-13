@@ -95,11 +95,9 @@ class ImportAppleids extends Command
             fclose($file_handle);
             // 跳跃读取
         } elseif ($file_type == 'csv') {
-            $file_handle = fopen($file, 'r');
-
             $fp = fopen($file, 'r');
             $r  = $i  = $j  = 0;
-            while (($data = fgetcsv($fp, 1000, ';')) !== false) {
+            while (($data = fgetcsv($fp)) !== false) {
                 $res = $this->handleLineArr($data);
                 if (!$res) {
                     echo '该文件内容格式不对';
