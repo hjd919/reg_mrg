@@ -6,6 +6,7 @@ use App\Http\Controllers\Backend\BackendController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class AppleidController extends BackendController
 {
@@ -19,14 +20,20 @@ class AppleidController extends BackendController
     {
         set_time_limit(0);
 
-        // 文件名
-        $extension   = $request->upload_email->extension();
-        $upload_name = time() . '.' . $extension;
+        if ($data = $request->input('data')) {
+            // ok
+            $path = 'import_appleids/' . uniqid() . '.txt';
+            Storage::put($path, $data);
+        } else {
+            // 文件名
+            $extension   = $request->upload_email->extension();
+            $upload_name = time() . '.' . $extension;
 
-        // 上传文件
-        $path = $request->upload_email->storeAs('import_appleids', $upload_name);
-        if (!$path) {
-            return response()->json(['error' => 1]);
+            // 上传文件
+            $path = $request->upload_email->storeAs('import_appleids', $upload_name);
+            if (!$path) {
+                return response()->json(['error' => 1]);
+            }
         }
 
         // 导入email
