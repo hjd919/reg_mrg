@@ -19,5 +19,10 @@ SELECT date_format(created_at,'%Y-%m-%d %H:%i'),count(*) a FROM `ips` group by d
 
 每小时情况
 SELECT date_format(updated_at,'%Y-%m-%d %H') a,state,count(*) FROM `appleids` where updated_at>'2018-04-18 04' group by a,state
+每分钟情况
+SELECT date_format(updated_at,'%Y-%m-%d %H:%i') a,state,count(*) FROM `appleids` where updated_at>'2018-04-18 17:45' group by a,state
+
 每小时跑的数量
 SELECT date_format(updated_at,'%Y-%m-%d %H') a,count(*) FROM `appleids` where updated_at>'2018-04-18 04' group by a
+每分钟情况
+SELECT date_format(updated_at,'%Y-%m-%d %H:%i') a,count(*) FROM `appleids` where updated_at>'2018-04-18 04' group by a

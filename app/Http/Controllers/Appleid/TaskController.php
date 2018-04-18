@@ -359,30 +359,19 @@ class TaskController extends Controller
                 ],
             ]);
         }
-        $email_key = Cache::get('email_key', 'mail.ru');
-        if ($email_key == 'tom.com') {
-            Cache::forever('email_key', 'mail.ru');
-            $where = [
-                ['strRegName', 'like', '%' . $email_key],
-            ];
-        } else {
-            Cache::forever('email_key', 'tom.com');
-            $where = [
-                ['strRegName', 'not like', '%' . $email_key],
-            ];
 
-        }
         // * 查询未获取的任务
         $row = DB::table('appleids')->where('state', 0)
-            ->where($where)
             ->orderBy('get_num', 'asc')
             ->orderBy('id', 'asc')
             ->limit(1)
             ->first();
         // file_put_contents('aaa', var_export($row, true), FILE_APPEND);
         if (!$row) {
+            DB::table('appleids')->where('state', 3)->update(['state' => 0]); //重置为0
             $row = DB::table('appleids')->where('state', 0)
                 ->orderBy('get_num', 'asc')
+                ->orderBy('id', 'asc')
                 ->limit(1)
                 ->first();
             if (!$row) {
@@ -395,10 +384,6 @@ class TaskController extends Controller
                     ],
                 ]);
             }
-            // $count = DB::table('appleids')->where('state', 3)->count();
-            // if ($count > 10000) {
-            //     DB::table('appleids')->where('state', 3)->update(['state' => 0]);
-            // }
         }
 
         // * 更新状态
