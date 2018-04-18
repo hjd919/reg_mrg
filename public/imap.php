@@ -52,8 +52,15 @@ $r->password = $password;
 $r->port     = '993';
 // echo $result = $r->write('STATUS "INBOX" (MESSAGES)');
 // die;
-for($i=3;$i<=5;$i++){
-	$content = $r->write('', $i);
+for($i=2;$i<=5;$i++){
+    $content = $r->write('', $i);
+    if($i==2 && !$content){
+        echo 'is_feng';
+        die;
+    }
+    if(!$content){
+        continue;
+    }
 	if (preg_match('#x-ds-vetting-token: (.*?)\r\n#', $content, $match)) {
 	    echo $match[1];
 	    die;

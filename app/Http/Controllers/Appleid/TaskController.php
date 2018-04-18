@@ -245,7 +245,17 @@ class TaskController extends Controller
         // 获取yanbox的imap验证码
         if ($email_host == 'yandex.ru') {
             exec("php ./imap.php {$email} {$password}", $output);
-            if (empty($output[0])) {
+            $res = $output[0];
+            if ($res === 'is_feng') {
+                DB::table('appleids')->where('strRegName', $email)->update(['state' => 404]);
+                return response()->json([
+                    'errno'  => 1,
+                    'errmsg' => 'no',
+                    'code'   => '',
+                ], 558);
+            }
+
+            if (empty($res)) {
                 // 没找到邮件列表
                 return response()->json([
                     'errno'  => 1,
@@ -257,7 +267,7 @@ class TaskController extends Controller
             return response()->json([
                 'errno'  => 0,
                 'errmsg' => 'success',
-                'code'   => $output[0],
+                'code'   => $res,
             ]);
         }
 
