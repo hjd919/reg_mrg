@@ -52,7 +52,15 @@ $r->password = $password;
 $r->port     = '993';
 // echo $result = $r->write('STATUS "INBOX" (MESSAGES)');
 // die;
-$content = $r->write('', 3);
+for($i=3;$i<=5;$i++){
+	$content = $r->write('', $i);
+	if (preg_match('#x-ds-vetting-token: (.*?)\r\n#', $content, $match)) {
+	    echo $match[1];
+	    die;
+	}
+}
+echo '';
+die;
 // echo $result."\n";
 // if (!preg_match('#base64[\r\n]+(.*?)[\r\n]+--==#s', $result, $match)) {
 //     file_put_contents('log.txt', date('Y-m-d') . "---result:{$result}" . "\n", FILE_APPEND);
@@ -60,10 +68,9 @@ $content = $r->write('', 3);
 // }
 // $content = base64_decode($match[1]);
 // echo $content."\n";
+$content = $r->write('', 3);
 if (preg_match('#x-ds-vetting-token: (.*?)\r\n#', $content, $match)) {
-    //file_put_contents('has_token.txt', "\n---url:{$command_url}".$content . "\n", FILE_APPEND);
     echo $match[1];
 } else {
-    //file_put_contents('no_token.txt', "\n---url:{$command_url}".$content . "\n", FILE_APPEND);
     echo '';
 }

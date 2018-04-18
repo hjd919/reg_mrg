@@ -268,7 +268,7 @@ class TaskController extends Controller
         $mailList = $this->mailList($email, $password, $pwd, $comand_url);
         if (!$mailList) {
             $email_row = DB::table('appleids')->select('id', 'get_num')->where('strRegName', $email)->first();
-            if ($email_row->get_num > 5) {
+            if ($email_row->get_num >= 2) {
                 DB::table('appleids')->where('id', $email_row->id)->update(['state' => 401]);
             }
             // 没找到邮件列表
@@ -366,6 +366,7 @@ class TaskController extends Controller
         $row = DB::table('appleids')->where('state', 0)
             ->where($where)
             ->orderBy('get_num', 'asc')
+            ->orderBy('id', 'asc')
             ->limit(1)
             ->first();
         // file_put_contents('aaa', var_export($row, true), FILE_APPEND);
