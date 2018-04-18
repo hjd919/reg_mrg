@@ -52,19 +52,19 @@ $r->password = $password;
 $r->port     = '993';
 // echo $result = $r->write('STATUS "INBOX" (MESSAGES)');
 // die;
-for($i=2;$i<=5;$i++){
+for ($i = 2; $i <= 4; $i++) {
     $content = $r->write('', $i);
-    if($i==2 && !$content){
+    if ($i == 2 && !$content) {
         echo 'is_feng';
         die;
     }
-    if(!$content){
+    if (!$content) {
         continue;
     }
-	if (preg_match('#x-ds-vetting-token: (.*?)\r\n#', $content, $match)) {
-	    echo $match[1];
-	    die;
-	}
+    if (preg_match('#x-ds-vetting-token: (.*?)\r\n#', $content, $match)) {
+        echo $match[1];
+        die;
+    }
 }
 echo '';
 die;
