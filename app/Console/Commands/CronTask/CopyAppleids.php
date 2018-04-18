@@ -40,13 +40,13 @@ class CopyAppleids extends Command
      */
     public function handle()
     {
-        $rows = DB::table('appleids')->where('state', 333)->update(['state' => 1]);
+        $rows = DB::table('appleids')->whereIn('state', [32, 333])->update(['state' => 1]);
 
         $prod_jishua_db = DB::connection('prod_jishua');
         $import_date    = date('Y-m-d');
         $len            = 100;
         $s              = $r              = $offset              = 0;
-        $date           = date('Y-m-d H:00:00',strtotime('-1 hours'));
+        $date           = date('Y-m-d H:00:00', strtotime('-1 hours'));
         while (1) {
             $rows = DB::table('appleids')->where([
                 ['updated_at', '>=', $date],
