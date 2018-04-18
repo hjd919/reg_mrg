@@ -16,3 +16,8 @@ SELECT date_format(successed_at,'%Y-%m-%d %H'),count(*) FROM `appleids` WHERE su
 select sum(a) from (SELECT ip,count(*) a FROM `ips` group by ip) b where a >1  104
 
 SELECT date_format(created_at,'%Y-%m-%d %H:%i'),count(*) a FROM `ips` group by date_format(created_at,'%Y-%m-%d %H:%i') order by a desc
+
+每小时情况
+SELECT date_format(updated_at,'%Y-%m-%d %H') a,state,count(*) FROM `appleids` where updated_at>'2018-04-18 04' group by a,state
+每小时跑的数量
+SELECT date_format(updated_at,'%Y-%m-%d %H') a,count(*) FROM `appleids` where updated_at>'2018-04-18 04' group by a
