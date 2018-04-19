@@ -11,7 +11,7 @@ class R
     public $port;
     public $type;
     public $pwd;
-    public $timeout = 6;
+    public $timeout = 10;
     public $secure  = true;
     public function write($command = '', $uid = 0)
     {
