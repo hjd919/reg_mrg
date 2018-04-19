@@ -31,7 +31,7 @@ class R
         curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
 
         curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
-        curl_setopt($ch, CURLOPT_PROXY, "118.31.212.185:14202");
+        curl_setopt($ch, CURLOPT_PROXY, "118.31.212.185:" . rand(14202, 14204));
         curl_setopt($ch, CURLOPT_PROXYUSERPWD, "cn_xs:{$this->pwd}");
 
         // $fp = tmpfile();
