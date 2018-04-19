@@ -36,7 +36,7 @@ class R
 
         // $fp = tmpfile();
         // curl_setopt($ch, CURLOPT_FILE, $fp);
-        curl_setopt($ch, CURLOPT_VERBOSE, true);
+        curl_setopt($ch, CURLOPT_VERBOSE, false);
         // $verbose = fopen('php://temp', 'w+');
         // curl_setopt($ch, CURLOPT_STDERR, $verbose);
         if ($command) {
