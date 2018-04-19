@@ -239,12 +239,11 @@ class TaskController extends Controller
         list($username, $email_host) = explode('@', $email);
 
         // 获取代理pwd
-        //$pwd = $this->count_proxy();
-        $pwd = '';
+        $pwd = $this->count_proxy();
 
         // 获取yanbox的imap验证码
         if ($email_host == 'yandex.ru') {
-            exec("php ./imap.php {$email} {$password}", $output);
+            exec("php ./imap.php {$email} {$password} {$pwd}", $output);
 
             if (empty($output)) {
                 // 没找到邮件列表

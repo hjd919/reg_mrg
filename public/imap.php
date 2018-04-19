@@ -1,7 +1,7 @@
 <?php
-// $email = 'Om6c53YR2@yandex.ru';
-// $password = 'bjeCBZ.';
-list($script, $email, $password) = $argv;
+// $email    = 'BV1qOQ9ejYmp@yandex.ru';
+// $password = 'rDAqjJb8tl';
+list($script, $email, $password, $pwd) = $argv;
 class R
 {
     public $host;
@@ -27,9 +27,14 @@ class R
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $this->timeout);
         curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
+
+        curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
+        curl_setopt($ch, CURLOPT_PROXY, "118.31.212.185:14203");
+        curl_setopt($ch, CURLOPT_PROXYUSERPWD, "cn_xs:{$pwd}");
+
         // $fp = tmpfile();
         // curl_setopt($ch, CURLOPT_FILE, $fp);
-        // curl_setopt($ch, CURLOPT_VERBOSE, false);
+        curl_setopt($ch, CURLOPT_VERBOSE, false);
         // $verbose = fopen('php://temp', 'w+');
         // curl_setopt($ch, CURLOPT_STDERR, $verbose);
         if ($command) {
