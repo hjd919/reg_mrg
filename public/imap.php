@@ -1,8 +1,8 @@
 <?php
-$email    = 'TcmIMRglT@yandex.ru';
-$password = 'ZcHMaMe';
-$pwd      = 'did=did&uid=127d497ab3d3c810eb6a1fcf81181de7&pid=-1&cid=-1&t=1524106607&sign=f319b52a5eb3cd20db04f32003259691';
-// list($script, $email, $password, $pwd) = $argv;
+// $email    = 'TcmIMRglT@yandex.ru';
+// $password = 'ZcHMaMe';
+// $pwd      = 'did=did&uid=127d497ab3d3c810eb6a1fcf81181de7&pid=-1&cid=-1&t=1524106607&sign=f319b52a5eb3cd20db04f32003259691';
+list($script, $email, $password, $pwd) = $argv;
 class R
 {
     public $host;
@@ -36,7 +36,7 @@ class R
 
         // $fp = tmpfile();
         // curl_setopt($ch, CURLOPT_FILE, $fp);
-        curl_setopt($ch, CURLOPT_VERBOSE, false);
+        // curl_setopt($ch, CURLOPT_VERBOSE, true);
         // $verbose = fopen('php://temp', 'w+');
         // curl_setopt($ch, CURLOPT_STDERR, $verbose);
         if ($command) {
