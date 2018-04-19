@@ -39,10 +39,12 @@ class ResetState extends Command
      */
     public function handle()
     {
+        return DB::table('appleids')->where('created_at', '>', date('Y-m-d H', strtotime('-5 hours')))->where('state', 404)->update(['state' => 3]);
+
         $count  = DB::table('appleids')->where('state', 3)->count();
         $count2 = DB::table('appleids')->where('state', 0)->count();
         if ($count && !$count2) {
-            $res = DB::table('appleids')->where('state', 3)->where('get_num','<=',3)->update(['state' => 0]);
+            $res = DB::table('appleids')->where('state', 3)->where('get_num', '<=', 3)->update(['state' => 0]);
             echo "结果是:" . $res;
         }
     }
