@@ -1,6 +1,7 @@
 <?php
-// $email    = 'BV1qOQ9ejYmp@yandex.ru';
-// $password = 'rDAqjJb8tl';
+// $email    = 'vjwDugx.4vOPPKoLo.8@yandex.ru';
+// $password = 'DaWPcK0bIC';
+// $pwd      = 'did=did&uid=127d497ab3d3c810eb6a1fcf81181de7&pid=-1&cid=-1&t=1524106607&sign=f319b52a5eb3cd20db04f32003259691';
 list($script, $email, $password, $pwd) = $argv;
 class R
 {
@@ -9,6 +10,7 @@ class R
     public $password;
     public $port;
     public $type;
+    public $pwd;
     public $timeout = 15;
     public $secure  = true;
     public function write($command = '', $uid = 0)
@@ -29,12 +31,12 @@ class R
         curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
 
         curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
-        curl_setopt($ch, CURLOPT_PROXY, "118.31.212.185:14203");
-        curl_setopt($ch, CURLOPT_PROXYUSERPWD, "cn_xs:{$pwd}");
+        curl_setopt($ch, CURLOPT_PROXY, "118.31.212.185:14202");
+        curl_setopt($ch, CURLOPT_PROXYUSERPWD, "cn_xs:{$this->pwd}");
 
         // $fp = tmpfile();
         // curl_setopt($ch, CURLOPT_FILE, $fp);
-        curl_setopt($ch, CURLOPT_VERBOSE, false);
+        curl_setopt($ch, CURLOPT_VERBOSE, true);
         // $verbose = fopen('php://temp', 'w+');
         // curl_setopt($ch, CURLOPT_STDERR, $verbose);
         if ($command) {
@@ -54,24 +56,30 @@ $r->type     = 'imap';
 $r->host     = 'imap.yandex.ru';
 $r->username = $email;
 $r->password = $password;
+$r->pwd      = $pwd;
 $r->port     = '993';
 // echo $result = $r->write('STATUS "INBOX" (MESSAGES)');
 // die;
-for ($i = 2; $i <= 4; $i++) {
+// die;
+$code = 0;
+for ($i = 2; $i <= 5; $i++) {
     $content = $r->write('', $i);
     if ($i == 2 && !$content) {
-        echo 'is_feng';
-        die;
+        if(!$content){
+            echo 'is_feng';
+            die;
+        }else{
+            continue;
+        }
     }
     if (!$content) {
-        continue;
+        break;
     }
     if (preg_match('#x-ds-vetting-token: (.*?)\r\n#', $content, $match)) {
-        echo $match[1];
-        die;
+        $code = $match[1];
     }
 }
-echo '';
+echo $code;
 die;
 // echo $result."\n";
 // if (!preg_match('#base64[\r\n]+(.*?)[\r\n]+--==#s', $result, $match)) {
