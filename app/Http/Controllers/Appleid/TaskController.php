@@ -243,8 +243,7 @@ class TaskController extends Controller
 
         // 获取yanbox的imap验证码
         if ($email_host == 'yandex.ru') {
-            exec("php ./imap.php {$email} {$password} {$pwd}", $output);
-
+            exec("php ./imap.php {$email} {$password} '{$pwd}'", $output);
             if (empty($output)) {
                 // 没找到邮件列表
                 return response()->json([

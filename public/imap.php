@@ -36,7 +36,7 @@ class R
 
         // $fp = tmpfile();
         // curl_setopt($ch, CURLOPT_FILE, $fp);
-        curl_setopt($ch, CURLOPT_VERBOSE, true);
+        curl_setopt($ch, CURLOPT_VERBOSE, false);
         // $verbose = fopen('php://temp', 'w+');
         // curl_setopt($ch, CURLOPT_STDERR, $verbose);
         if ($command) {
@@ -58,17 +58,29 @@ $r->username = $email;
 $r->password = $password;
 $r->pwd      = $pwd;
 $r->port     = '993';
-// echo $result = $r->write('STATUS "INBOX" (MESSAGES)');
+$result      = $r->write('STATUS "INBOX" (MESSAGES)');
+if (!preg_match("/MESSAGES (\d+)\)/", $result, $match)) {
+    die('is_feng');
+}
+$email_num = $match[1];
+$content   = $r->write('', $email_num);
+$code      = '';
+if (preg_match('#x-ds-vetting-token: (.*?)\r\n#', $content, $match)) {
+    $code = $match[1];
+}
+echo $code;
+die;
+
 // die;
 // die;
 $code = 0;
 for ($i = 2; $i <= 5; $i++) {
     $content = $r->write('', $i);
     if ($i == 2 && !$content) {
-        if(!$content){
+        if (!$content) {
             echo 'is_feng';
             die;
-        }else{
+        } else {
             continue;
         }
     }
