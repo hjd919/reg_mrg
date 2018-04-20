@@ -26,3 +26,6 @@ SELECT date_format(updated_at,'%Y-%m-%d %H:%i') a,state,count(*) FROM `appleids`
 SELECT date_format(updated_at,'%Y-%m-%d %H') a,count(*) FROM `appleids` where updated_at>'2018-04-18 04' group by a
 每分钟情况
 SELECT date_format(updated_at,'%Y-%m-%d %H:%i') a,count(*) FROM `appleids` where updated_at>'2018-04-18 04' group by a
+
+每小时chan数量
+SELECT date_format(created_at,'%Y-%m-%d %H') a,count(*) FROM `appleids` where created_at>'2018-04-18 04' group by a

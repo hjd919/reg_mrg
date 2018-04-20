@@ -7,6 +7,7 @@ use App\Console\Commands\CronTask\ResetState;
 use App\Console\Commands\Import\ImportAppleids;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
+use App\Console\Commands\CronTask\DeleteError;
 //use App\Console\Commands\TestCommand;
 
 class Kernel extends ConsoleKernel
@@ -20,6 +21,7 @@ class Kernel extends ConsoleKernel
         ImportAppleids::class,
         CopyAppleids::class,
         ResetState::class,
+        DeleteError::class,
         //TestCommand::class,
     ];
 
@@ -31,9 +33,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $filePath = './cron.log';
-        $schedule->command('copy:appleids')->cron('0 */1 * * * *')->appendOutputTo($filePath);
-	    $schedule->command('reset:state')->cron('* */1 * * * *')->appendOutputTo($filePath);
+        // $filePath = './cron.log';
+        $schedule->command('copy:appleids')->cron('0 */1 * * * *');
+	    $schedule->command('reset:state')->cron('* */1 * * * *');
+	    $schedule->command('delete:error')->cron('0 18 * * * *');
 	//$schedule->command('copy:appleids_test')->cron('1 */1 * * * *')->appendOutputTo($filePath);
     }
 }
