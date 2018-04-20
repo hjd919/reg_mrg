@@ -1,5 +1,6 @@
 #!/bin/bash
 if [ $1 ]; then
+git add -A
 git commit -a -m $1
 fi
 git push
