@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Appleid;
 use App\Http\Controllers\Controller;
 use App\Support\Util;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class TaskController extends Controller
@@ -366,6 +365,15 @@ class TaskController extends Controller
             ->first();
         // file_put_contents('aaa', var_export($row, true), FILE_APPEND);
         if (!$row) {
+            // 没有
+            return response()->json([
+                'regist' => [
+                    'errno'  => 1,
+                    'errmsg' => 'no email',
+                    'data'   => (object) [],
+                ],
+            ]);
+
             DB::table('appleids')->where('state', 3)->update(['state' => 0]); //重置为0
             $row = DB::table('appleids')->where('state', 0)
                 ->orderBy('get_num', 'asc')

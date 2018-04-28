@@ -39,7 +39,7 @@ class ResetState extends Command
      */
     public function handle()
     {
-        return DB::table('appleids')->where('created_at', '>', date('Y-m-d H', strtotime('-5 hours')))->where('state', 404)->update(['state' => 3]);
+        DB::table('appleids')->where('created_at', '>', date('Y-m-d H', strtotime('-5 hours')))->where('state', 404)->update(['state' => 3]);
 
         $count  = DB::table('appleids')->where('state', 3)->count();
         $count2 = DB::table('appleids')->where('state', 0)->count();
