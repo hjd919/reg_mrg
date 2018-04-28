@@ -39,7 +39,7 @@ class DeleteError extends Command
      */
     public function handle()
     {
-        $res = DB::table('appleids')->where('created_at', '<', date('Y-m-d H', strtotime('-1 days')))->whereIn('state', [0, 3])->where('strRegName','like','%yandex.ru')->delete();
+        $res = DB::table('appleids')->where('created_at', '<', date('Y-m-d H', strtotime('-1 days')))->whereIn('state', [0, 3])->where('strRegName','like','%yandex.ru')->update(['state'=>404]);
         dd($res);
     }
 }
