@@ -32,6 +32,7 @@ Route::group([
     $router->get('/email/state_import', 'EmailController@stateImport');
 
 $router->post('/appleid/import', 'AppleidController@import');
+$router->post('/email/process_num', 'AppleidController@process_num');
 $router->get('/appleid/get_today_num', 'AppleidController@getTodayNum');
     
 });

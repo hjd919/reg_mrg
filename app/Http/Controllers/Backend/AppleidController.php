@@ -46,4 +46,9 @@ class AppleidController extends BackendController
         ob_end_clean();
         return response()->json(['exitCode' => $exitCode, 'error' => 0, 'content' => $content]);
     }
+
+    public function process_num()
+    {
+        return 10;
+    }
 }

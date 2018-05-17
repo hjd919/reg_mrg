@@ -29,3 +29,6 @@ SELECT date_format(updated_at,'%Y-%m-%d %H:%i') a,count(*) FROM `appleids` where
 
 每小时chan数量
 SELECT date_format(created_at,'%Y-%m-%d %H') a,count(*) FROM `appleids` where created_at>'2018-04-18 04' group by a
+
+<!-- 每天账号被封状态 -->
+SELECT date_format(import_date,'%Y-%m-%d')a,valid_status,count(*) FROM `emails` where import_date>'2018-04-01' group by a,valid_status order by a desc
