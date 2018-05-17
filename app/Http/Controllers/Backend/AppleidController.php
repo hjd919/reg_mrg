@@ -49,6 +49,6 @@ class AppleidController extends BackendController
 
     public function process_num()
     {
-        return 10;
+        return DB::table('configs')->where('name', 'process_num')->value('value');
     }
 }
