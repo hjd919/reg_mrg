@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class TaskController extends Controller
 {
-    protected $ports = [14202, 14203, 14204];
+    protected $ports = [14202, 14203];
 
     public function getCommandUrl($email_host, $content_id = '')
     {
@@ -112,7 +112,7 @@ class TaskController extends Controller
     {
         $pwd = $this->count_proxy();
 
-        $n     = time() % 3;
+        $n     = time() % 2;
         $ports = $this->ports;
 
         $res = [

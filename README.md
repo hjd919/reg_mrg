@@ -28,7 +28,12 @@ SELECT date_format(updated_at,'%Y-%m-%d %H') a,count(*) FROM `appleids` where up
 SELECT date_format(updated_at,'%Y-%m-%d %H:%i') a,count(*) FROM `appleids` where updated_at>'2018-04-18 04' group by a
 
 每小时chan数量
-SELECT date_format(created_at,'%Y-%m-%d %H') a,count(*) FROM `appleids` where created_at>'2018-04-18 04' group by a
+SELECT date_format(created_at,'%Y-%m-%d') a,count(*) FROM `appleids` where created_at>'2018-05-21' group by a
+每小时成功量
+SELECT date_format(created_at,'%Y-%m-%d') a,count(*) FROM `appleids` where created_at>'2018-05-21' and state=200 group by a
+每天所需账号
+SELECT date_format(start_time,'%Y-%m-%d'),sum(brushed_num) as total FROM `apps` WHERE `start_time` > '2018-05-20 00:00:00' group by date_format(start_time,'%Y-%m-%d')
+
 
 <!-- 每天账号被封状态 -->
 SELECT date_format(import_date,'%Y-%m-%d')a,valid_status,count(*) FROM `emails` where import_date>'2018-04-01' group by a,valid_status order by a desc
