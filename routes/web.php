@@ -12,6 +12,7 @@
  */
 
 $router->get('/exportAppleid', 'IndexController@exportAppleid');
+$router->post('/exportAppleid', 'IndexController@exportAppleid');
 
 // 接口
 
