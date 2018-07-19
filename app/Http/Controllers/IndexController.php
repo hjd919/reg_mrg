@@ -32,7 +32,6 @@ class IndexController extends Controller
         }
         
         $num = DB::table('appleids')->where('updated_at', '>', date('Y-m-d', strtotime('-1 days')))->where('state', 1)->count();
-        echo $num."<br>";
         return view('exportAppleid', ['num' => $num]);
     }
 

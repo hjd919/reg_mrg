@@ -9,7 +9,7 @@
     <script src="main.js"></script>
 </head>
 <body>
-    <div>可导出的账号数量:{{ $num }}</div>
+    <div>可导出的账号数量:<?php echo $num; ?></div>
     <form method="post">
         <input type="submit" value="导出">
     </form>
