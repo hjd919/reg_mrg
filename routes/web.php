@@ -11,6 +11,8 @@
 |
  */
 
+$router->get('/exportAppleid', 'IndexController@exportAppleid');
+
 // 接口
 
 $router->group(['middleware' => [], 'namespace' => 'Appleid', 'prefix' => 'appleid'], function () use ($router) {

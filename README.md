@@ -37,3 +37,6 @@ SELECT date_format(start_time,'%Y-%m-%d'),sum(brushed_num) as total FROM `apps` 
 
 <!-- 每天账号被封状态 -->
 SELECT date_format(import_date,'%Y-%m-%d')a,valid_status,count(*) FROM `emails` where import_date>'2018-04-01' group by a,valid_status order by a desc
+
+#复制一对一账号和设备
+docker exec -it dc_fpm_1 reg_mrg/artisan CpAppleidDevice

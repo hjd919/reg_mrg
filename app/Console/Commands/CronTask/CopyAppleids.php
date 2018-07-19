@@ -46,10 +46,12 @@ class CopyAppleids extends Command
         $import_date    = date('Y-m-d');
         $len            = 100;
         $s              = $r              = $offset              = 0;
-        $date           = date('Y-m-d H:00:00', strtotime('-1 hours'));
+        $date           = date('Y-m-d H:00:00', strtotime('-1 days'));
+        $end_date       = date('Y-m-d H:00:00', strtotime('-7 days'));
         while (1) {
             $rows = DB::table('appleids')->where([
-                ['updated_at', '>=', $date],
+                ['updated_at', '<=', $date],
+                ['updated_at', '>', $end_date],
                 ['state', '=', 1],
             ])
                 ->limit($len)
