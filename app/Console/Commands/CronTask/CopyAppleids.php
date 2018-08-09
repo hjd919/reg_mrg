@@ -50,8 +50,8 @@ class CopyAppleids extends Command
         $end_date       = date('Y-m-d', strtotime('-7 days'));
         while (1) {
             $rows = DB::table('appleids')->where([
-                ['updated_at', '<=', $date],
-                ['updated_at', '>', $end_date],
+                // ['updated_at', '<=', $date],
+                ['updated_at', '>', $date],
                 ['state', '=', 1],
             ])
                 ->limit($len)
