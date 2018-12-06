@@ -113,7 +113,7 @@ class TaskController extends Controller
         $pwd = $this->count_proxy();
 
         //$n     = time() % 2;
-        //$ports = $this->ports;
+        $ports = $this->ports;
 
         $res = [
             "id"       => 1,
