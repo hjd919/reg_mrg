@@ -364,7 +364,7 @@ class TaskController extends Controller
         $row = DB::table('appleids')->where('state', 0)
             ->where('get_num', '<', 4)
             ->orderBy('get_num', 'asc')
-            ->orderBy('id', 'asc')
+            ->orderBy('id', 'desc')
             ->limit(1)
             ->first();
         // file_put_contents('aaa', var_export($row, true), FILE_APPEND);
