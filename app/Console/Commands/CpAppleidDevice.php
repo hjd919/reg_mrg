@@ -13,7 +13,10 @@ class CpAppleidDevice extends Command
     public function handle()
     {
         // 获取账号
-        $appleids     = DB::table('appleids')->where('created_at', '>', date('Y-m-d'))->where('state', 1)->get();
+	    $appleids     = DB::table('appleids')
+		    ->where('created_at', '>', date('Y-m-d',strtotime('-1 days')))
+		   // ->where('created_at','<',date('Y-m-d'))
+		    ->where('state', 1)->get();
         $device_limit = $appleids->count();
         if (!$device_limit) {
             echo 'mei you zhang hao';

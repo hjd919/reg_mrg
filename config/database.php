@@ -55,7 +55,7 @@ return [
         ],
 	'prod_jishua'  => [
             'driver'      => 'mysql',
-            'host'        => '39.107.53.2',
+            'host'        => '39.106.200.117',
             'port'        => 3306,
             'database'    => 'jishua',
             'username'    => 'super_hjd',
@@ -70,11 +70,11 @@ return [
 
         'prod_jishua_test'  => [
             'driver'      => 'mysql',
-            'host'        => '39.106.189.180',
+            'host'        => '39.106.200.117',
             'port'        => 3306,
             'database'    => 'jishua',
-            'username'    => 'root',
-            'password'    => 'Hjd123!@#',
+            'username'    => 'super_hjd',
+            'password'    => 'Dev~!@#Hjd919',
             'unix_socket' => env('DB_SOCKET', ''),
             'charset'     => 'utf8mb4',
             'collation'   => 'utf8mb4_unicode_ci',
