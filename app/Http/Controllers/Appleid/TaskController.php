@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class TaskController extends Controller
 {
-    protected $ports = [14202, 14203];
+    protected $ports = [14280, 14202, 14203];
 
     public function getCommandUrl($email_host, $content_id = '')
     {
@@ -119,8 +119,7 @@ class TaskController extends Controller
             "id"       => 1,
             "ip"       => "118.31.212.185",
             // "port"     => "14204",
-            //"port"     => (string) $ports[$n],
-            "port"     => "14202",
+            "port"     => (string) $ports[0],
             "user"     => "cn_xs",
             "password" => $pwd,
             "type"     => "sock5",
