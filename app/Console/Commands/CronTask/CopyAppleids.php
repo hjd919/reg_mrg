@@ -70,7 +70,7 @@ class CopyAppleids extends Command
                     'source'           => 2,
                 ];
                 try {
-                    $res = $prod_jishua_db->table('emails')->insert($emails);
+                    $res = $prod_jishua_db->table('appleids')->insert($emails);
                     if (!$res) {
                         echo "error\n";
                         $r++;

@@ -112,7 +112,7 @@ class TaskController extends Controller
     {
         $pwd = $this->count_proxy();
 
-        $n     = time() % 2;
+        //$n     = time() % 2;
         $ports = $this->ports;
 
         $res = [
@@ -120,7 +120,6 @@ class TaskController extends Controller
             "ip"       => "118.31.212.185",
             // "port"     => "14204",
             "port"     => (string) $ports[0],
-            // "port"     => (string) $ports[$n],
             "user"     => "cn_xs",
             "password" => $pwd,
             "type"     => "sock5",
@@ -244,6 +243,8 @@ class TaskController extends Controller
         // 获取yanbox的imap验证码
         if ($email_host == 'yandex.ru') {
             exec("php ./imap.php {$email} {$password} '{$pwd}'", $output);
+	    
+        //file_put_contents('aaa',"php ./imap.php {$email} {$password} '{$pwd}'\n",FILE_APPEND);
             if (empty($output)) {
                 // 没找到邮件列表
                 return response()->json([
@@ -254,13 +255,14 @@ class TaskController extends Controller
             }
             $res = $output[0];
             if ($res === 'is_feng') {
-                DB::table('appleids')->where('strRegName', $email)->update(['state' => 404]);
+                //DB::table('appleids')->where('strRegName', $email)->update(['state' => 404]);
                 return response()->json([
                     'errno'  => 1,
                     'errmsg' => 'no',
                     'code'   => '',
                 ], 558);
             }
+        //file_put_contents('aaa',"php ./imap.php {$email} {$password} '{$pwd}' {$res}\n",FILE_APPEND);
 
             return response()->json([
                 'errno'  => 0,
