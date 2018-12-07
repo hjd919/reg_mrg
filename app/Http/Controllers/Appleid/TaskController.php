@@ -251,7 +251,7 @@ class TaskController extends Controller
                     'errno'  => 1,
                     'errmsg' => 'no',
                     'code'   => '',
-                ], 555);
+                ], 600);
             }
             $res = $output[0];
             if ($res === 'is_feng') {
@@ -260,7 +260,7 @@ class TaskController extends Controller
                     'errno'  => 1,
                     'errmsg' => 'no',
                     'code'   => '',
-                ], 558);
+                ], 601);
             }
             //file_put_contents('aaa',"php ./imap.php {$email} {$password} '{$pwd}' {$res}\n",FILE_APPEND);
 

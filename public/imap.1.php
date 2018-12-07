@@ -2,9 +2,9 @@
 // $email    = 'TcmIMRglT@yandex.ru';
 // $password = 'ZcHMaMe';
 // $pwd      = 'did=did&uid=127d497ab3d3c810eb6a1fcf81181de7&pid=-1&cid=-1&t=1524106607&sign=f319b52a5eb3cd20db04f32003259691';
-// list($script, $email, $password, $pwd) = $argv;
-$email       = 'hjd123hjd@inbox.lv';
-$password    = 'hjd825601';
+list($script, $email, $password, $pwd) = $argv;
+// $email       = 'hjd123hjd@inbox.lv';
+// $password    = 'hjd825601';
 
 class R
 {
@@ -74,39 +74,3 @@ if (preg_match('#x-ds-vetting-token: (.*?)\r\n#', $content, $match)) {
 }
 echo $code;
 die;
-
-// die;
-// die;
-$code = 0;
-for ($i = 2; $i <= 5; $i++) {
-    $content = $r->write('', $i);
-    if ($i == 2 && !$content) {
-        if (!$content) {
-            echo 'is_feng';
-            die;
-        } else {
-            continue;
-        }
-    }
-    if (!$content) {
-        break;
-    }
-    if (preg_match('#x-ds-vetting-token: (.*?)\r\n#', $content, $match)) {
-        $code = $match[1];
-    }
-}
-echo $code;
-die;
-// echo $result."\n";
-// if (!preg_match('#base64[\r\n]+(.*?)[\r\n]+--==#s', $result, $match)) {
-//     file_put_contents('log.txt', date('Y-m-d') . "---result:{$result}" . "\n", FILE_APPEND);
-//     return false;
-// }
-// $content = base64_decode($match[1]);
-// echo $content."\n";
-$content = $r->write('', 3);
-if (preg_match('#x-ds-vetting-token: (.*?)\r\n#', $content, $match)) {
-    echo $match[1];
-} else {
-    echo '';
-}
