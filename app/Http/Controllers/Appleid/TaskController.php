@@ -392,7 +392,7 @@ class TaskController extends Controller
         }
 
         // * 查询未获取的任务
-        $row = DB::table('appleids')->where('state', 0)
+        $row = DB::table('appleids')->where('state', 999)
             ->where('get_num', '<', 4)
         //->orderBy('get_num', 'asc')
             ->orderBy('id', 'desc')
