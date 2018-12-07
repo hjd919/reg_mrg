@@ -5,3 +5,4 @@ Homestead.yaml
 .env
 .DS_Store
 ubuntu.tar
+node_modules

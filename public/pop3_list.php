@@ -1,18 +1,14 @@
 <?php
-// $email = $_GET['email'];
-// $password = $_GET['password'];
-// $command_url = $_GET['comand_url'];
-// $port = $_GET['port'];
 
-// $email = 'gphgkornrbtl@hotmail.com';
-// $password = 'eYw5MNRDGF2u';
-// $command_url = 'pop3s://pop-mail.outlook.com/';
-// $email       = 'maksimovasaf1991@mail.ru';
+$email = 'hjd123hjd@inbox.lv';
+$password = 'hjd825601';
+$command_url = 'pop3s://mail.inbox.lv/1';
+// $email       = 'hjd123hjd@inbox.lv';
 // $password    = '56aPbfnk';
 // $command_url = 'pop3s://pop.mail.ru/';
-// $port = '995';
-// 
-list($script, $email, $password, $command_url, $port, $pwd) = $argv;
+$port = '993';
+
+// list($script, $email, $password, $command_url, $port, $pwd) = $argv;
 
 // create curl resource
 $curl = curl_init();
@@ -38,7 +34,7 @@ if ($curl) {
 
     //curl_setopt($curl, CURLOPT_CAINFO, "./certificate.pem");
 
-    // curl_setopt($curl, CURLOPT_VERBOSE, true);
+    curl_setopt($curl, CURLOPT_VERBOSE, true);
 
     //return the transfer as a string
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -51,7 +47,7 @@ if ($curl) {
 curl_close($curl);
 
 if (!$output) {
-    file_put_contents('./empty_pop_list.txt', $email . "--" . $password . "\n", FILE_APPEND);
+    // file_put_contents('./empty_pop_list.txt', $email . "--" . $password . "\n", FILE_APPEND);
     die('');
 } else {
     die($output);

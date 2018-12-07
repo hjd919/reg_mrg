@@ -241,10 +241,10 @@ class TaskController extends Controller
         $pwd = $this->count_proxy();
 
         // 获取yanbox的imap验证码
-        if ($email_host == 'yandex.ru') {
-            exec("php ./imap.php {$email} {$password} '{$pwd}'", $output);
-	    
-        //file_put_contents('aaa',"php ./imap.php {$email} {$password} '{$pwd}'\n",FILE_APPEND);
+        if ($email_host == 'inbox.lv') {
+            exec("php ./imap.1.php {$email} {$password} '{$pwd}'", $output);
+
+            //file_put_contents('aaa',"php ./imap.php {$email} {$password} '{$pwd}'\n",FILE_APPEND);
             if (empty($output)) {
                 // 没找到邮件列表
                 return response()->json([
@@ -262,7 +262,38 @@ class TaskController extends Controller
                     'code'   => '',
                 ], 558);
             }
-        //file_put_contents('aaa',"php ./imap.php {$email} {$password} '{$pwd}' {$res}\n",FILE_APPEND);
+            //file_put_contents('aaa',"php ./imap.php {$email} {$password} '{$pwd}' {$res}\n",FILE_APPEND);
+
+            return response()->json([
+                'errno'  => 0,
+                'errmsg' => 'success',
+                'code'   => $res,
+            ]);
+        }
+
+        // 获取yanbox的imap验证码
+        if ($email_host == 'yandex.ru') {
+            exec("php ./imap.php {$email} {$password} '{$pwd}'", $output);
+
+            //file_put_contents('aaa',"php ./imap.php {$email} {$password} '{$pwd}'\n",FILE_APPEND);
+            if (empty($output)) {
+                // 没找到邮件列表
+                return response()->json([
+                    'errno'  => 1,
+                    'errmsg' => 'no',
+                    'code'   => '',
+                ], 555);
+            }
+            $res = $output[0];
+            if ($res === 'is_feng') {
+                //DB::table('appleids')->where('strRegName', $email)->update(['state' => 404]);
+                return response()->json([
+                    'errno'  => 1,
+                    'errmsg' => 'no',
+                    'code'   => '',
+                ], 558);
+            }
+            //file_put_contents('aaa',"php ./imap.php {$email} {$password} '{$pwd}' {$res}\n",FILE_APPEND);
 
             return response()->json([
                 'errno'  => 0,
@@ -363,7 +394,7 @@ class TaskController extends Controller
         // * 查询未获取的任务
         $row = DB::table('appleids')->where('state', 0)
             ->where('get_num', '<', 4)
-            //->orderBy('get_num', 'asc')
+        //->orderBy('get_num', 'asc')
             ->orderBy('id', 'desc')
             ->limit(1)
             ->first();
