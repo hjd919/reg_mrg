@@ -388,7 +388,7 @@ class Login
     public function getCookies()
     {
         $this->cookies = new Requests_Cookie_Jar();
-        $response      = Requests::get('https://passport.yandex.ru/registration?from=mail&origin=hostroot_homer_auth_L_ru&retpath=https%3A%2F%2Fmail.yandex.ru%2F', [], ['cookies' => $this->cookies, 'proxy' => [$this->proxy, $this->proxyuser, $this->proxypwd]]);
+        $response      = Requests::get('https://login.inbox.lv/signup?go=portal', [], ['cookies' => $this->cookies, 'proxy' => [$this->proxy, $this->proxyuser, $this->proxypwd]]);
         // $body          = $response->body;
 
         // preg_match('/name=\"track_id\" value=\"(.*?)\"/', $body, $match);
@@ -438,11 +438,11 @@ class Login
 
         // return $header[mt_rand(0, count($header) - 1)];
         return [
+            'Upgrade-Insecure-Requests' => '1',
+            'User-Agent'                => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36',
             'Accept'                    => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
             'Accept-Encoding'           => 'gzip, deflate, sdch',
             'Accept-Language'           => 'zh-CN,zh;q=0.8,en;q=0.6',
-            'User-Agent'                => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36',
-            'Upgrade-Insecure-Requests' => '1',
             'Connection'                => 'keep-alive',
             'Content-Type'              => 'application/x-www-form-urlencoded',
             'Cache-Control'             => 'no-cache',

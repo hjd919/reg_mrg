@@ -9,6 +9,7 @@ use App\Console\Commands\Import\ImportAppleids;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 use App\Console\Commands\CpAppleidDevice;
+use App\Console\Commands\RegMail;
 
 //use App\Console\Commands\TestCommand;
 
@@ -25,6 +26,7 @@ class Kernel extends ConsoleKernel
         ResetState::class,
         DeleteError::class,
         CpAppleidDevice::class,
+        RegMail::class,
         //TestCommand::class,
     ];
 

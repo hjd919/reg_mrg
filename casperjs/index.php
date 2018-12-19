@@ -17,12 +17,12 @@ date_default_timezone_set('Asia/Shanghai');
 $date = date('ymd');
 $file = "emails.txt";
 $t1   = microtime(true);
-for ($i = 0; $i < 100; $i++) {
+for ($i = 0; $i < 1; $i++) {
     // 获取代理ip
     $content    = file_get_contents('http://jsapi.yz210.com/appleid/task/getproxy');
     $proxy      = json_decode($content, true);
     $proxy_auth = "{$proxy['user']}:{$proxy['password']}";
-    for ($j = 0; $j < 3; $j++) {
+    for ($j = 0; $j < 1; $j++) {
         $key        = md5(microtime(true) . rand(1, 100));
         $email_name = substr($key, 0, 6);
         $password   = '';
@@ -36,9 +36,10 @@ echo "花费时间" . ($t2 - $t1);
 
 function reg_ru($email_name, $proxy_auth)
 {
+    echo "p---$proxy_auth";
     // 调用注册
-    $cmd = "docker exec reg_ru casperjs --proxy-type=socks5 --proxy='118.31.212.185:14202' --proxy-auth='{$proxy_auth}' --web-security=no reg_ty.js --email_name='{$email_name}' >> log.txt";
+    $cmd = "casperjs --ignore-ssl-errors=true --proxy-type=socks5 --proxy='118.31.212.185:14203' --proxy-auth='{$proxy_auth}' --web-security=no reg_inbox.js >> log.txt";
     exec($cmd, $result);
-    // print_r($result);
+    print_r($result);
     return true;
 }

@@ -1,0 +1,650 @@
+[36m[info][0m [phantom] Starting...
+[36m[info][0m [phantom] Running suite: 7 steps
+[36m[info][0m [phantom] Starting...
+[36m[info][0m [phantom] Running suite: 7 steps
+[36m[info][0m [phantom] Starting...
+[36m[info][0m [phantom] Running suite: 7 steps
+[36m[info][0m [phantom] Starting...
+[36m[info][0m [phantom] Running suite: 7 steps
+[36m[info][0m [phantom] Step anonymous 2/7 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] 注册
+[36m[info][0m [phantom] 填写用户名
+[36m[info][0m [phantom] 验证用户名
+[36m[info][0m [phantom] Capture saved to /Users/hjd/dc/app/reg_mrg/casperjs/capture/1545212494519验证用户名.jpg
+[36m[info][0m [phantom] Step anonymous 2/7: done in 16179ms.
+[36m[info][0m [phantom] Step _step 3/7 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 3/7: done in 16180ms.
+[36m[info][0m [phantom] waitFor() finished in 2024ms.
+[36m[info][0m [phantom] Step anonymous 4/8 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] 验证用户名成功
+[36m[info][0m [phantom] 填写密码和姓名
+[36m[info][0m [phantom] 点击协议
+[36m[info][0m [phantom] Step anonymous 4/8: done in 18228ms.
+[36m[info][0m [phantom] Step _step 5/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 5/23: done in 18248ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 6/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 6/23: done in 18361ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 7/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 7/23: done in 18483ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 8/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 8/23: done in 18594ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 9/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 9/23: done in 18712ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 10/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 10/23: done in 18833ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 11/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 11/23: done in 18954ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 12/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 12/23: done in 19062ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 13/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 13/23: done in 19171ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 14/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 14/23: done in 19283ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 15/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 15/23: done in 19398ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 16/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 16/23: done in 19505ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 17/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 17/23: done in 19614ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 18/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 18/23: done in 19730ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 19/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 19/23: done in 19850ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 20/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 20/23: done in 19955ms.
+[36m[info][0m [phantom] waitFor() finished in 43ms.
+[36m[info][0m [phantom] Step anonymous 21/24 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] 提交表单
+[36m[info][0m [phantom] Step anonymous 21/24: done in 20041ms.
+[36m[info][0m [phantom] Step _step 22/24 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 22/24: done in 20042ms.
+[33m[warning][0m [phantom] Casper.waitFor() timeout
+[37;41;1m[error][0m [phantom] Wait timeout of 5000ms expired, exiting.
+[37;41;1mWait timeout of 5000ms expired, exiting.[0m
+[36m[info][0m [phantom] Starting...
+[36m[info][0m [phantom] Running suite: 7 steps
+[36m[info][0m [phantom] Step anonymous 2/7 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] 注册
+[36m[info][0m [phantom] 填写用户名
+[36m[info][0m [phantom] 验证用户名
+[36m[info][0m [phantom] Capture saved to /Users/hjd/dc/app/reg_mrg/casperjs/capture/1545212619497验证用户名.jpg
+[36m[info][0m [phantom] Step anonymous 2/7: done in 16962ms.
+[36m[info][0m [phantom] Step _step 3/7 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 3/7: done in 16964ms.
+[36m[info][0m [phantom] waitFor() finished in 2456ms.
+[36m[info][0m [phantom] Step anonymous 4/8 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] 验证用户名成功
+[36m[info][0m [phantom] 填写密码和姓名
+[36m[info][0m [phantom] 点击协议
+[36m[info][0m [phantom] Step anonymous 4/8: done in 20754ms.
+[36m[info][0m [phantom] Step _step 5/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 5/23: done in 20776ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 6/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 6/23: done in 20891ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 7/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 7/23: done in 21012ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 8/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 8/23: done in 21122ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 9/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 9/23: done in 21233ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 10/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 10/23: done in 21341ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 11/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 11/23: done in 21450ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 12/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 12/23: done in 21557ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 13/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 13/23: done in 21670ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 14/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 14/23: done in 21782ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 15/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 15/23: done in 21892ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 16/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 16/23: done in 21998ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 17/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 17/23: done in 22106ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 18/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 18/23: done in 22212ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 19/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 19/23: done in 22321ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 20/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 20/23: done in 22429ms.
+[36m[info][0m [phantom] waitFor() finished in 44ms.
+[36m[info][0m [phantom] Step anonymous 21/24 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] 提交表单
+[36m[info][0m [phantom] Step anonymous 21/24: done in 22518ms.
+[36m[info][0m [phantom] Step _step 22/24 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 22/24: done in 22520ms.
+[33m[warning][0m [phantom] Casper.waitFor() timeout
+[37;41;1m[error][0m [phantom] Wait timeout of 15000ms expired, exiting.
+[37;41;1mWait timeout of 15000ms expired, exiting.[0m
+[36m[info][0m [phantom] Starting...
+[36m[info][0m [phantom] Running suite: 7 steps
+[36m[info][0m [phantom] Step anonymous 2/7 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] 注册
+[36m[info][0m [phantom] 填写用户名
+[36m[info][0m [phantom] 验证用户名
+[36m[info][0m [phantom] Capture saved to /Users/hjd/dc/app/reg_mrg/casperjs/capture/1545212689336验证用户名.jpg
+[36m[info][0m [phantom] Step anonymous 2/7: done in 29245ms.
+[36m[info][0m [phantom] Step _step 3/7 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 3/7: done in 29246ms.
+[36m[info][0m [phantom] waitFor() finished in 2072ms.
+[36m[info][0m [phantom] Step anonymous 4/8 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] 验证用户名成功
+[36m[info][0m [phantom] 填写密码和姓名
+[36m[info][0m [phantom] 点击协议
+[36m[info][0m [phantom] Step anonymous 4/8: done in 31340ms.
+[36m[info][0m [phantom] Step _step 5/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 5/23: done in 31360ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 6/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 6/23: done in 31474ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 7/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 7/23: done in 31596ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 8/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 8/23: done in 31706ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 9/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 9/23: done in 31818ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 10/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 10/23: done in 31926ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 11/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 11/23: done in 32046ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 12/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 12/23: done in 32155ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 13/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 13/23: done in 32265ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 14/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 14/23: done in 32375ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 15/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 15/23: done in 32483ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 16/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 16/23: done in 32593ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 17/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 17/23: done in 32701ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 18/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 18/23: done in 32809ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 19/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 19/23: done in 32917ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 20/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 20/23: done in 33026ms.
+[36m[info][0m [phantom] waitFor() finished in 45ms.
+[36m[info][0m [phantom] Step anonymous 21/24 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] 提交表单
+[36m[info][0m [phantom] Step anonymous 21/24: done in 33115ms.
+[36m[info][0m [phantom] Step _step 22/24 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 22/24: done in 33116ms.
+[33m[warning][0m [phantom] Casper.waitFor() timeout
+[37;41;1m[error][0m [phantom] Wait timeout of 30000ms expired, exiting.
+[37;41;1mWait timeout of 30000ms expired, exiting.[0m
+[36m[info][0m [phantom] Starting...
+[36m[info][0m [phantom] Running suite: 7 steps
+[36m[info][0m [phantom] Step anonymous 2/7 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] 注册
+[36m[info][0m [phantom] 填写用户名
+[36m[info][0m [phantom] 验证用户名
+[36m[info][0m [phantom] Capture saved to /Users/hjd/dc/app/reg_mrg/casperjs/capture/1545213249800验证用户名.jpg
+[36m[info][0m [phantom] Step anonymous 2/7: done in 10876ms.
+[36m[info][0m [phantom] Step _step 3/7 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 3/7: done in 16636ms.
+[36m[info][0m [phantom] waitFor() finished in 43ms.
+[36m[info][0m [phantom] Step anonymous 4/8 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] 验证用户名成功
+[36m[info][0m [phantom] 填写密码和姓名
+[36m[info][0m [phantom] 点击协议
+[36m[info][0m [phantom] Step anonymous 4/8: done in 16704ms.
+[36m[info][0m [phantom] Step _step 5/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 5/23: done in 16726ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 6/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 6/23: done in 16840ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 7/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 7/23: done in 16947ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 8/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 8/23: done in 17054ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 9/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 9/23: done in 17162ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 10/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 10/23: done in 17272ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 11/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 11/23: done in 17381ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 12/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 12/23: done in 17492ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 13/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 13/23: done in 17605ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 14/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 14/23: done in 17715ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 15/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 15/23: done in 17823ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 16/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 16/23: done in 17930ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 17/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 17/23: done in 18039ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 18/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 18/23: done in 18148ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 19/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 19/23: done in 18258ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 20/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 20/23: done in 18370ms.
+[36m[info][0m [phantom] waitFor() finished in 46ms.
+[36m[info][0m [phantom] Step anonymous 21/24 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] 提交表单
+[36m[info][0m [phantom] Capture saved to /Users/hjd/dc/app/reg_mrg/casperjs/capture/1545213257526提交表单.jpg
+[36m[info][0m [phantom] Step anonymous 21/24: done in 18539ms.
+[36m[info][0m [phantom] Step _step 22/24 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 22/24: done in 18540ms.
+[33m[warning][0m [phantom] Casper.waitFor() timeout
+[37;41;1m[error][0m [phantom] Wait timeout of 30000ms expired, exiting.
+[37;41;1mWait timeout of 30000ms expired, exiting.[0m
+[36m[info][0m [phantom] Starting...
+[36m[info][0m [phantom] Running suite: 7 steps
+[36m[info][0m [phantom] Step anonymous 2/7 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] 注册
+[36m[info][0m [phantom] 填写用户名
+[36m[info][0m [phantom] 验证用户名
+[36m[info][0m [phantom] Capture saved to /Users/hjd/dc/app/reg_mrg/casperjs/capture/1545213405952验证用户名.jpg
+[36m[info][0m [phantom] Step anonymous 2/7: done in 18182ms.
+[36m[info][0m [phantom] Step _step 3/7 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 3/7: done in 21154ms.
+[36m[info][0m [phantom] waitFor() finished in 42ms.
+[36m[info][0m [phantom] Step anonymous 4/8 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] 验证用户名成功
+[36m[info][0m [phantom] 填写密码和姓名
+[36m[info][0m [phantom] 点击协议
+[36m[info][0m [phantom] Step anonymous 4/8: done in 21218ms.
+[36m[info][0m [phantom] Step _step 5/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 5/23: done in 21237ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 6/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 6/23: done in 21354ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 7/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 7/23: done in 21476ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 8/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 8/23: done in 21586ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 9/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 9/23: done in 21695ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 10/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 10/23: done in 21805ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 11/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 11/23: done in 21915ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 12/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 12/23: done in 22022ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 13/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 13/23: done in 22134ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 14/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 14/23: done in 22256ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 15/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 15/23: done in 22360ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 16/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 16/23: done in 22469ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 17/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 17/23: done in 22576ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 18/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 18/23: done in 22686ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 19/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 19/23: done in 22792ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 20/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 20/23: done in 22897ms.
+[36m[info][0m [phantom] waitFor() finished in 40ms.
+[36m[info][0m [phantom] Step anonymous 21/24 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] 提交表单
+[36m[info][0m [phantom] Capture saved to /Users/hjd/dc/app/reg_mrg/casperjs/capture/1545213410908提交表单.jpg
+[36m[info][0m [phantom] Step anonymous 21/24: done in 23067ms.
+[36m[info][0m [phantom] Step _step 22/24 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 22/24: done in 23069ms.
+[33m[warning][0m [phantom] Casper.waitFor() timeout
+[37;41;1m[error][0m [phantom] Wait timeout of 30000ms expired, exiting.
+[37;41;1mWait timeout of 30000ms expired, exiting.[0m
+[36m[info][0m [phantom] Starting...
+[36m[info][0m [phantom] Running suite: 7 steps
+[36m[info][0m [phantom] Step anonymous 2/7 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] 注册
+[36m[info][0m [phantom] 填写用户名
+[36m[info][0m [phantom] 验证用户名
+[36m[info][0m [phantom] Capture saved to /Users/hjd/dc/app/reg_mrg/casperjs/capture/1545213784371验证用户名.jpg
+[36m[info][0m [phantom] Step anonymous 2/7: done in 43443ms.
+[36m[info][0m [phantom] Step _step 3/7 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 3/7: done in 43444ms.
+[36m[info][0m [phantom] waitFor() finished in 2692ms.
+[36m[info][0m [phantom] Step anonymous 4/8 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] 验证用户名成功
+[36m[info][0m [phantom] 填写密码和姓名
+[36m[info][0m [phantom] 点击协议
+[36m[info][0m [phantom] Step anonymous 4/8: done in 46158ms.
+[36m[info][0m [phantom] Step _step 5/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 5/23: done in 46178ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 6/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 6/23: done in 46292ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 7/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 7/23: done in 46401ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 8/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 8/23: done in 46509ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 9/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 9/23: done in 46630ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 10/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 10/23: done in 46737ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 11/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 11/23: done in 46844ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 12/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 12/23: done in 46951ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 13/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 13/23: done in 47066ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 14/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 14/23: done in 47174ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 15/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 15/23: done in 47278ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 16/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 16/23: done in 47386ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 17/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 17/23: done in 47492ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 18/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 18/23: done in 47599ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 19/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 19/23: done in 47708ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 20/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 20/23: done in 47820ms.
+[36m[info][0m [phantom] waitFor() finished in 47ms.
+[36m[info][0m [phantom] Step anonymous 21/24 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] 提交表单
+[36m[info][0m [phantom] Capture saved to /Users/hjd/dc/app/reg_mrg/casperjs/capture/1545213788984提交表单.jpg
+[36m[info][0m [phantom] Step anonymous 21/24: done in 47988ms.
+[36m[info][0m [phantom] Step _step 22/24 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 22/24: done in 47989ms.
+[33m[warning][0m [phantom] Casper.waitFor() timeout
+[37;41;1m[error][0m [phantom] Wait timeout of 30000ms expired, exiting.
+[37;41;1mWait timeout of 30000ms expired, exiting.[0m
+[36m[info][0m [phantom] Starting...
+[36m[info][0m [phantom] Running suite: 7 steps
+[33m[warning][0m [phantom] Loading resource failed with status=fail: https://login.inbox.lv/signup?go=portal
+[36m[info][0m [phantom] 注册
+[36m[info][0m [phantom] 填写用户名
+[36m[info][0m [phantom] 验证用户名
+[36m[info][0m [phantom] Capture saved to /Users/hjd/dc/app/reg_mrg/casperjs/capture/1545213848387验证用户名.jpg
+[36m[info][0m [phantom] Step anonymous 2/7: done in 14406ms.
+[36m[info][0m [phantom] Step _step 3/7: done in 14407ms.
+[33m[warning][0m [phantom] Casper.waitFor() timeout
+[37;41;1m[error][0m [phantom] Wait timeout of 15000ms expired, exiting.
+[37;41;1mWait timeout of 15000ms expired, exiting.[0m
+[36m[info][0m [phantom] Starting...
+[36m[info][0m [phantom] Running suite: 7 steps
+[33m[warning][0m [phantom] Loading resource failed with status=fail: https://login.inbox.lv/signup?go=portal
+[36m[info][0m [phantom] 注册
+[36m[info][0m [phantom] 填写用户名
+[36m[info][0m [phantom] 验证用户名
+[36m[info][0m [phantom] Capture saved to /Users/hjd/dc/app/reg_mrg/casperjs/capture/1545213941404验证用户名.jpg
+[36m[info][0m [phantom] Step anonymous 2/7: done in 14837ms.
+[36m[info][0m [phantom] Step _step 3/7: done in 14838ms.
+[33m[warning][0m [phantom] Casper.waitFor() timeout
+[37;41;1m[error][0m [phantom] Wait timeout of 15000ms expired, exiting.
+[37;41;1mWait timeout of 15000ms expired, exiting.[0m
+[36m[info][0m [phantom] Starting...
+[36m[info][0m [phantom] Running suite: 7 steps
+[36m[info][0m [phantom] Step anonymous 2/7 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] 注册
+[36m[info][0m [phantom] 填写用户名
+[36m[info][0m [phantom] 验证用户名
+[36m[info][0m [phantom] Capture saved to /Users/hjd/dc/app/reg_mrg/casperjs/capture/1545214000942验证用户名.jpg
+[36m[info][0m [phantom] Step anonymous 2/7: done in 9603ms.
+[36m[info][0m [phantom] Step _step 3/7 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 3/7: done in 10957ms.
+[36m[info][0m [phantom] waitFor() finished in 529ms.
+[36m[info][0m [phantom] Step anonymous 4/8 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] 验证用户名成功
+[36m[info][0m [phantom] 填写密码和姓名
+[36m[info][0m [phantom] 点击协议
+[36m[info][0m [phantom] Step anonymous 4/8: done in 11509ms.
+[36m[info][0m [phantom] Step _step 5/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 5/23: done in 11528ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 6/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 6/23: done in 11644ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 7/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 7/23: done in 11752ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 8/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 8/23: done in 11873ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 9/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 9/23: done in 11980ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 10/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 10/23: done in 12088ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 11/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 11/23: done in 12196ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 12/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 12/23: done in 12318ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 13/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 13/23: done in 12426ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 14/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 14/23: done in 12536ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 15/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 15/23: done in 12652ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 16/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 16/23: done in 12760ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 17/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 17/23: done in 12868ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 18/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 18/23: done in 12974ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 19/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 19/23: done in 13078ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 20/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 20/23: done in 13184ms.
+[36m[info][0m [phantom] waitFor() finished in 46ms.
+[36m[info][0m [phantom] Step anonymous 21/24 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] 提交表单
+[36m[info][0m [phantom] Capture saved to /Users/hjd/dc/app/reg_mrg/casperjs/capture/1545214004750提交表单.jpg
+[36m[info][0m [phantom] Step anonymous 21/24: done in 13351ms.
+[36m[info][0m [phantom] Step _step 22/24 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 22/24: done in 13353ms.
+[33m[warning][0m [phantom] Casper.waitFor() timeout
+[37;41;1m[error][0m [phantom] Wait timeout of 15000ms expired, exiting.
+[37;41;1mWait timeout of 15000ms expired, exiting.[0m
+[36m[info][0m [phantom] Starting...
+[36m[info][0m [phantom] Running suite: 7 steps
+[36m[info][0m [phantom] Step anonymous 2/7 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] 注册
+[36m[info][0m [phantom] 填写用户名
+[36m[info][0m [phantom] 验证用户名
+[36m[info][0m [phantom] Capture saved to /Users/hjd/dc/app/reg_mrg/casperjs/capture/1545214532766验证用户名.jpg
+[36m[info][0m [phantom] Step anonymous 2/7: done in 16544ms.
+[36m[info][0m [phantom] Step _step 3/7 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 3/7: done in 18001ms.
+[36m[info][0m [phantom] waitFor() finished in 259ms.
+[36m[info][0m [phantom] Step anonymous 4/8 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] 验证用户名成功
+[36m[info][0m [phantom] 填写密码和姓名
+[36m[info][0m [phantom] 点击协议
+[36m[info][0m [phantom] Step anonymous 4/8: done in 18263ms.
+[36m[info][0m [phantom] Step _step 5/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 5/23: done in 18280ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 6/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 6/23: done in 18409ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 7/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 7/23: done in 18518ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 8/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 8/23: done in 18640ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 9/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 9/23: done in 18762ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 10/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 10/23: done in 18870ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 11/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 11/23: done in 18980ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 12/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 12/23: done in 19091ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 13/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 13/23: done in 19203ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 14/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 14/23: done in 19314ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 15/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 15/23: done in 19435ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 16/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 16/23: done in 19543ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 17/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 17/23: done in 19655ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 18/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 18/23: done in 19764ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 19/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 19/23: done in 19875ms.
+[36m[info][0m [phantom] wait() finished waiting for 100ms.
+[36m[info][0m [phantom] Step _step 20/23 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 20/23: done in 19985ms.
+[36m[info][0m [phantom] waitFor() finished in 47ms.
+[36m[info][0m [phantom] Step anonymous 21/24 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] 提交表单
+[36m[info][0m [phantom] Capture saved to /Users/hjd/dc/app/reg_mrg/casperjs/capture/1545214536448提交表单.jpg
+[36m[info][0m [phantom] Step anonymous 21/24: done in 20159ms.
+[36m[info][0m [phantom] Step _step 22/24 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 22/24: done in 20160ms.
+[33m[warning][0m [phantom] Casper.waitFor() timeout
+[37;41;1m[error][0m [phantom] Wait timeout of 15000ms expired, exiting.
+[37;41;1mWait timeout of 15000ms expired, exiting.[0m
+[36m[info][0m [phantom] Starting...
+[36m[info][0m [phantom] Running suite: 7 steps
+[36m[info][0m [phantom] Step anonymous 2/7 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] 注册
+[36m[info][0m [phantom] 填写用户名
+[36m[info][0m [phantom] 验证用户名
+[36m[info][0m [phantom] Capture saved to /Users/hjd/dc/app/reg_mrg/casperjs/capture/1545214724392验证用户名.jpg
+[36m[info][0m [phantom] Step anonymous 2/7: done in 36954ms.
+[36m[info][0m [phantom] Step _step 3/7 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 3/7: done in 36957ms.
+[33m[warning][0m [phantom] Casper.waitFor() timeout
+[37;41;1m[error][0m [phantom] Wait timeout of 15000ms expired, exiting.
+[37;41;1mWait timeout of 15000ms expired, exiting.[0m
+[36m[info][0m [phantom] Starting...
+[36m[info][0m [phantom] Running suite: 7 steps
+[36m[info][0m [phantom] Step anonymous 2/7 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] 注册
+[36m[info][0m [phantom] 填写用户名
+[36m[info][0m [phantom] 验证用户名
+[36m[info][0m [phantom] Capture saved to /Users/hjd/dc/app/reg_mrg/casperjs/capture/1545214789936验证用户名.jpg
+[36m[info][0m [phantom] Step anonymous 2/7: done in 22158ms.
+[36m[info][0m [phantom] Step _step 3/7 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 3/7: done in 24442ms.
+[33m[warning][0m [phantom] Casper.waitFor() timeout
+[37;41;1m[error][0m [phantom] Wait timeout of 15000ms expired, exiting.
+[37;41;1mWait timeout of 15000ms expired, exiting.[0m
+[36m[info][0m [phantom] Starting...
+[36m[info][0m [phantom] Running suite: 7 steps
+[36m[info][0m [phantom] Step anonymous 2/7 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] 注册
+[36m[info][0m [phantom] 填写用户名
+[36m[info][0m [phantom] 验证用户名
+[36m[info][0m [phantom] Capture saved to /Users/hjd/dc/app/reg_mrg/casperjs/capture/1545214900339验证用户名.jpg
+[36m[info][0m [phantom] Step anonymous 2/7: done in 78420ms.
+[36m[info][0m [phantom] Step _step 3/7 https://login.inbox.lv/signup?go=portal (HTTP 200)
+[36m[info][0m [phantom] Step _step 3/7: done in 78420ms.
+[33m[warning][0m [phantom] Casper.waitFor() timeout
+[37;41;1m[error][0m [phantom] Wait timeout of 30000ms expired, exiting.
+[37;41;1mWait timeout of 30000ms expired, exiting.[0m
